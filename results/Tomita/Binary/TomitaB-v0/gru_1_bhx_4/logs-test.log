@@ -1,0 +1,5 @@
+08/06/2018 03:30:32 PM [INFO ] [root -> <module>]  Loading Data-Set
+08/06/2018 03:30:32 PM [INFO ] [root -> generate_bottleneck_data]  Data Sizes:
+08/06/2018 03:30:32 PM [INFO ] [root -> generate_bottleneck_data]  Hx Train:20230 Hx Test:9700 Obs Train:2 Obs Test:2
+08/06/2018 03:30:33 PM [INFO ] [root -> <module>]  Testing  HX SandGlassNet
+08/06/2018 03:30:33 PM [INFO ] [root -> <module>]  MSE :0.0009852054063230753

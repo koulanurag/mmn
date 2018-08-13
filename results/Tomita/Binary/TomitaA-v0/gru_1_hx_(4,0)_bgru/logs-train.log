@@ -1,0 +1,10 @@
+08/06/2018 05:40:46 PM [INFO ] [root -> <module>]  Training Binary GRUNet!
+08/06/2018 05:40:46 PM [INFO ] [root -> generate_trajectories]  Loading Saved data .. 
+08/06/2018 05:40:48 PM [INFO ] [bgru_nn -> train]  Padding Sequences ...
+08/06/2018 05:40:48 PM [ERROR] [root -> <module>]  Traceback (most recent call last):
+  File "main_tomita_binary.py", line 450, in <module>
+    args.batch_size, args.train_epochs, args.cuda)
+  File "/nfs/guille/afern/users/koula/Anurag_Research/Code/mmn-private/bgru_nn.py", line 72, in train
+    data_obs, data_actions, data_action_probs, data_len = train_data[batch_seed]
+ValueError: not enough values to unpack (expected 4, got 3)
+

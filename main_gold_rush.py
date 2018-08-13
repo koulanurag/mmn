@@ -61,6 +61,7 @@ class GRUNet(nn.Module):
         self.input_ff = nn.Sequential(nn.Linear(input_size, self.input_c_features), nn.ReLU())
         self.gru = nn.GRUCell(self.input_c_features, gru_cells)
         self.actor_linear = nn.Linear(gru_cells, total_actions)
+        self.critic_linear = nn.Linear(gru_cells, 1)
 
         self.apply(weights_init)
         self.actor_linear.weight.data = normalized_columns_initializer(self.actor_linear.weight.data, 0.01)
@@ -76,9 +77,9 @@ class GRUNet(nn.Module):
         ghx = self.gru(input, hx)
         hx, bhx = hx_fn(ghx) if hx_fn is not None else (ghx, ghx)
         if inspect:
-            return self.actor_linear(hx), hx, (ghx, bhx, c_input, input_x)
+            return self.critic_linear(hx), self.actor_linear(hx), hx, (ghx, bhx, c_input, input_x)
         else:
-            return self.actor_linear(hx), hx
+            return self.critic_linear(hx), self.actor_linear(hx), hx
 
     def initHidden(self, batch_size=1):
         return torch.zeros(batch_size, self.gru_units)
@@ -155,7 +156,7 @@ def generate_bottleneck_data(net, env, episodes, save_path, cuda=False):
                     if cuda:
                         hx = hx.cuda()
                         obs = obs.cuda()
-                    logit, hx, (_, _, obs_c, _) = net((obs, hx), inspect=True)
+                    critic, logit, hx, (_, _, obs_c, _) = net((obs, hx), inspect=True)
                     prob = F.softmax(logit, dim=1)
                     action = int(prob.max(1)[1].data.cpu().numpy())
                     obs, reward, done, info = env.step(action)
@@ -205,7 +206,7 @@ def generate_trajectories(env, batches, batch_size, save_path, guide=None):
                             _actions.append(action)
                         else:
                             obs = Variable(torch.Tensor(obs).unsqueeze(0))
-                            logit, hx, (_, _, obs_c, _) = guide((obs, hx), inspect=True)
+                            critic, logit, hx, (_, _, obs_c, _) = guide((obs, hx), inspect=True)
                             prob = F.softmax(logit, dim=1)
                             action = int(prob.max(1)[1].data.cpu().numpy())
                             _actions.append(prob.data.cpu().numpy()[0].tolist())
@@ -303,7 +304,7 @@ if __name__ == '__main__':
                 gru_net.train()
                 optimizer = optim.Adam(gru_net.parameters(), lr=1e-3)
                 gru_net = gru_nn.train(gru_net, env, optimizer, gru_net_path, gru_plot_dir, train_data, args.batch_size,
-                                     args.train_epochs, args.cuda)
+                                       args.train_epochs, args.cuda)
                 # gru_net.load_state_dict(torch.load(gru_net_path))
                 logging.info('Generating Data-Set for Later Bottle Neck Training')
                 gru_net.eval()
@@ -421,7 +422,10 @@ if __name__ == '__main__':
             bgru_net_path = os.path.join(bgru_dir, 'model.p')
             bgru_plot_dir = ensure_directory_exits(os.path.join(bgru_dir, 'Plots'))
 
-            set_log(bgru_dir, 'train' if args.bgru_train else ('test' if args.bgru_test else 'generate_fsm'))
+            _log_tag = 'train' if args.bgru_train else ('test' if args.bgru_test else 'generate_fsm')
+            _log_tag = _log_tag if not args.evaluate_fsm else 'evaluate_fsm'
+
+            set_log(bgru_dir, _log_tag)
             if args.bgru_train:
                 logging.info('Training Binary GRUNet!')
                 bgru_net.train()
@@ -451,12 +455,20 @@ if __name__ == '__main__':
                 bgru_net.eval()
                 moore_machine = MooreMachine()
                 moore_machine.extract_from_nn(env, bgru_net, 500, 0, log=True)
-                perf = moore_machine.evaluate(bgru_net, env, total_episodes=100)
+                perf = moore_machine.evaluate(bgru_net, env, total_episodes=500)
                 moore_machine.save(open(os.path.join(bgru_dir, 'fsm.txt'), 'w'))
                 logging.info('Performance Before Minimization:{}'.format(perf))
                 moore_machine.minimize()
                 moore_machine.save(open(os.path.join(bgru_dir, 'minimized_fsm.txt'), 'w'))
-                perf = moore_machine.evaluate(bgru_net, env, total_episodes=100)
+                pickle.dump(moore_machine, open(os.path.join(bgru_dir, 'moore_machine.p'), 'w'))
+                perf = moore_machine.evaluate(bgru_net, env, total_episodes=500)
                 logging.info('Performance After Minimization: {}'.format(perf))
+            if args.evaluate_fsm:
+                bgru_net.load_state_dict(torch.load(bgru_net_path))
+                moore_machine = pickle.load(open(os.path.join(bgru_dir, 'moore_machine.p'), 'r'))
+                bgru_net.cpu()
+                bgru_net.eval()
+
+
     except Exception as ex:
         logging.error(''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__)))

@@ -6,6 +6,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 from prettytable import PrettyTable
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -83,7 +84,7 @@ class MooreMachine:
 
         return state_indices, new_entries
 
-    def extract_from_nn(self, env, net, episodes, seed, log=True):
+    def extract_from_nn(self, env, net, episodes, seed, log=True,render=False):
         """ Extract Finite State Moore Machine from a Binary Neural Network"""
         net.eval()
         random.seed(seed)
@@ -96,16 +97,19 @@ class MooreMachine:
             for ep in range(episodes):
                 done = False
                 obs = env.reset()
-                curr_state = net.initHidden()
+                curr_state = Variable(net.initHidden())
                 curr_state_x = net.state_encode(curr_state)
                 ep_reward = 0
                 while not done:
+                    if render:
+                        env.render()
                     curr_action = net.get_action_linear(curr_state_x, decode=True)
                     prob = F.softmax(curr_action, dim=1)
                     curr_action = int(prob.max(1)[1].cpu().data.numpy()[0])
                     obs = Variable(torch.Tensor(obs)).unsqueeze(0)
 
-                    logit, next_state, (next_state_c, next_state_x), (_, obs_x) = net((obs, curr_state), inspect=True)
+                    critic, logit, next_state, (next_state_c, next_state_x), (_, obs_x) = net((obs, curr_state),
+                                                                                              inspect=True)
                     prob = F.softmax(logit, dim=1)
                     next_action = int(prob.max(1)[1].data.cpu().numpy())
 
@@ -227,6 +231,13 @@ class MooreMachine:
                     new_trans.pop(start_state_p)
                     new_state_info.pop(start_state_p)
                     new_state_info[state]['sub_states'] += partitions[start_state_p]
+
+                    # This could be highly wrong (On God's Grace :D )
+                    for _state in new_trans.keys():
+                        for _o in new_trans[_state].keys():
+                            if new_trans[_state][_o] == start_state_p:
+                                new_trans[_state][_o] = state
+
                     start_state_p = state
                     break
 
@@ -258,7 +269,7 @@ class MooreMachine:
         self.minobs_obs_map = _minobs_obs_map
         self.minimized = True
 
-    def evaluate(self, net, env, total_episodes, log=True):
+    def evaluate(self, net, env, total_episodes, log=True,render=False):
         net.eval()
         total_reward = 0
         for ep in range(total_episodes):
@@ -266,8 +277,12 @@ class MooreMachine:
             done = False
             ep_reward = 0
             ep_actions = []
+            ep_obs = []
             curr_state = self.start_state
             while not done:
+                if render:
+                    env.render()
+                ep_obs.append(obs)
                 obs = torch.FloatTensor(obs).unsqueeze(0)
                 obs = Variable(obs)
                 obs_x = list(net.obs_encode(obs).data.cpu().numpy()[0])
@@ -281,6 +296,7 @@ class MooreMachine:
             total_reward += ep_reward
             if log:
                 logger.info("Episode => {} Score=> {}".format(ep, ep_reward))
+                logger.info("Action => {} Observation=> {}".format(ep_actions, ep_obs))
         return total_reward / total_episodes
 
     def save(self, info_file):

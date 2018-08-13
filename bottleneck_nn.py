@@ -12,7 +12,7 @@ from tools import plot_data
 logger = logging.getLogger(__name__)
 
 
-def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=False):
+def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=False, grad_clip=None):
     mse_loss = nn.MSELoss().cuda() if cuda else nn.MSELoss()
     # mse_loss = nn.SmoothL1Loss().cuda() if cuda else nn.SmoothL1Loss()
     train_data, test_data = data
@@ -39,20 +39,30 @@ def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=F
             loss = mse_loss(batch_ouput, batch_target)
             loss.backward()
             batch_losses.append(loss.item())
+            if grad_clip is not None:
+                torch.nn.utils.clip_grad_norm_(net.parameters(), grad_clip)
             optimizer.step()
 
             logger.info('epoch: %d batch: %d loss: %f' % (epoch, b_i, loss.item()))
 
         batch_loss_data += batch_losses
-        epoch_losses.append(round(np.average(batch_losses), 4))
-        test_losses.append(round(test(net, test_data, len(test_data), cuda=cuda), 4))
+        epoch_losses.append(round(np.average(batch_losses), 5))
+        test_losses.append(round(test(net, test_data, len(test_data), cuda=cuda), 5))
+        # test_losses.append(round(test(net, test_data, batch_size, cuda=cuda), 5))
+        logger.info('epoch: %d test loss: %f' % (epoch, test_losses[-1]))
         plot_data(verbose_data_dict(test_losses, epoch_losses, batch_loss_data), plot_dir)
 
-        if best_i is None or test_losses[best_i] > test_losses[-1]:
-            best_i = len(test_losses) - 1
+        if (best_i is None) or (test_losses[best_i] >= test_losses[-1]):
             torch.save(net.state_dict(), model_path)
             logger.info('Bottle Net Model Saved!')
-        if (len(test_losses) - 1 - best_i) > 20 or np.isnan(batch_losses[-1]):
+        if (best_i is None) or (test_losses[best_i] > test_losses[-1]):
+            best_i = len(test_losses) - 1
+            logger.info('Best_i updated')
+
+        if np.isnan(batch_losses[-1]):
+            logger.info('Batch Loss: Nan')
+            break
+        if ((len(test_losses) - 1 - best_i) > 20) or (test_losses[-1] == 0):
             logger.info('Early Stopping!')
             break
 

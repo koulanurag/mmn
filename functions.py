@@ -20,6 +20,7 @@ class BinarizeSigF(Function):
         grad_input = grad_output.clone()
         return grad_input
 
+
 class BinarizeTanhF(Function):
 
     @staticmethod
@@ -33,6 +34,22 @@ class BinarizeTanhF(Function):
     def backward(cxt, grad_output):
         grad_input = grad_output.clone()
         return grad_input
+
+
+class TernarizeTanhF(Function):
+
+    @staticmethod
+    def forward(cxt, input):
+        output = input.new(input.size())
+        output.data = input.data
+        output.round_()
+        return output
+
+    @staticmethod
+    def backward(cxt, grad_output):
+        grad_input = grad_output.clone()
+        return grad_input
+
 
 class BernolliSampleBinarizeF(Function):
     @staticmethod
@@ -63,13 +80,28 @@ class BinarySigmoid(nn.Module):
 
 class BinaryTanh(nn.Module):
     """Ref: https://github.com/DingKe/pytorch_workplace/blob/master/binary/modules.py#L10"""
+
     def __init__(self):
         super(BinaryTanh, self).__init__()
-        self.hardtanh = nn.Hardtanh()
+        # self.hardtanh = nn.Hardtanh()
+        self.hardtanh = nn.Tanh()
 
     def forward(self, input):
         output = self.hardtanh(input)
         output = binarizeTanh(output)
+        return output
+
+
+class TernaryTanh(nn.Module):
+    """Ref: https://r2rt.com/beyond-binary-ternary-and-one-hot-neurons.html"""
+
+    def __init__(self):
+        super(TernaryTanh, self).__init__()
+
+    def forward(self, input):
+        output = 1.5 * F.tanh(input) + 0.5 * F.tanh(-3 * input)
+        # output = F.tanh(input)
+        output = ternarizeTanh(output)
         return output
 
 
@@ -94,7 +126,25 @@ def gumbel_softmax_sample(input, hard=False):
     return x.view_as(input)
 
 
+class DynamicGNoise(nn.Module):
+    def __init__(self, shape, mean=0, std=0.05, cuda=False):
+        super(DynamicGNoise).__init__()
+        self.noise = torch.zeros(shape, shape)
+        self.noise = self.noise.cuda() if cuda else self.noise
+        self.noise = Variable(self.noise)
+        self.std = std
+        self.mean = mean
+
+    def forward(self, x):
+        if self.training:
+            self.noise.data.normal_(mean=self.mean, std=self.std)
+            print(x.size(), self.noise.size())
+            x += self.noise.expand()
+        return x
+
+
 # aliases
 binarizeSig = BinarizeSigF.apply
 binarizeTanh = BinarizeTanhF.apply
+ternarizeTanh = TernarizeTanhF.apply
 bernolliSample = BernolliSampleBinarizeF.apply
