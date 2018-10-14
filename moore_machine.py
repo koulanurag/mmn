@@ -1,13 +1,19 @@
-import logging
+import logging, sys
 import numpy as np
 import random
 import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
 from prettytable import PrettyTable
-
+from tools import ensure_directory_exits
+import scipy.misc
+from PIL import Image, ImageFont, ImageDraw
+import os
+from collections import deque
 
 logger = logging.getLogger(__name__)
+
+sys.setrecursionlimit(3000)
 
 
 class MooreMachine:
@@ -22,6 +28,8 @@ class MooreMachine:
         self.minimized = False
         self.obs_minobs_map = None
         self.minobs_obs_map = None
+        self.frequency = None
+        self.trajectory = None
         self.total_actions = total_actions
 
     def __str__(self):
@@ -57,7 +65,7 @@ class MooreMachine:
             _index = None
         return source, _index
 
-    def _update_info(self, obs, curr_state, next_state, curr_action, next_action):
+    def _update_info(self, obs, curr_state, next_state, curr_action, next_action, partial=False):
         """ Records new states and transactions"""
         self.obs_space, obs_index = self._get_index(self.obs_space, obs)
         state_indices = []
@@ -84,9 +92,10 @@ class MooreMachine:
 
         return state_indices, new_entries
 
-    def extract_from_nn(self, env, net, episodes, seed, log=True,render=False):
+    def extract_from_nn(self, env, net, episodes, seed, log=True, render=False, partial=False, cuda=False):
         """ Extract Finite State Moore Machine from a Binary Neural Network"""
         net.eval()
+        max_actions = 10000
         random.seed(seed)
         self.total_actions = int(env.action_space.n)
         x = set([])
@@ -97,9 +106,12 @@ class MooreMachine:
             for ep in range(episodes):
                 done = False
                 obs = env.reset()
-                curr_state = Variable(net.initHidden())
+                curr_state = Variable(net.init_hidden())
+                if cuda:
+                    curr_state = curr_state.cuda()
                 curr_state_x = net.state_encode(curr_state)
                 ep_reward = 0
+                ep_actions = []
                 while not done:
                     if render:
                         env.render()
@@ -107,15 +119,25 @@ class MooreMachine:
                     prob = F.softmax(curr_action, dim=1)
                     curr_action = int(prob.max(1)[1].cpu().data.numpy()[0])
                     obs = Variable(torch.Tensor(obs)).unsqueeze(0)
-
+                    if cuda:
+                        obs = obs.cuda()
                     critic, logit, next_state, (next_state_c, next_state_x), (_, obs_x) = net((obs, curr_state),
                                                                                               inspect=True)
                     prob = F.softmax(logit, dim=1)
-                    next_action = int(prob.max(1)[1].data.cpu().numpy())
+                    next_action = int(prob.max(1)[1].cpu().data.numpy())
 
                     self._update_info(obs_x.cpu().data.numpy()[0], curr_state_x.cpu().data.numpy()[0],
                                       next_state_x.cpu().data.numpy()[0], curr_action, next_action)
                     obs, reward, done, _ = env.step(next_action)
+
+                    done = done if len(ep_actions) <= max_actions else True
+                    ep_actions.append(next_action)
+                    # a quick hack to prevent the agent from stucking
+                    max_same_action = 5000
+                    if len(ep_actions) > max_same_action:
+                        actions_to_consider = ep_actions[-max_same_action:]
+                        if actions_to_consider.count(actions_to_consider[0]) == max_same_action:
+                            done = True
                     curr_state = next_state
                     curr_state_x = next_state_x
                     ep_reward += reward
@@ -127,6 +149,7 @@ class MooreMachine:
             if log:
                 logger.info('Average Reward:{}'.format(np.average(all_ep_rewards)))
 
+        if not partial:
             # find missing entries in the transaction table
             unknowns = []
             for curr_state_i in self.state_desc.keys():
@@ -150,6 +173,9 @@ class MooreMachine:
                     obs_x = torch.FloatTensor(obs_x).unsqueeze(0)
                     obs_x = Variable(obs_x)
 
+                    if cuda:
+                        state_x, obs_x = state_x.cuda(), obs_x.cuda()
+
                     curr_action = net.get_action_linear(state_x, decode=True)
                     prob = F.softmax(curr_action, dim=1)
                     curr_action = int(prob.max(1)[1].cpu().data.numpy()[0])
@@ -165,6 +191,7 @@ class MooreMachine:
                     state_indices, new_entries = self._update_info(obs_x, state_x, next_state_x, curr_action,
                                                                    next_action)
                     unknowns.pop(i)
+
                     if len(new_entries) > 0:
                         unknowns += new_entries
                         logger.info('New Unknown State-Trasactions: {}'.format(new_entries))
@@ -172,14 +199,201 @@ class MooreMachine:
                     done = False
                     break
 
-            # find index of the start_state
-            start_state = net.initHidden()
-            start_state_x = net.state_encode(start_state).data.cpu().numpy()[0]
-            _, self.start_state = self._get_index(self.state_space, start_state_x, force=False)
+        # find index of the start_state
+        start_state = Variable(net.init_hidden())
+        if cuda:
+            start_state = start_state.cuda()
+        start_state_x = net.state_encode(start_state).data.cpu().numpy()[0]
+        _, self.start_state = self._get_index(self.state_space, start_state_x, force=False)
 
         return self.obs_space, self.transaction, self.state_desc, self.start_state
 
-    def minimize(self):
+    def map_action(self, net, s_i, obs_i):
+        state_x = self.state_desc[s_i]['description']
+        state_x = Variable(torch.FloatTensor(state_x).unsqueeze(0))
+
+        obs_x = self.obs_space[obs_i]
+        obs_x = torch.FloatTensor(obs_x).unsqueeze(0)
+        obs_x = Variable(obs_x)
+        next_state_x = net.transact(obs_x, state_x)
+        next_action = net.get_action_linear(next_state_x, decode=True)
+        prob = F.softmax(next_action, dim=1)
+        next_action = int(prob.max(1)[1].cpu().data.numpy()[0])
+        return next_action
+
+    def minimize_partial_fsm(self, net):
+        _states = sorted(self.transaction.keys())
+        compatibility_mat = {s: {p: False if self.state_desc[s]['action'] != self.state_desc[p]['action'] else None
+                                 for p in _states[:i + 1]}
+                             for i, s in enumerate(_states[1:])}
+        unknowns = []
+        for s in compatibility_mat.keys():
+            for k in compatibility_mat[s].keys():
+                if compatibility_mat[s][k] is None:
+                    unknowns.append((s, k))
+
+        unknown_lengths = deque(maxlen=1000)
+        while len(unknowns) != 0:
+            # next 3 lines are experimental
+            # import pdb;pdb.set_trace()
+            if len(unknown_lengths) > 0 and unknown_lengths.count(unknown_lengths[0]) == unknown_lengths.maxlen:
+                s, k = unknowns[-1]
+                compatibility_mat[s][k] = True
+            print(len(unknowns))
+
+            s, k = unknowns.pop(0)
+            if compatibility_mat[s][k] is None:
+                compatibility_mat[s][k] = []
+                for obs_i in range(len(self.obs_space)):
+                    if (obs_i not in self.transaction[s]) or (self.transaction[s][obs_i] is None) or \
+                            (obs_i not in self.transaction[k]) or (self.transaction[k][obs_i] is None):
+                        pass
+                        # action_next_s = self.map_action(net, s, obs_i)
+                        # action_next_k = self.map_action(net, k, obs_i)
+                        # if action_next_k != action_next_s:
+                        #     compatibility_mat[s][k] = False
+                        #     break
+                    # elif obs_i in self.transaction[s] and (self.transaction[s][obs_i] is not None):
+                    #     if obs_i in self.transaction[k] and (self.transaction[k][obs_i] is not None):
+                    else:
+                        next_s, next_k = self.transaction[s][obs_i], self.transaction[k][obs_i]
+                        action_next_s = self.state_desc[next_s]['action']
+                        action_next_k = self.state_desc[next_k]['action']
+                        # if next_s != next_k and next_k != k and next_s != s:
+                        if next_s != next_k and not (next_k == k and next_s == s):
+                            if action_next_s != action_next_k:
+                                compatibility_mat[s][k] = False
+                                break
+                            first, sec = sorted([next_k, next_s])[::-1]
+                            if type(compatibility_mat[first][sec]).__name__ == 'bool' and not \
+                                    compatibility_mat[first][sec]:
+                                compatibility_mat[s][k] = False
+                                break
+                            elif compatibility_mat[first][sec] is None or \
+                                    type(compatibility_mat[first][sec]).__name__ != 'bool':
+                                compatibility_mat[s][k].append((first, sec))
+
+            elif type(compatibility_mat[s][k]).__name__ != 'bool':
+                for i, (m, n) in enumerate(compatibility_mat[s][k]):
+                    if type(compatibility_mat[m][n]).__name__ == 'bool' and not compatibility_mat[m][n]:
+                        compatibility_mat[s][k] = False
+                        break
+                    elif type(compatibility_mat[m][n]).__name__ == 'bool' and compatibility_mat[m][n]:
+                        compatibility_mat[s][k].pop(i)
+
+            if type(compatibility_mat[s][k]).__name__ != 'bool':
+                if len(compatibility_mat[s][k]) == 0:
+                    compatibility_mat[s][k] = True
+                else:
+                    unknowns.append((s, k))
+
+            unknown_lengths.append(len(unknowns))
+
+        # new_trans = copy.deepcopy(self.transaction)
+
+        new_states = []
+        new_state_info = {}
+        processed = {x: False for x in _states}
+        belongs_to = {_: None for _ in _states}
+        # for s in sorted(compatibility_mat.keys()):
+        for s in sorted(_states):
+            if not processed[s]:
+                comp_pair = [sorted((s, x))[::-1] for x in _states if
+                             (x != s and compatibility_mat[max(s, x)][min(s, x)])]
+                if len(comp_pair) != 0:
+                    _new_state = self.traverse_compatible_states(comp_pair, compatibility_mat)
+                    _new_state.sort(key=len, reverse=True)
+                else:
+                    _new_state = [[s]]
+                for d in _new_state[0]:
+                    processed[d] = True
+                    belongs_to[d] = len(new_states)
+                new_state_info[len(new_states)] = {'action': self.state_desc[_new_state[0][0]]['action'],
+                                                   'sub_states': _new_state[0]}
+                new_states.append(_new_state[0])
+
+        # new_states = []
+        # for s in _states:
+        #     sub_compatible = []
+        #     for s_next in _states:
+        #         if s != s_next:
+
+        new_trans = {}
+        for i, s in enumerate(new_states):
+            new_trans[i] = {}
+            for o in range(len(self.obs_space)):
+                new_trans[i][o] = None
+                for sub_s in s:
+                    if o in self.transaction[sub_s] and self.transaction[sub_s][o] is not None:
+                        new_trans[i][o] = belongs_to[self.transaction[sub_s][o]]
+                        break
+
+        # if the new_state comprising of start-state has just one sub-state ;
+        # then we can merge this new_state with other new_states as the action of the start-state doesn't matter
+        start_state_p = belongs_to[self.start_state]
+        if len(new_states[start_state_p]) == 1:
+            start_state_trans = new_trans[start_state_p]
+            for state in new_trans.keys():
+                if state != start_state_p and new_trans[state] == start_state_trans:
+                    new_trans.pop(start_state_p)
+                    new_state_info.pop(start_state_p)
+                    new_state_info[state]['sub_states'] += new_states[start_state_p]
+
+                    # This could be highly wrong (On God's Grace :D )
+                    for _state in new_trans.keys():
+                        for _o in new_trans[_state].keys():
+                            if new_trans[_state][_o] == start_state_p:
+                                new_trans[_state][_o] = state
+
+                    start_state_p = state
+                    break
+
+        # Minimize Observation Space (Combine observations which show the same transaction behaviour for all states)
+        _obs_minobs_map = {}
+        _minobs_obs_map = {}
+        _trans_minobs_map = {}
+        min_trans = {s: {} for s in new_trans.keys()}
+        obs_i = 0
+        for i in range(len(self.obs_space)):
+            _trans_key = [new_trans[s][i] for s in sorted(new_trans.keys())].__str__()
+            if _trans_key not in _trans_minobs_map:
+                obs_i += 1
+                o = 'o_' + str(obs_i)
+                _trans_minobs_map[_trans_key] = o
+                _minobs_obs_map[o] = [i]
+                for s in new_trans.keys():
+                    min_trans[s][o] = new_trans[s][i]
+            else:
+                _minobs_obs_map[_trans_minobs_map[_trans_key]].append(i)
+            _obs_minobs_map[i] = _trans_minobs_map[_trans_key]
+
+        # Update information
+        self.transaction = min_trans
+        self.state_desc = new_state_info
+        self.state_space = list(self.transaction.keys())
+        self.start_state = start_state_p
+        self.obs_minobs_map = _obs_minobs_map
+        self.minobs_obs_map = _minobs_obs_map
+        self.minimized = True
+
+    @staticmethod
+    def traverse_compatible_states(states, compatibility_mat):
+        for i, s in enumerate(states):
+            for j, s_next in enumerate(states[i + 1:]):
+                compatible = True
+                for m in s:
+                    for n in s_next:
+                        if m != n and not compatibility_mat[max(m, n)][min(m, n)]:
+                            compatible = False
+                            break
+                    if not compatible:
+                        break
+                if compatible:
+                    _states = states[:i] + [sorted(list(set(s + s_next)))] + states[i + j + 2:]
+                    return MooreMachine.traverse_compatible_states(_states, compatibility_mat)
+        return states
+
+    def minimize(self, partial=False):
         # create initial partitions (states) based on the action space
         partitions = {'s_' + str(i): [] for i in range(self.total_actions)}
         state_dict = {}
@@ -269,38 +483,150 @@ class MooreMachine:
         self.minobs_obs_map = _minobs_obs_map
         self.minimized = True
 
-    def evaluate(self, net, env, total_episodes, log=True,render=False):
+    def evaluate(self, net, env, total_episodes, log=True, render=False, inspect=False, store_obs=False, path=None,
+                 cuda=False):
         net.eval()
+        if inspect:
+            obs_path = ensure_directory_exits(os.path.join(path, 'obs'))
+            video_dir_path = ensure_directory_exits(os.path.join(path, 'eps_videos'))
+            if len(os.listdir(video_dir_path)) > 0:
+                sys.exit('Previous Video Files present: ' + video_dir_path)
+            self.frequency = {s: {t: 0 for t in sorted((self.state_desc.keys()))} for s in
+                              sorted(self.state_desc.keys())}
+            self.trajectory = []
+
         total_reward = 0
         for ep in range(total_episodes):
-            obs = env.reset()
+            if inspect:
+                ep_video_path = ensure_directory_exits(os.path.join(video_dir_path, str(ep)))
+                obs, org_obs = env.reset(inspect=True)
+                _shape = (org_obs.shape[1], org_obs.shape[0])
+            else:
+                obs = env.reset()
             done = False
             ep_reward = 0
             ep_actions = []
             ep_obs = []
             curr_state = self.start_state
             while not done:
-                if render:
-                    env.render()
                 ep_obs.append(obs)
                 obs = torch.FloatTensor(obs).unsqueeze(0)
                 obs = Variable(obs)
+                if cuda:
+                    obs = obs.cuda()
                 obs_x = list(net.obs_encode(obs).data.cpu().numpy()[0])
                 _, obs_index = self._get_index(self.obs_space, obs_x, force=False)
-                obs_index = obs_index if not self.minimized else self.obs_minobs_map[obs_index]
-                curr_state = self.transaction[curr_state][obs_index]
+                if store_obs:
+                    obs_dir = ensure_directory_exits(os.path.join(obs_path, str(obs_index)))
+                    scipy.misc.imsave(
+                        os.path.join(obs_dir, str(obs_index) + '_' + str(random.randint(0, 100000)) + '.jpg'),
+                        org_obs)
+
+                if not self.minimized:
+                    (obs_index, pre_index) = (obs_index, None)
+                else:
+                    try:
+                        (obs_index, pre_index) = (self.obs_minobs_map[obs_index], obs_index)
+                    except Exception as e:
+                        logger.error(e)
+                next_state = self.transaction[curr_state][obs_index]
+                if next_state is None:
+                    logger.info('None state encountered!')
+                    logger.info('Exiting the script!')
+                    sys.exit(0)
+                if render and inspect:
+                    _text = 'Current State:{} \n Obs: {} \n Next State: {} \n\n\n Total States:{} \n Total Obs: {}'
+                    _text = _text.format(str(curr_state), (obs_index, pre_index).__str__(), str(next_state),
+                                         len(self.state_desc.keys()), len(self.minobs_obs_map.keys()))
+                    _label_img = self.text_image(_shape, _text, font_size=12)
+                    _img = np.hstack((org_obs, _label_img))
+                    env.render(inspect=inspect, img=_img)
+                    if inspect:
+                        frame_id = str(len(ep_obs))
+                        frame_id = '0' * (10 - len(frame_id)) + frame_id
+                        scipy.misc.imsave(os.path.join(ep_video_path, 'frame_' + frame_id + '.jpg'), _img)
+                        self.frequency[curr_state][next_state] += 1
+                        if ep == total_episodes - 1:
+                            self.trajectory.append([len(ep_obs), curr_state, (obs_index, pre_index), next_state])
+                elif render:
+                    env.render()
+
+                curr_state = next_state
                 action = int(self.state_desc[curr_state]['action'])
-                obs, reward, done, _ = env.step(action)
+                obs, reward, done, info = env.step(action)
+                org_obs = info['org_obs']
                 ep_actions.append(action)
                 ep_reward += reward
+
+                # a quick hack to prevent the agent from stucking
+                max_same_action = 5000
+                if len(ep_actions) > max_same_action:
+                    actions_to_consider = ep_actions[-max_same_action:]
+                    if actions_to_consider.count(actions_to_consider[0]) == max_same_action:
+                        done = True
+
             total_reward += ep_reward
             if log:
                 logger.info("Episode => {} Score=> {}".format(ep, ep_reward))
-                logger.info("Action => {} Observation=> {}".format(ep_actions, ep_obs))
+                # logger.info("Action => {} Observation=> {}".format(ep_actions, ep_obs))
+            if inspect:
+                _parseable_path = ep_video_path.replace('(', '\(')
+                _parseable_path = _parseable_path.replace(')', '\)')
+                os.system("ffmpeg -f image2 -pattern_type glob -framerate 1 -i '{}*.jpg' {}{}.mp4".
+                          format(os.path.join(_parseable_path, 'frame_'), os.path.join(_parseable_path, 'video_'),
+                                 ep))
+                os.system("rm -rf {}/*.jpg".format(_parseable_path))
+
+        if self.minimized and store_obs:
+            logger.info('Combining Sub-Observations')
+            combined_obs_path = ensure_directory_exits(os.path.join(path, 'combined_obs'))
+            for k in sorted(self.minobs_obs_map.keys()):
+                logger.info('Observation Class:' + str(k))
+                max_images_per_comb = 250  # beyond this images cannot be combined due to library/memory issues
+                suffix = len(self.minobs_obs_map[k]) > max_images_per_comb
+                total_parts = int(len(self.minobs_obs_map[k]) / max_images_per_comb)
+                if len(self.minobs_obs_map[k]) % max_images_per_comb != 0:
+                    total_parts += 1
+                for p_i in range(total_parts):
+                    k_image = None
+                    for o_i in self.minobs_obs_map[k][p_i:p_i + max_images_per_comb]:
+                        o_path = os.path.join(obs_path, str(o_i))
+                        o_files = [os.path.join(o_path, f) for f in os.listdir(o_path) if
+                                   os.path.isfile(os.path.join(o_path, f))]
+                        o_i_image = scipy.misc.imread(random.choice(o_files))
+
+                        o_i_image = np.hstack((self.text_image(_shape, str(o_i),
+                                                               position=(_shape[0] // 2, _shape[1] // 2)),
+                                               o_i_image))
+                        for i in range(9):
+                            o_i_image = np.hstack((o_i_image, scipy.misc.imread(random.choice(o_files))))
+                        k_image = o_i_image if k_image is None else np.vstack((k_image, o_i_image))
+                    k_shape = (_shape[0], len(self.minobs_obs_map[k][p_i:p_i + max_images_per_comb]) * _shape[1])
+                    k_name_image = self.text_image(k_shape, str(k), position=(k_shape[0] // 2, 10), font_size=20)
+                    k_image = np.hstack((k_name_image, k_image))
+                    k_file_name = str(k) + (('_part_' + str(p_i + 1)) if suffix else '')
+                    scipy.misc.imsave(os.path.join(combined_obs_path, k_file_name + '.jpg'), k_image)
+
+            if inspect:
+                obs_path = obs_path.replace('(', '\(').replace(')', '\)')
+                os.system("rm -rf {}".format(obs_path))
+
         return total_reward / total_episodes
+
+    @staticmethod
+    def text_image(shape, text, position=(0, 0), font_size=25):
+        font = ImageFont.truetype("arial.ttf", font_size)
+        img = Image.new("RGB", shape, (255, 255, 255))
+        draw = ImageDraw.Draw(img)
+        draw.text(position, text, (0, 0, 0), font=font)
+        return np.array(img)
 
     def save(self, info_file):
         info_file.write('Total Unique States:{}\n'.format(len(self.state_desc.keys())))
+        if not self.minimized:
+            info_file.write('Total Unique Observations:{}\n'.format(len(self.obs_space)))
+        else:
+            info_file.write('Total Unique Observations:{}\n'.format(len(self.minobs_obs_map.keys())))
         info_file.write('\n\nStart State: {}\n'.format(self.start_state))
 
         if not self.minimized:
@@ -322,19 +648,41 @@ class MooreMachine:
             _state_info = self.state_desc[k]['description' if not self.minimized else 'sub_states']
             t1.add_row([k, self.state_desc[k]['action'], _state_info])
         info_file.write(t1.__str__() + '\n')
-        column_names = [""] + sorted(self.transaction[list(self.transaction.keys())[0]].keys())
-        t = PrettyTable(column_names)
-        for key in sorted(self.transaction.keys()):
-            t.add_row([key] + [self.transaction[key][c] for c in column_names[1:]])
+        # column_names = [""] + sorted(self.transaction[list(self.transaction.keys())[0]].keys())
+        if not self.minimized:
+            column_names = [""] + [str(_) for _ in range(len(self.obs_space))]
+            t = PrettyTable(column_names)
+            for key in sorted(self.transaction.keys()):
+                t.add_row([key] +
+                          [(self.transaction[key][int(c)] if int(c) in self.transaction[key] else None) for c in
+                           column_names[1:]])
+        else:
+            column_names = [""] + sorted(self.transaction[list(self.transaction.keys())[0]].keys())
+            t = PrettyTable(column_names)
+            for key in sorted(self.transaction.keys()):
+                t.add_row([key] + [self.transaction[key][c] for c in column_names[1:]])
 
         info_file.write('\n\nTransaction Matrix:    (StateIndex_ObservationIndex x StateIndex)' + '\n')
         info_file.write(t.__str__())
+
+        if self.frequency is not None:
+            column_names = [""] + [str(_) for _ in sorted(self.frequency.keys())]
+            t = PrettyTable(column_names)
+            for key in sorted(self.frequency.keys()):
+                t.add_row([key] + [self.frequency[key][c] for c in sorted(self.frequency.keys())])
+            info_file.write('\n\nState Transaction Frequency Matrix:    (From  x To)' + '\n')
+            info_file.write(t.__str__())
+
+        if self.trajectory is not None:
+            info_file.write('\n\nTrajectory info:' + '\n')
+            info_file.write(self.trajectory.__str__())
         info_file.close()
 
 
 if __name__ == '__main__':
     trans = {0: {0: 1, 1: 2}, 1: {0: 0, 1: 3}, 2: {0: 4, 1: 5}, 3: {0: 4, 1: 5}, 4: {0: 4, 1: 5}, 5: {0: 5, 1: 5}}
-    desc = {0: {'action': 0}, 1: {'action': 0}, 2: {'action': 1}, 3: {'action': 1}, 4: {'action': 1}, 5: {'action': 0}}
+    desc = {0: {'action': 0}, 1: {'action': 0}, 2: {'action': 1}, 3: {'action': 1}, 4: {'action': 1},
+            5: {'action': 0}}
     mm = MooreMachine(trans, desc, [], [_ for _ in range(2)], 0, total_actions=2)
     mm.minimize()
     correct_trans = {'ns_1': {0: 'ns_1', 1: 'ns_2'}, 'ns_0': {0: 'ns_0', 1: 'ns_0'}, 'ns_2': {0: 'ns_2', 1: 'ns_0'}}

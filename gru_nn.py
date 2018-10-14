@@ -19,7 +19,7 @@ def _train(net, optimizer, batch_data, batch_size, cuda=False, grad_clip=5, trun
 
     data_obs = Variable(torch.Tensor(data_obs))
     data_actions = Variable(torch.LongTensor(data_actions))
-    hx = Variable(net.initHidden(batch_size))
+    hx = Variable(net.init_hidden(batch_size))
     if cuda:
         data_obs, data_actions, hx = data_obs.cuda(), data_actions.cuda(), hx.cuda()
 
@@ -48,7 +48,7 @@ def _train(net, optimizer, batch_data, batch_size, cuda=False, grad_clip=5, trun
 
 
 def train(net, env, optimizer, model_path, plot_dir, train_data, batch_size, epochs, cuda=False, grad_clip=5,
-          trunc_k=10):
+          trunc_k=10,ep_check=True , rw_check=True):
     """Supervised Learning to train the policy"""
     batch_seeds = list(train_data.keys())
     test_env = copy.deepcopy(env)
@@ -104,15 +104,18 @@ def train(net, env, optimizer, model_path, plot_dir, train_data, batch_size, epo
 
         # We need to ensure complete imitation rather than just performance . Many a times, optimal
         # performance could be achieved without complete imitation of the actor
-        if _epoch_loss_check or _reward_threshold_check:
-            logger.info('Optimal Performance achieved!!!')
+        if _epoch_loss_check and ep_check:
+            logger.info('Complete Imitation of the Agent!!!')
+            break
+        if _reward_threshold_check and rw_check:
+            logger.info('Consistent optimal performance achieved!!!')
             break
 
     net.load_state_dict(torch.load(model_path))
     return net
 
 
-def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, render=False):
+def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, render=False, max_actions=5000):
     net.eval()
     total_reward = 0
     with torch.no_grad():
@@ -123,8 +126,9 @@ def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, rende
             done = False
             ep_reward = 0
             ep_actions = []
-            hx = Variable(net.initHidden())
+            hx = Variable(net.init_hidden())
             all_observations = [obs]
+            action_count = 0
             while not done:
                 if render:
                     env.render()
@@ -133,16 +137,27 @@ def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, rende
                     obs, hx = obs.cuda(), hx.cuda()
                 critic, logit, hx = net((obs, hx))
                 prob = F.softmax(logit, dim=1)
+                #action = int(prob.multinomial(num_samples=1).data.cpu().numpy())
                 action = int(prob.max(1)[1].data.cpu().numpy())
+                action = 0
                 obs, reward, done, _ = env.step(action)
+                action_count += 1
+                done = done if action_count <= max_actions else True
                 ep_actions.append(action)
+                # a quick hack to prevent the agent from stucking
+                max_same_action = 5000
+                if action_count > max_same_action:
+                    actions_to_consider = ep_actions[-max_same_action:]
+                    if actions_to_consider.count(actions_to_consider[0]) == max_same_action:
+                        done = True
                 ep_reward += reward
                 if not done:
                     all_observations.append(obs)
             total_reward += ep_reward
             if log:
-                logger.info('Episode =>{} Score=> {} Actions=> {}'.format(ep, ep_reward, ep_actions))
-                logger.info(''.join([str(x) for x in all_observations]))
+                logger.info('Episode =>{} Score=> {} Actions=> {} ActionCount=> {}'.format(ep, ep_reward, ep_actions,
+                                                                                           action_count))
+                # logger.info(''.join([str(x) for x in all_observations]))
         return total_reward / total_episodes
 
 
