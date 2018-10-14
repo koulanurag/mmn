@@ -1,6 +1,0 @@
-pip>=10.0.1
-PrettyTable
-gym
-matplotlib==2.0.1
-torch==0.4.0
--e git://github.com/koulanurag/gym_x#egg=gym_x
