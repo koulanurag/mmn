@@ -1,7 +1,7 @@
-#Introduction
+# Introduction
 In this document, a step by step manual on how to work with the *LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS*'s code is described. A simple environment such as TomitaB has been used as a toy example, but the main procedure would be the same with different environments, such as GoldRush, Pong etc.
 
-##Step 0
+## Step 0
 In this step, the trajectory data will be created. The data model will be saved in the folder named after the environment in this directory: `results/Atari/**ENVIRONMENT**/trajectories_data.p`.
 Use the below command to generate and save the data:<br />
 `CUDA_VISIBLE_DEVICES=0 python main_gold_rush.py --env TomitaB-v0 --generate_train_data`
@@ -22,7 +22,7 @@ The output would be something similar to this:
 >[root -> generate_trajectories]  Average Performance: 1.0
 
 
-##Step 1
+## Step 1
 Train the RNN(**GRU**) network from **scratch**. This training doesn't include the QBNs. The aim of this step is to train a model to be used for training the QBNs.
 Use the command below to do so:<br />
 `CUDA_VISIBLE_DEVICES=0 python main_gold_rush.py --env TomitaB-v0 --gru_train --gru_size 10 --generate_max_steps 100`
@@ -45,7 +45,7 @@ The output would be something similar to this:
 Also, there some plots to show how was the training. They will be save here: `results/Atari/**ENVIRONMENT**/**MODEL**/plots/`
 
 
-##Step 2
+## Step 2
 This step is to be used to test how was training. Use the command below for that:
 `CUDA_VISIBLE_DEVICES=0 python main_gold_rush.py --env TomitaB-v0 --gru_test --gru_size 10`
 
@@ -65,7 +65,7 @@ Here is the output:
 This simply tells what is the model actions, ground truth(as episodes), score, and model's final accuracy.
 
 
-##Step 3
+## Step 3
 Now QBNs data should be generated. This means that quantizing the continuous data(which are built in step 0) into a discrete form. This can be done by the following command:
 `CUDA_VISIBLE_DEVICES=0 python main_gold_rush.py --env TomitaB-v0 --generate_bn_data --gru_size 10 --generate_max_steps 100`
 And the output is like:
@@ -74,7 +74,7 @@ And the output is like:
 >[root -> generate_bottleneck_data]  Hx Train:589 Hx Test:269 Obs Train:589 Obs Test:2<br/>
 [root -> generate_trajectories]  Loading Saved data ..
 
-##Step 4
+## Step 4
 Now the QBNs can be trained based on the RNN(**GRU**) model trained earlier and the data generated in previous step. To do this, the following command should be run:
 `CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bhx_train --bhx_size 8 --gru_size 10 --generate_max_steps 100`
 
@@ -116,7 +116,7 @@ Output is like:
 After it's done, the model will be saved here: `results/Atari/**ENVIRONMENT**/**MODEL**/model.p`.
 
 
-##Step 5
+## Step 5
 Now it's time to test the new model that was trained using the QBNs. Run the following command:
 `CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bhx_test --bhx_size 8 --gru_size 10 --generate_max_steps 100`
 The output:
@@ -134,7 +134,7 @@ The output:
   warnings.warn("nn.functional.tanh is deprecated. Use torch.tanh instead.")<br/>
 [root -> <module>]  MSE :0.004303866997361183
 
-##Step 6
+## Step 6
 Having the QBNs, it's time to fine-tune the RNN(**GRU**) model. Running the following command would do that:
 `CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bgru_train --bhx_size 8 --ox_size 1 --gru_size 10 --generate_max_steps 100`
 
@@ -164,7 +164,7 @@ NOTE: Since the model already have the accuracy of 1.00, it doesn't need to be t
 After training is done, the model will be saved here: `results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru`
 
 
-##Step 7
+## Step 7
 Here the trained model in previous step is going to be tested by the following command:
 `CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bgru_test --bhx_size 8 --ox_size 1 --gru_size 10 --generate_max_steps 100`
 The output:
@@ -184,7 +184,7 @@ The output:
 As it's been printed, the accuracy is 1.00. In each test case, the ground truth(as episodes), scores, actions taken, and results are printed.
 
 
-#Step 8
+## Step 8
 Congrats, you've made it so far. It's the final step. Here the final results will be converted into a finite state machine. Run the following command for that:
 `python main_gold_rush.py --env TomitaB-v0 --generate_fsm --bhx_size 8 --ox_size 1 --gru_size 10 --generate_max_steps 100`
 
