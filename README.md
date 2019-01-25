@@ -89,7 +89,7 @@ Output is like:
 [root -> generate_bottleneck_data]  Data Sizes:<br/>
 [root -> generate_bottleneck_data]  Hx Train:589 Hx Test:269 Obs Train:589 Obs Test:2<br/>
 [root -> <module>]  Training HX SandGlassNet!<br/>
-/home/danesh/Research/Learning_FSM_GRU/venv/lib/python3.5/site-packages/torch/nn/functional.py:1320: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br/>
+venv/lib/python3.5/site-packages/torch/nn/functional.py:1320: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br/>
   warnings.warn("nn.functional.tanh is deprecated. Use torch.tanh instead.")<br/>
 [qbn -> train]  epoch: 0 batch: 0 loss: 0.786866<br/>
 [qbn -> train]  epoch: 0 batch: 1 loss: 0.783952<br/>
@@ -110,7 +110,7 @@ Output is like:
 01/23/2019 06:02:57 PM [DEBUG] [matplotlib.axes._base -> _update_title_position]  update_title_pos<br/>
 01/23/2019 06:02:57 PM [DEBUG] [matplotlib.axes._base -> _update_title_position]  update_title_pos<br/>
 01/23/2019 06:02:57 PM [DEBUG] [matplotlib.axes._base -> _update_title_position]  update_title_pos<br/>
-[tools -> plot_data]  Plot Saved! - /home/danesh/Research/Learning_FSM_GRU/results/Atari/TomitaB-v0/gru_10_bhx_8/Plots<br/>
+[tools -> plot_data]  Plot Saved! - results/Atari/TomitaB-v0/gru_10_bhx_8/Plots<br/>
 [qbn -> train]  epoch: 204 test loss: 0.004970 best perf i: 0 min loss i: 186
 
 After it's done, the model will be saved here: `results/Atari/**ENVIRONMENT**/**MODEL**/model.p`.
@@ -130,7 +130,7 @@ The output:
 [root -> generate_bottleneck_data]  Data Sizes:<br/>
 [root -> generate_bottleneck_data]  Hx Train:589 Hx Test:269 Obs Train:589 Obs Test:2<br/>
 [root -> <module>]  Testing  HX SandGlassNet<br/>
-/home/danesh/Research/Learning_FSM_GRU/venv/lib/python3.5/site-packages/torch/nn/functional.py:1320: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br/>
+venv/lib/python3.5/site-packages/torch/nn/functional.py:1320: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br/>
   warnings.warn("nn.functional.tanh is deprecated. Use torch.tanh instead.")<br/>
 [root -> <module>]  MSE :0.004303866997361183
 
@@ -152,7 +152,7 @@ The output:
 [root -> <module>]  Training Binary GRUNet!<br/>
 [root -> generate_trajectories]  Loading Saved data ..<br/> 
 [bgru_nn -> train]  Padding Sequences ...<br/>
-/home/danesh/Research/Learning_FSM_GRU/venv/lib/python3.5/site-packages/torch/nn/functional.py:1320: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br/>
+venv/lib/python3.5/site-packages/torch/nn/functional.py:1320: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br/>
   warnings.warn("nn.functional.tanh is deprecated. Use torch.tanh instead.")<br/>
 [bgru_nn -> train]  epoch 0 Test Performance: 1.000000<br/>
 [bgru_nn -> train]  Binary GRU Model Saved!<br/>
@@ -184,7 +184,7 @@ The output:
 As it's been printed, the accuracy is 1.00. In each test case, the ground truth(as episodes), scores, actions taken, and results are printed.
 
 
-#Step 8
+##Step 8
 Congrats, you've made it so far. It's the final step. Here the final results will be converted into a finite state machine. Run the following command for that:
 `python main_gold_rush.py --env TomitaB-v0 --generate_fsm --bhx_size 8 --ox_size 1 --gru_size 10 --generate_max_steps 100`
 
@@ -199,4 +199,4 @@ The output:
 [moore_machine -> evaluate]  None state encountered!<br/>
 [moore_machine -> evaluate]  Exiting the script!
 
-And the FSM models are saved as text files here: `/home/danesh/Research/Learning_FSM_GRU/results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru/fsm.txt`.
+And the FSM models are saved as text files here: `results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru/fsm.txt`.
