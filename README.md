@@ -75,7 +75,7 @@ And the output is like:
 [root -> generate_trajectories]  Loading Saved data ..
 
 ## Step 4
-Now the QBNs can be trained based on the RNN(**GRU**) model trained earlier and the data generated in previous step. To do this, the following command should be run:
+Now the QBNs can be trained based on the RNN(**GRU**) model trained earlier and the data generated in previous step. To do this, the following command should be run to train the BX net:
 `CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bhx_train --bhx_size 8 --gru_size 10 --generate_max_steps 100`
 
 Output is like:
@@ -117,7 +117,7 @@ After it's done, the model will be saved here: `results/Atari/**ENVIRONMENT**/**
 
 
 ## Step 5
-Now it's time to test the new model that was trained using the QBNs. Run the following command:
+Now it's time to test the new model that was trained using the QBNs(BX net). Run the following command:
 `CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bhx_test --bhx_size 8 --gru_size 10 --generate_max_steps 100`
 The output:
 >[gru_nn -> test]  Episode =>0 Score=> 1 Actions=> [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1] ActionCount=> 40<br/>
@@ -134,9 +134,20 @@ venv/lib/python3.5/site-packages/torch/nn/functional.py:1320: UserWarning: nn.fu
   warnings.warn("nn.functional.tanh is deprecated. Use torch.tanh instead.")<br/>
 [root -> <module>]  MSE :0.004303866997361183
 
+
 ## Step 6
+Now the QBNs can be trained based on the RNN(**GRU**) model trained earlier and the data generated in previous steps. To do this, the following command should be run to train the OX net:
+`CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --ox_train --ox_size 8 --bhx_size 8 --gru_size 10 --generate_max_steps 100`
+
+
+## Step 7
+Now it's time to test the new model that was trained using the QBNs(OX net). Run the following command:
+`CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --ox_test --ox_size 8 --bhx_size 8 --gru_size 10 --generate_max_steps 100`
+
+
+## Step 8
 Having the QBNs, it's time to fine-tune the RNN(**GRU**) model. Running the following command would do that:
-`CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bgru_train --bhx_size 8 --ox_size 1 --gru_size 10 --generate_max_steps 100`
+`CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bgru_train --bhx_size 8 --ox_size 8 --gru_size 10 --generate_max_steps 100`
 
 The output:
 >[gru_nn -> test]  Episode =>0 Score=> 1 Actions=> [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1] ActionCount=> 40<br/>
@@ -164,9 +175,9 @@ NOTE: Since the model already have the accuracy of 1.00, it doesn't need to be t
 After training is done, the model will be saved here: `results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru`
 
 
-## Step 7
+## Step 9
 Here the trained model in previous step is going to be tested by the following command:
-`CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bgru_test --bhx_size 8 --ox_size 1 --gru_size 10 --generate_max_steps 100`
+`CUDA_VISIBLE_DEVICES=0  python main_gold_rush.py --env TomitaB-v0 --bgru_test --bhx_size 8 --ox_size 8 --gru_size 10 --generate_max_steps 100`
 The output:
 >[bgru_nn -> test]  Episode =>0 Score=> 1 Actions=> [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1] ActionCount=> 40<br/>
 [bgru_nn -> test]  Episode =>1 Score=> 1 Actions=> [0, 1, 0, 1, 0, 1, 0, 1] ActionCount=> 8<br/>
@@ -184,9 +195,9 @@ The output:
 As it's been printed, the accuracy is 1.00. In each test case, the ground truth(as episodes), scores, actions taken, and results are printed.
 
 
-## Step 8
+## Step 10
 Congrats, you've made it so far. It's the final step. Here the final results will be converted into a finite state machine. Run the following command for that:
-`python main_gold_rush.py --env TomitaB-v0 --generate_fsm --bhx_size 8 --ox_size 1 --gru_size 10 --generate_max_steps 100`
+`python main_gold_rush.py --env TomitaB-v0 --generate_fsm --bhx_size 8 --ox_size 8 --gru_size 10 --generate_max_steps 100`
 
 The output:
 >.<br/>
