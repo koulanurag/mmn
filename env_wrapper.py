@@ -167,6 +167,15 @@ class BowlingWrapper(AtariWrapper):
         return imresize(img[105:172, :].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
 
 
+class ElevatorActionWrapper(AtariWrapper):
+    def __init__(self, env):
+        AtariWrapper.__init__(self, env)
+
+
+
+
+
+
 def atari_wrapper(env_name):
     x = env_name.lower()
     x = x.split('deterministic')[0] if 'deterministic' in x else x.split('-')[0]
@@ -190,6 +199,10 @@ def atari_wrapper(env_name):
         env = BowlingWrapper(gym.make(env_name))
     # elif x in ['qbert']:
     #     env = Crop15And195(gym.make(env_name))
+    elif x in ['elevatoraction']:
+        env = ElevatorActionWrapper(gym.make(env_name))
+
+
     else:
         env = AtariWrapper(gym.make(env_name))
     return env

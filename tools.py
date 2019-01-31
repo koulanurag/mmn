@@ -216,22 +216,35 @@ def get_args():
     parser.add_argument('--gru_size', type=int, help="No. of GRU Cells")
     parser.add_argument('--gru_lr', type=float, default=0.001, help="No. of GRU Cells")
 
+    # parser = argparse.ArgumentParser(description='LSTM to FSM')
+    # parser.add_argument('--generate_train_data', action='store_true', default=False, help='Generate Train Data')
+    # parser.add_argument('--generate_bn_data', action='store_true', default=False, help='Generate Bottle-Neck Data')
+    # parser.add_argument('--generate_max_steps', type=int, help='Maximum number of steps to be used for data generation')
+    # parser.add_argument('--lstm_train', action='store_true', default=False, help='Train LSTM Network')
+    # parser.add_argument('--lstm_test', action='store_true', default=False, help='Test LSTM Network')
+    # parser.add_argument('--lstm_size', type=int, help="No. of LSTM Cells")
+    # parser.add_argument('--lstm_lr', type=float, default=0.001, help="No. of LSTM Cells")
+
     parser.add_argument('--bhx_train', action='store_true', default=False, help='Train bx network')
     parser.add_argument('--ox_train', action='store_true', default=False, help='Train ox network')
     parser.add_argument('--bhx_test', action='store_true', default=False, help='Test bx network')
     parser.add_argument('--ox_test', action='store_true', default=False, help='Test ox network')
     parser.add_argument('--bgru_train', action='store_true', default=False, help='Train binary gru network')
     parser.add_argument('--bgru_test', action='store_true', default=False, help='Test binary gru network')
+    parser.add_argument('--blstm_train', action='store_true', default=False, help='Train binary lstm network')
+    parser.add_argument('--blstm_test', action='store_true', default=False, help='Test binary lstm network')
 
     parser.add_argument('--bhx_size', type=int, help="binary encoding size")
     parser.add_argument('--bhx_suffix', default='', help="suffix fo bhx folder")
     parser.add_argument('--ox_size', type=int, help="binary encoding size")
 
     parser.add_argument('--train_epochs', type=int, default=400, help="No. of training episodes")
-    parser.add_argument('--batch_size', type=int, default=32, help="batch size used for training GRU")
+    parser.add_argument('--batch_size', type=int, default=32, help="batch size used for training")
     parser.add_argument('--bgru_lr', type=float, default=0.0001, help="Learning rate for binary GRU")
     parser.add_argument('--gru_scratch', action='store_true', default=False, help='use scratch gru for BGRU')
-    parser.add_argument('--bx_scratch', action='store_true', default=False, help='use scratch bx network for BGRU')
+    parser.add_argument('--blstm_lr', type=float, default=0.0001, help="Learning rate for binary LSTM")
+    parser.add_argument('--lstm_scratch', action='store_true', default=False, help='use scratch lstm for BLSTM')
+    parser.add_argument('--bx_scratch', action='store_true', default=False, help='use scratch bx network for BGRU or BLSTM')
     parser.add_argument('--generate_fsm', action='store_true', default=False, help='extract fsm from fmm net')
     parser.add_argument('--evaluate_fsm', action='store_true', default=False, help='evaluate fsm')
 
@@ -279,6 +292,7 @@ def generate_trajectories(env, batches, batch_size, save_path, guide=None, cuda=
                             env.render()
                         _obs.append(obs)
                         if guide is None:
+                            # action = env.action_space.sample()
                             action = env.env.get_desired_action()
                             _actions.append(action)
                         else:
@@ -298,7 +312,7 @@ def generate_trajectories(env, batches, batch_size, save_path, guide=None, cuda=
                     data_actions_prob.append(_action_probs)
                     data_len.append(len(_obs))
                     all_ep_rewards.append(ep_reward)
-                    logging.info('Batch:{} Ep: {} Reward:{}'.format(seed, ep, ep_reward))
+                    logging.info('Ep:{} Batch: {} Reward:{}'.format(seed, ep, ep_reward))
 
                 _train_data[seed] = (data_obs, data_actions, data_actions_prob, data_len)
         logging.info('Average Performance: {}'.format(sum(all_ep_rewards) / len(all_ep_rewards)))

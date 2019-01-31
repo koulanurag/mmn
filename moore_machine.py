@@ -529,6 +529,9 @@ class MooreMachine:
                         (obs_index, pre_index) = (self.obs_minobs_map[obs_index], obs_index)
                     except Exception as e:
                         logger.error(e)
+
+                # if not obs_index:
+                #     break
                 next_state = self.transaction[curr_state][obs_index]
                 if next_state is None:
                     logger.info('None state encountered!')
@@ -554,7 +557,7 @@ class MooreMachine:
                 curr_state = next_state
                 action = int(self.state_desc[curr_state]['action'])
                 obs, reward, done, info = env.step(action)
-                org_obs = info['org_obs']
+                org_obs = info['org_obs'] if 'org_obs' in info else obs
                 ep_actions.append(action)
                 ep_reward += reward
 

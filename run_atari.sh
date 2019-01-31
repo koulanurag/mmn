@@ -3,7 +3,7 @@
 ENV=$1
 GRU_SIZE=32
 FILE=main_atari.py
-source ~/virtualenvs/rl/bin/activate
+#source /home/danesh/Research/Learning_FSM_GRU/venv/bin/activate
 
 #python $FILE --env $ENV --gru_size 32 --bhx_size 64 --ox_size 100 --gru_train
 #wait
@@ -19,8 +19,7 @@ source ~/virtualenvs/rl/bin/activate
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size 600 --ox_train &
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size 800 --ox_train &
 
-#
-#python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  100  --bgru_train &
+python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  100  --bgru_train
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  100  --bgru_train &
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  200  --bgru_train &
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  200  --bgru_train &
@@ -45,12 +44,12 @@ source ~/virtualenvs/rl/bin/activate
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 256 --ox_size  800  --bgru_train &
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 512 --ox_size  800  --bgru_train &
 ##
-python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  100  --generate_fsm &
-python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  100  --generate_fsm &
-python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  200  --generate_fsm &
-python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  200  --generate_fsm &
-python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  400  --generate_fsm &
-python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  400  --generate_fsm &
+#python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  100  --generate_fsm &
+#python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  100  --generate_fsm &
+#python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  200  --generate_fsm &
+#python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  200  --generate_fsm &
+#python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  400  --generate_fsm &
+#python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  400  --generate_fsm &
 
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64  --ox_size  200  --generate_fsm &
 #python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 128 --ox_size  200  --generate_fsm &

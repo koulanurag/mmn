@@ -73,6 +73,8 @@ class HxQBNet(nn.Module):
     """Quantized Bottleneck network for Hidden State of GRU"""
 
     def __init__(self, input_size, x_features):
+        print("_______________________")
+        print(x_features)
         super(HxQBNet, self).__init__()
         self.bhx_size = x_features
         # f1, f2 = int(0.5 * x_features), int(0.75 * x_features)
@@ -241,6 +243,7 @@ if __name__ == '__main__':
         # ***********************************************************************************
         if args.generate_train_data:
             tl.set_log(gru_dir, 'generate_train_data')
+            print("eeee0")
             train_data = tl.generate_trajectories(env, 10000, args.batch_size, trajectories_data_path)
         # ***********************************************************************************
         # Gru Network                                                                       *
@@ -248,14 +251,37 @@ if __name__ == '__main__':
         if args.gru_train or args.gru_test:
             tl.set_log(gru_dir, 'train' if args.gru_train else 'test')
             gru_net = GRUNet(len(obs), args.gru_size, int(env.action_space.n))
+            print("eeee1")
+            # train_data = tl.generate_trajectories(env, 500, args.batch_size, trajectories_data_path)
+            train_data = tl.generate_trajectories(env, 500, args.batch_size, trajectories_data_path)
+
             if args.cuda:
                 gru_net = gru_net.cuda()
             if args.gru_train:
+                # start_time = time.time()
+                # gru_net.noise = True
+                # logging.info(['No Training Performed!!'])
+                # logging.warning('We assume that we already have a pre-trained model @ {}'.format(gru_net_path))
+                # tl.write_net_readme(gru_net, gru_dir, info={'time_taken': time.time() - start_time})
+
+                logging.info('Training GRU!')
                 start_time = time.time()
-                gru_net.noise = True
-                logging.info(['No Training Performed!!'])
-                logging.warning('We assume that we already have a pre-trained model @ {}'.format(gru_net_path))
+                gru_net.train()
+                optimizer = optim.Adam(gru_net.parameters(), lr=1e-3)
+                gru_net = gru_nn.train(gru_net, env, optimizer, gru_net_path, gru_plot_dir, train_data, args.batch_size,
+                                       args.train_epochs, args.cuda, trunc_k=50)
+                # gru_net.load_state_dict(torch.load(gru_net_path))
+                logging.info('Generating Data-Set for Later Bottle Neck Training')
+                gru_net.eval()
+                tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda)
+                print("eeee2")
+                tl.generate_trajectories(env, 500, args.batch_size, gru_prob_data_path, gru_net.cpu())
                 tl.write_net_readme(gru_net, gru_dir, info={'time_taken': time.time() - start_time})
+
+
+
+
+
             if args.gru_test:
                 logging.info('Testing GRU!')
                 gru_net.load_state_dict(torch.load(gru_net_path))

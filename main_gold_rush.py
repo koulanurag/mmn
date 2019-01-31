@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Script for training MMNet on Atari Environment
+# Script for training MMNet on Gold Rush
 
 import copy
 import logging
@@ -17,7 +17,7 @@ import bgru_nn
 import gru_nn
 import qbn
 import tools as tl
-from env_wrapper import atari_wrapper
+import gym, gym_x
 from functions import TernaryTanh
 from moore_machine import MooreMachine
 
@@ -28,22 +28,7 @@ class ObsQBNet(nn.Module):
     def __init__(self, input_size, x_features):
         super(ObsQBNet, self).__init__()
         self.bhx_size = x_features
-        # f1, f2 = int(0.5 * x_features), int(0.75 * x_features)
-        # f1, f2 = int(0.5 * x_features), int(0.8 * x_features)
-        # f1, f2 = 300, 600
-        # self.encoder = nn.Sequential(nn.Linear(input_size, f1),
-        #                              nn.Tanh(),
-        #                              nn.Linear(f1, f2),
-        #                              nn.Tanh(),
-        #                              nn.Linear(f2, x_features),
-        #                              TernaryTanh())
-        #
-        # self.decoder = nn.Sequential(nn.Linear(x_features, f2),
-        #                              nn.Tanh(),
-        #                              nn.Linear(f2, f1),
-        #                              nn.Tanh(),
-        #                              nn.Linear(f1, input_size),
-        #                              nn.ReLU6())
+
         f1 = int(8 * x_features)
         self.encoder = nn.Sequential(nn.Linear(input_size, f1),
                                      nn.Tanh(),
@@ -73,23 +58,15 @@ class HxQBNet(nn.Module):
     """Quantized Bottleneck network for Hidden State of GRU"""
 
     def __init__(self, input_size, x_features):
-        print("_______________________")
-        print(x_features)
         super(HxQBNet, self).__init__()
         self.bhx_size = x_features
-        # f1, f2 = int(0.5 * x_features), int(0.75 * x_features)
-        f1, f2 = int(8 * x_features), int(4 * x_features)
-        # f1, f2 = 64, 256
+        f1 = int(8 * x_features)
         self.encoder = nn.Sequential(nn.Linear(input_size, f1),
                                      nn.Tanh(),
-                                     nn.Linear(f1, f2),
-                                     nn.Tanh(),
-                                     nn.Linear(f2, x_features),
+                                     nn.Linear(f1, x_features),
                                      TernaryTanh())
 
-        self.decoder = nn.Sequential(nn.Linear(x_features, f2),
-                                     nn.Tanh(),
-                                     nn.Linear(f2, f1),
+        self.decoder = nn.Sequential(nn.Linear(x_features, f1),
                                      nn.Tanh(),
                                      nn.Linear(f1, input_size),
                                      nn.Tanh())
@@ -110,46 +87,22 @@ class GRUNet(nn.Module):
     def __init__(self, input_size, gru_cells, total_actions):
         super(GRUNet, self).__init__()
         self.gru_units = gru_cells
-        self.noise = False
-        self.conv1 = nn.Conv2d(input_size, 32, 3, stride=2, padding=1)
-        self.conv2 = nn.Conv2d(32, 32, 3, stride=2, padding=1)
-        self.conv3 = nn.Conv2d(32, 16, 3, stride=2, padding=1)
-        self.conv4 = nn.Conv2d(16, 8, 3, stride=2, padding=1)
-
-        self.input_ff = nn.Sequential(self.conv1, nn.ReLU(), self.conv2, nn.ReLU(), self.conv3, nn.ReLU(),
-                                      self.conv4, nn.ReLU6())
-        self.input_c_features = 8 * 5 * 5
-        self.input_c_shape = (8, 5, 5)
+        self.input_c_features = 4 * input_size
+        self.input_ff = nn.Sequential(nn.Linear(input_size, self.input_c_features), nn.ReLU())
         self.gru = nn.GRUCell(self.input_c_features, gru_cells)
-
-        self.critic_linear = nn.Linear(gru_cells, 1)
         self.actor_linear = nn.Linear(gru_cells, total_actions)
-
-        self.apply(tl.weights_init)
-        self.actor_linear.weight.data = tl.normalized_columns_initializer(self.actor_linear.weight.data, 0.01)
-        self.actor_linear.bias.data.fill_(0)
-        self.critic_linear.weight.data = tl.normalized_columns_initializer(self.critic_linear.weight.data, 1.0)
-        self.critic_linear.bias.data.fill_(0)
-
-        self.gru.bias_ih.data.fill_(0)
-        self.gru.bias_hh.data.fill_(0)
 
     def forward(self, input, input_fn=None, hx_fn=None, inspect=False):
         input, hx = input
         c_input = self.input_ff(input)
-        c_input = c_input.view(-1, self.input_c_features)
-        # We keep the noise during both training as well as evaluation
-        # c_input = gaussian(c_input, self.training, mean=0, std=0.05, one_sided=True)
-        # c_input = tl.uniform(c_input, self.noise, low=-0.01, high=0.01, enforce_pos=True)
         input, input_x = input_fn(c_input) if input_fn is not None else (c_input, c_input)
         ghx = self.gru(input, hx)
-        # ghx = tl.uniform(ghx, self.noise, low=-0.01, high=0.01)
         hx, bhx = hx_fn(ghx) if hx_fn is not None else (ghx, ghx)
 
         if inspect:
-            return self.critic_linear(hx), self.actor_linear(hx), hx, (ghx, bhx, c_input, input_x)
+            return None, self.actor_linear(hx), hx, (ghx, bhx, c_input, input_x)
         else:
-            return self.critic_linear(hx), self.actor_linear(hx), hx
+            return None, self.actor_linear(hx), hx
 
     def init_hidden(self, batch_size=1):
         return torch.zeros(batch_size, self.gru_units)
@@ -210,7 +163,7 @@ class MMNet(nn.Module):
 
 if __name__ == '__main__':
     args = tl.get_args()
-    env = atari_wrapper(args.env)
+    env = gym.make(args.env)
     env.seed(args.env_seed)
     obs = env.reset()
 
@@ -243,17 +196,14 @@ if __name__ == '__main__':
         # ***********************************************************************************
         if args.generate_train_data:
             tl.set_log(gru_dir, 'generate_train_data')
-            print("eeee0")
-            train_data = tl.generate_trajectories(env, 10000, args.batch_size, trajectories_data_path)
+            train_data = tl.generate_trajectories(env, 500, args.batch_size, trajectories_data_path)
         # ***********************************************************************************
         # Gru Network                                                                       *
         # ***********************************************************************************
         if args.gru_train or args.gru_test:
             tl.set_log(gru_dir, 'train' if args.gru_train else 'test')
             gru_net = GRUNet(len(obs), args.gru_size, int(env.action_space.n))
-            print("eeee1")
-            # train_data = tl.generate_trajectories(env, 500, args.batch_size, trajectories_data_path)
-            train_data = tl.generate_trajectories(env, 5, args.batch_size, trajectories_data_path)
+            train_data = tl.generate_trajectories(env, 100, args.batch_size, trajectories_data_path)
 
             if args.cuda:
                 gru_net = gru_net.cuda()
@@ -269,12 +219,11 @@ if __name__ == '__main__':
                 gru_net.train()
                 optimizer = optim.Adam(gru_net.parameters(), lr=1e-3)
                 gru_net = gru_nn.train(gru_net, env, optimizer, gru_net_path, gru_plot_dir, train_data, args.batch_size,
-                                       args.train_epochs, args.cuda)
+                                       args.train_epochs, args.cuda, trunc_k=50)
                 # gru_net.load_state_dict(torch.load(gru_net_path))
                 logging.info('Generating Data-Set for Later Bottle Neck Training')
                 gru_net.eval()
-                tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda)
-                print("eeee2")
+                tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda, max_steps=args.generate_max_steps)
                 tl.generate_trajectories(env, 500, args.batch_size, gru_prob_data_path, gru_net.cpu())
                 tl.write_net_readme(gru_net, gru_dir, info={'time_taken': time.time() - start_time})
 
@@ -287,7 +236,7 @@ if __name__ == '__main__':
                 gru_net.load_state_dict(torch.load(gru_net_path))
                 gru_net.eval()
                 gru_net.noise = True
-                perf = gru_nn.test(gru_net, env, 20, log=True, cuda=args.cuda, render=True)
+                perf = gru_nn.test(gru_net, env, 100, log=True, cuda=args.cuda, render=True)
                 logging.info('Average Performance:{}'.format(perf))
         # ***********************************************************************************
         # Generate BottleNeck Training Data                                                 *
@@ -444,33 +393,33 @@ if __name__ == '__main__':
                                                           copy.deepcopy(bgru_net.gru_net).cpu())
 
                     bgru_net = bgru_nn.train(bgru_net, env, optimizer, bgru_net_path, bgru_plot_dir, train_data,
-                                             5, args.train_epochs, args.cuda, test_episodes=1, trunc_k=100)
+                                             32, args.train_epochs, args.cuda, test_episodes=1, trunc_k=100)
                 tl.write_net_readme(bgru_net, bgru_dir, info={'time_taken': round(time.time() - _start_time, 4)})
 
             if args.bgru_test:
                 bgru_net.load_state_dict(torch.load(bgru_net_path))
                 bgru_net.eval()
-                bgru_perf = bgru_nn.test(bgru_net, env, 1, log=True, cuda=args.cuda, render=True)
+                bgru_perf = bgru_nn.test(bgru_net, env, 50, log=True, cuda=args.cuda, render=True)
                 logging.info('Average Performance: {}'.format(bgru_perf))
 
             if args.generate_fsm:
                 bgru_net.load_state_dict(torch.load(bgru_net_path))
                 bgru_net.eval()
                 moore_machine = MooreMachine()
-                moore_machine.extract_from_nn(env, bgru_net, 10, 0, log=True, partial=True, cuda=args.cuda)
-                perf = moore_machine.evaluate(bgru_net, env, total_episodes=3, render=True, cuda=args.cuda)
+                moore_machine.extract_from_nn(env, bgru_net, 500, 0, log=True, partial=False, cuda=args.cuda)
+                perf = moore_machine.evaluate(bgru_net, env, total_episodes=3, render=False, cuda=args.cuda)
                 pickle.dump(moore_machine, open(unmin_moore_machine_path, 'wb'))
                 moore_machine.save(open(os.path.join(bgru_dir, 'fsm.txt'), 'w'))
                 logging.info('Performance Before Minimization:{}'.format(perf))
 
                 moore_machine.minimize_partial_fsm(bgru_net)
-                perf = moore_machine.evaluate(bgru_net, env, total_episodes=3, render=True, inspect=True,
-                                              store_obs=True,
-                                              path=tl.ensure_directory_exits(os.path.join(bgru_dir, 'obs_data')),
-                                              cuda=args.cuda)
                 # perf = moore_machine.evaluate(bgru_net, env, total_episodes=3, render=True, inspect=True,
                 #                               store_obs=False,
                 #                               path=tl.ensure_directory_exits(os.path.join(bgru_dir, 'obs_data')),
+                #                               cuda=args.cuda)
+                # perf = moore_machine.evaluate(bgru_net, env, total_episodes=3, render=True, inspect=False,
+                #                               store_obs=False,
+                #                               path=None,
                 #                               cuda=args.cuda)
                 moore_machine.save(open(os.path.join(bgru_dir, 'minimized_moore_machine.txt'), 'w'))
                 pickle.dump(moore_machine, open(min_moore_machine_path, 'wb'))

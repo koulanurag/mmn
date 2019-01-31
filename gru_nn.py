@@ -139,7 +139,7 @@ def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, rende
                 prob = F.softmax(logit, dim=1)
                 #action = int(prob.multinomial(num_samples=1).data.cpu().numpy())
                 action = int(prob.max(1)[1].data.cpu().numpy())
-                action = 0
+                # action = 0
                 obs, reward, done, _ = env.step(action)
                 action_count += 1
                 done = done if action_count <= max_actions else True
