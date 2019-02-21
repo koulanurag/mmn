@@ -67,7 +67,8 @@ class Crop15And195(AtariWrapper):
 
     @staticmethod
     def process_atari_image(img):
-        return imresize(img[15:195].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
+        # return imresize(img[15:195].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
+        return imresize(img[:195].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
 
 
 class PongWrapper(Crop35And195):
@@ -136,13 +137,14 @@ class BoxingWrapper(AtariWrapper):
         return imresize(img[15:180, 30:130].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
 
 
-class BreakoutWrapper(AtariWrapper):
+class BreakoutWrapper(Crop35And195):
     def __init__(self, env):
-        AtariWrapper.__init__(self, env)
+        Crop35And195.__init__(self, env)
+        # AtariWrapper.__init__(self, env)
 
-    @staticmethod
-    def process_atari_image(img):
-        return imresize(img[35:195, 10:150].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
+    # @staticmethod
+    # def process_atari_image(img):
+    #     return imresize(img[35:195].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
 
 
 class QbertWrapper(AtariWrapper):
@@ -160,7 +162,7 @@ class BowlingWrapper(AtariWrapper):
 
     @property
     def action_space(self):
-        return gym.spaces.discrete.Discrete(6)
+        return gym.spaces.discrete.Discrete(4)
 
     @staticmethod
     def process_atari_image(img):
