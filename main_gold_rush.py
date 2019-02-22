@@ -206,14 +206,14 @@ if __name__ == '__main__':
         # ***********************************************************************************
         if args.generate_train_data:
             tl.set_log(gru_dir, 'generate_train_data')
-            train_data = tl.generate_trajectories(env, 500, args.batch_size, trajectories_data_path)
+            no_batches = 500
+            train_data = tl.generate_trajectories(env, no_batches, args.batch_size, trajectories_data_path)
         # ***********************************************************************************
         # GRU Network                                                                       *
         # ***********************************************************************************
         if args.gru_train or args.gru_test:
             tl.set_log(gru_dir, 'train' if args.gru_train else 'test')
             gru_net = GRUNet(len(obs), args.gru_size, int(env.action_space.n))
-            train_data = tl.generate_trajectories(env, 100, args.batch_size, trajectories_data_path)
 
             if args.cuda:
                 gru_net = gru_net.cuda()
@@ -241,7 +241,8 @@ if __name__ == '__main__':
                 gru_net.load_state_dict(torch.load(gru_net_path))
                 gru_net.eval()
                 gru_net.noise = True
-                perf = gru_nn.test(gru_net, env, 100, log=True, cuda=args.cuda, render=True)
+                no_episodes = 100
+                perf = gru_nn.test(gru_net, env, no_episodes, log=True, cuda=args.cuda, render=True)
                 logging.info('Average Performance:{}'.format(perf))
         # ***********************************************************************************
         # Generating BottleNeck training data                                               *
@@ -292,7 +293,7 @@ if __name__ == '__main__':
                 bhx_end_time = time.time()
                 tl.write_net_readme(bhx_net, bhx_dir, info={'time_taken': round(bhx_end_time - bhx_start_time, 4)})
             if args.bhx_test:
-                logging.info('Testing  HX SandGlassNet')
+                logging.info('Testing HX SandGlassNet')
                 bhx_net.load_state_dict(torch.load(bhx_net_path))
                 bhx_net.eval()
                 bhx_test_mse = qbn.test(bhx_net, hx_test_data, len(hx_test_data), cuda=args.cuda)
