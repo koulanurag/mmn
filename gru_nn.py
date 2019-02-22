@@ -1,18 +1,30 @@
 # -*- coding: utf-8 -*-
-# Continuous Recurrent Network (CRN) training  : GRU
+"""
+Continuous Recurrent Network(CRN), GRU, training and testing code.
+"""
 
-import logging, copy, random
-import numpy as np
 import torch
+import numpy as np
 import torch.nn as nn
-from torch.autograd import Variable
 from tools import plot_data
+import logging, copy, random
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 logger = logging.getLogger(__name__)
 
-
 def _train(net, optimizer, batch_data, batch_size, cuda=False, grad_clip=5, trunc_k=None):
+    """
+    Train the network in each batch.
+
+    :param net: Bottleneck GRU network
+    :param optimizer: optimizer method(Adam is preferred)
+    :param batch_data: training data in the batch
+    :param batch_size: batch size
+    :param cuda: check if cuda is available
+    :param grad_clip: max norm of the gradients
+    :return: returns trained network on the batch data and loss
+    """
     cross_entropy_loss = nn.CrossEntropyLoss().cuda() if cuda else nn.CrossEntropyLoss()
     data_obs, data_actions, _, data_len = batch_data
     _max, _min = max(data_len), min(data_len)
@@ -47,9 +59,24 @@ def _train(net, optimizer, batch_data, batch_size, cuda=False, grad_clip=5, trun
     return net, round(sum(loss_data) / batch_size, 4)
 
 
-def train(net, env, optimizer, model_path, plot_dir, train_data, batch_size, epochs, cuda=False, grad_clip=5,
-          trunc_k=10,ep_check=True , rw_check=True):
-    """Supervised Learning to train the policy"""
+def train(net, env, optimizer, model_path, plot_dir, train_data, batch_size, epochs, cuda=False, grad_clip=5, trunc_k=10, ep_check=True, rw_check=True):
+    """
+    Supervised Learning to train the policy. Saves model in the given path.
+
+    :param net: Bottleneck GRU network
+    :param env: environment
+    :param optimizer: optimizer method(Adam is preferred)
+    :param model_path: path to where save the model
+    :param plot_dir: path to where save the plots
+    :param train_data: given training data
+    :param batch_size: batch size
+    :param epochs: number of training epochs
+    :param cuda: check if cuda is available
+    :param grad_clip: max norm of the gradients
+    :param ep_check: check number of episodes
+    :param rw_check: check reward
+    :return: returns the trained model
+    """
     batch_seeds = list(train_data.keys())
     test_env = copy.deepcopy(env)
     test_episodes = 300
@@ -116,6 +143,19 @@ def train(net, env, optimizer, model_path, plot_dir, train_data, batch_size, epo
 
 
 def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, render=False, max_actions=5000):
+    """
+    Test the performance of the given network.
+
+    :param net: trained Bottleneck GRU network
+    :param env: environment
+    :param total_episodes: number of episodes of testing
+    :param test_seeds: test seeds
+    :param cuda: check if cuda is available
+    :param log: check to print out test log
+    :param render: check to render environment
+    :param max_actions: max number of actions
+    :return: test performance on trained model
+    """
     net.eval()
     total_reward = 0
     with torch.no_grad():
@@ -137,14 +177,12 @@ def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, rende
                     obs, hx = obs.cuda(), hx.cuda()
                 critic, logit, hx = net((obs, hx))
                 prob = F.softmax(logit, dim=1)
-                #action = int(prob.multinomial(num_samples=1).data.cpu().numpy())
                 action = int(prob.max(1)[1].data.cpu().numpy())
-                # action = 0
                 obs, reward, done, _ = env.step(action)
                 action_count += 1
                 done = done if action_count <= max_actions else True
                 ep_actions.append(action)
-                # a quick hack to prevent the agent from stucking
+                # A quick hack to prevent the agent from stucking
                 max_same_action = 5000
                 if action_count > max_same_action:
                     actions_to_consider = ep_actions[-max_same_action:]
@@ -155,13 +193,19 @@ def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, rende
                     all_observations.append(obs)
             total_reward += ep_reward
             if log:
-                logger.info('Episode =>{} Score=> {} Actions=> {} ActionCount=> {}'.format(ep, ep_reward, ep_actions,
-                                                                                           action_count))
-                # logger.info(''.join([str(x) for x in all_observations]))
+                logger.info('Episode =>{} Score=> {} Actions=> {} ActionCount=> {}'.format(ep, ep_reward, ep_actions, action_count))
         return total_reward / total_episodes
 
 
 def verbose_data_dict(perf_data, epoch_losses, batch_losses):
+    """
+    Makes data(losses and performance) into a dictionary for the sake of data plotting.
+
+    :param perf_data: test performance
+    :param epoch_losses: MSE and CE epoch loss
+    :param batch_losses: MSE and CE batch loss
+    :return: returns data info dictionary
+    """
     data_dict = []
     if epoch_losses is not None and len(epoch_losses) > 0:
         data_dict.append({'title': "Actor_Loss_vs_Epoch", 'data': epoch_losses['actor'],

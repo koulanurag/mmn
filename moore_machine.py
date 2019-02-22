@@ -1,23 +1,24 @@
-import logging, sys
-import numpy as np
-import random
+import os
 import torch
-from torch.autograd import Variable
+import random
+import scipy.misc
+import numpy as np
+import logging, sys
+from collections import deque
 import torch.nn.functional as F
 from prettytable import PrettyTable
+from torch.autograd import Variable
 from tools import ensure_directory_exits
-import scipy.misc
 from PIL import Image, ImageFont, ImageDraw
-import os
-from collections import deque
 
 logger = logging.getLogger(__name__)
 
 sys.setrecursionlimit(3000)
 
-
 class MooreMachine:
-    """Moore Machine"""
+    """
+    Moore Machine Network definition
+    """
 
     def __init__(self, t={}, sd={}, ss=np.array([]), os=np.array([]), start_state=0, total_actions=None):
         self.transaction = t
@@ -47,10 +48,11 @@ class MooreMachine:
 
     @staticmethod
     def _get_index(source, item, force=True):
-        """ Returns index of the item in the source
+        """
+        Returns index of the item in the source.
 
         :param source: np-array comprising of unique elements (set)
-        :param item: target item (array)
+        :param item: target item(array)
         :param force: if True: In case item not found; it will add the item and return the corresponding index
         """
         _index = np.where(np.all(source == item, axis=1))[0] if len(source) != 0 else []
@@ -65,8 +67,17 @@ class MooreMachine:
             _index = None
         return source, _index
 
-    def _update_info(self, obs, curr_state, next_state, curr_action, next_action, partial=False):
-        """ Records new states and transactions"""
+    def _update_info(self, obs, curr_state, next_state, curr_action, next_action):
+        """
+        Records new states and transactions.
+
+        :param obs: array of observations
+        :param curr_state: current state of the environment
+        :param next_state: next state of the environment
+        :param curr_action: current action of the environment
+        :param next_action: next action of the environment
+        :return: each state's index and a set of states and observations
+        """
         self.obs_space, obs_index = self._get_index(self.obs_space, obs)
         state_indices = []
         new_entries = []
@@ -92,8 +103,17 @@ class MooreMachine:
 
         return state_indices, new_entries
 
-    def extract_from_nn(self, env, net, episodes, seed, log=True, render=False, partial=False, cuda=False):
-        """ Extract Finite State Moore Machine from a Binary Neural Network"""
+    def extract_from_nn(self, env, net, episodes, seed=0, log=True, render=False, partial=False, cuda=False):
+        """
+        Extract Finite State Moore Machine Network(MMNet) from a BottleNeck Gated Recurrent Unit Network(BGRUNet).
+
+        :param env: the environment where agent is in
+        :param net: BottleNeck GRUNet
+        :param episodes: number of episodes
+        :param log: check to print out logs
+        :param render: check to render environment
+        :param cuda: check if cuda is available
+        """
         net.eval()
         max_actions = 10000
         random.seed(seed)
@@ -206,9 +226,17 @@ class MooreMachine:
         start_state_x = net.state_encode(start_state).data.cpu().numpy()[0]
         _, self.start_state = self._get_index(self.state_space, start_state_x, force=False)
 
-        return self.obs_space, self.transaction, self.state_desc, self.start_state
+        # return self.obs_space, self.transaction, self.state_desc, self.start_state
 
     def map_action(self, net, s_i, obs_i):
+        """
+        Gets state and observation at time i in a network and gives next action.
+
+        :param net: given network
+        :param s_i: state at time i
+        :param obs_i: observation at time i
+        :return: next action according to the given state and observation
+        """
         state_x = self.state_desc[s_i]['description']
         state_x = Variable(torch.FloatTensor(state_x).unsqueeze(0))
 
@@ -222,6 +250,11 @@ class MooreMachine:
         return next_action
 
     def minimize_partial_fsm(self, net):
+        """
+        Minimizing the whole Finite State Machine(FSM) to fewer observations.
+
+        :param net: given network
+        """
         _states = sorted(self.transaction.keys())
         compatibility_mat = {s: {p: False if self.state_desc[s]['action'] != self.state_desc[p]['action'] else None
                                  for p in _states[:i + 1]}
@@ -235,11 +268,9 @@ class MooreMachine:
         unknown_lengths = deque(maxlen=1000)
         while len(unknowns) != 0:
             # next 3 lines are experimental
-            # import pdb;pdb.set_trace()
             if len(unknown_lengths) > 0 and unknown_lengths.count(unknown_lengths[0]) == unknown_lengths.maxlen:
                 s, k = unknowns[-1]
                 compatibility_mat[s][k] = True
-            print(len(unknowns))
 
             s, k = unknowns.pop(0)
             if compatibility_mat[s][k] is None:
@@ -393,7 +424,10 @@ class MooreMachine:
                     return MooreMachine.traverse_compatible_states(_states, compatibility_mat)
         return states
 
-    def minimize(self, partial=False):
+    def minimize(self):
+        """
+        Minimize observation space.
+        """
         # create initial partitions (states) based on the action space
         partitions = {'s_' + str(i): [] for i in range(self.total_actions)}
         state_dict = {}
@@ -455,7 +489,7 @@ class MooreMachine:
                     start_state_p = state
                     break
 
-        # Minimize Observation Space (Combine observations which show the same transaction behaviour for all states)
+        # Combine observations which show the same transaction behaviour for all states
         _obs_minobs_map = {}
         _minobs_obs_map = {}
         _trans_minobs_map = {}
@@ -483,8 +517,21 @@ class MooreMachine:
         self.minobs_obs_map = _minobs_obs_map
         self.minimized = True
 
-    def evaluate(self, net, env, total_episodes, log=True, render=False, inspect=False, store_obs=False, path=None,
-                 cuda=False):
+    def evaluate(self, net, env, total_episodes, log=True, render=False, inspect=False, store_obs=False, path=None, cuda=False):
+        """
+        Evaluate the trained network.
+
+        :param net: trained Bottleneck GRU network
+        :param env: environment
+        :param total_episodes: number of episodes to test
+        :param log: check to print out evaluation log
+        :param render: check to render environment
+        :param inspect: check for previous evaluations to not evaluate again
+        :param store_obs: check to store observations again
+        :param path: where to check for inspection
+        :param cuda: check if cuda is available
+        :return: evaluation performance on given model
+        """
         net.eval()
         if inspect:
             obs_path = ensure_directory_exits(os.path.join(path, 'obs'))
@@ -541,7 +588,8 @@ class MooreMachine:
                     _text = 'Current State:{} \n Obs: {} \n Next State: {} \n\n\n Total States:{} \n Total Obs: {}'
                     _text = _text.format(str(curr_state), (obs_index, pre_index).__str__(), str(next_state),
                                          len(self.state_desc.keys()), len(self.minobs_obs_map.keys()))
-                    _label_img = self.text_image(_shape, _text, font_size=12)
+                    # _label_img = self.text_image(_shape, _text, font_size=12)
+                    _label_img = self.text_image(_shape, _text)
                     _img = np.hstack((org_obs, _label_img))
                     env.render(inspect=inspect, img=_img)
                     if inspect:
@@ -625,6 +673,11 @@ class MooreMachine:
         return np.array(img)
 
     def save(self, info_file):
+        """
+        Save data into given file.
+
+        :param info_file: an opened file to write data in
+        """
         info_file.write('Total Unique States:{}\n'.format(len(self.state_desc.keys())))
         if not self.minimized:
             info_file.write('Total Unique Observations:{}\n'.format(len(self.obs_space)))

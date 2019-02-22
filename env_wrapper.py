@@ -1,5 +1,9 @@
-import numpy as np
+"""
+The Atari environment(env) wrapper. Some envs needed some configurations which you can find below.
+"""
+
 import gym
+import numpy as np
 from scipy.misc import imresize
 
 
@@ -140,11 +144,6 @@ class BoxingWrapper(AtariWrapper):
 class BreakoutWrapper(Crop35And195):
     def __init__(self, env):
         Crop35And195.__init__(self, env)
-        # AtariWrapper.__init__(self, env)
-
-    # @staticmethod
-    # def process_atari_image(img):
-    #     return imresize(img[35:195].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
 
 
 class QbertWrapper(AtariWrapper):
@@ -174,10 +173,6 @@ class ElevatorActionWrapper(AtariWrapper):
         AtariWrapper.__init__(self, env)
 
 
-
-
-
-
 def atari_wrapper(env_name):
     x = env_name.lower()
     x = x.split('deterministic')[0] if 'deterministic' in x else x.split('-')[0]
@@ -199,12 +194,8 @@ def atari_wrapper(env_name):
         env = QbertWrapper(gym.make(env_name))
     elif x in ['bowling']:
         env = BowlingWrapper(gym.make(env_name))
-    # elif x in ['qbert']:
-    #     env = Crop15And195(gym.make(env_name))
     elif x in ['elevatoraction']:
         env = ElevatorActionWrapper(gym.make(env_name))
-
-
     else:
         env = AtariWrapper(gym.make(env_name))
     return env

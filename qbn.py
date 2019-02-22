@@ -1,21 +1,41 @@
 # -*- coding: utf-8 -*-
-# Quantized Bottle-Neck Network (QBN) Training
+"""
+Quantized BottleNeck Network(QBN) training and testing
+"""
 
-import logging
-import random
-import numpy as np
 import math
 import torch
+import random
+import logging
+import numpy as np
 import torch.nn as nn
-from torch.autograd import Variable
 from tools import plot_data
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 logger = logging.getLogger(__name__)
 
 
-def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=False, grad_clip=None, target_net=None,
-          env=None, low=0, high=0.05, target_test_episodes=1):
+def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=False, grad_clip=None, target_net=None, env=None, low=0, high=0.05, target_test_episodes=1):
+    """
+    Train the QBN
+
+    :param net: given network
+    :param data: given data to train the network on
+    :param optimizer: optimizer method(Adam is preferred)
+    :param model_path: path to where save the model
+    :param plot_dir: path to where save the plots
+    :param batch_size: batch size
+    :param epochs: number of training epochs
+    :param cuda: check if cuda is available
+    :param grad_clip: max norm of the gradients
+    :param target_net:
+    :param env: environment
+    :param low: lower bound of noise data
+    :param high: upper bound of noise data
+    :param target_test_episodes: number of episodes to test on
+    :return: returns the trained model
+    """
     mse_loss = nn.MSELoss().cuda() if cuda else nn.MSELoss()
     train_data, test_data = data
 
@@ -55,7 +75,6 @@ def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=F
         test_perf = test_with_env(target_net(net), env, target_test_episodes, cuda=cuda)
         test_perf_data.append(test_perf)
 
-        # if (best_perf_i is None) or (test_perf_data[best_perf_i] <= test_perf_data[-1]) :
         if (best_perf_i is None) or (test_perf_data[best_perf_i] <= test_perf_data[-1]) or test_perf_data[
             -1] == env.spec.reward_threshold:
             torch.save(net.state_dict(), model_path)
@@ -84,6 +103,15 @@ def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=F
 
 
 def test(net, data, batch_size, cuda=False):
+    """
+    Test the trained network.
+
+    :param net: given network
+    :param data: given data to test the network on
+    :param batch_size: batch size
+    :param cuda: check if cuda is available
+    :return: test performance
+    """
     mse_loss = nn.MSELoss().cuda() if cuda else nn.MSELoss()
     net.eval()
     batch_losses = []
@@ -105,6 +133,18 @@ def test(net, data, batch_size, cuda=False):
 
 
 def test_with_env(net, env, total_episodes, cuda=False, log=False, render=False, max_actions=10000):
+    """
+    Test on an environment.
+
+    :param net: given network
+    :param env: environment
+    :param total_episodes: number of episodes of testing
+    :param cuda: check if cuda is available
+    :param log: check to print out test log
+    :param render: check to render environment
+    :param max_actions: max number of actions
+    :return: test performance
+    """
     net.eval()
     total_reward = 0
     with torch.no_grad():
@@ -144,6 +184,15 @@ def test_with_env(net, env, total_episodes, cuda=False, log=False, render=False,
 
 
 def verbose_data_dict(test_loss, epoch_losses, batch_losses, test_env_perf):
+    """
+    Makes data(losses and performance) into a dictionary for the sake of data plotting.
+
+    :param test_loss: test performance
+    :param epoch_losses: MSE and CE epoch loss
+    :param batch_losses: MSE and CE batch loss
+    :param test_env_perf: performance on test environment
+    :return: data info dictionary
+    """
     data_dict = [
         {'title': "Test_Loss_vs_Epoch", 'data': test_loss, 'y_label': 'Loss(' + str(min(test_loss)) + ')',
          'x_label': 'Epoch'},

@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
-# Bottleneck GRU network training and testing code
+"""
+Bottleneck GRU network training and testing code.
+"""
 
-import logging, copy, random
-import numpy as np
 import torch
+import random
+import logging
+import numpy as np
 import torch.nn as nn
-from torch.autograd import Variable
 from tools import plot_data
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 logger = logging.getLogger(__name__)
-
 
 def _train(net, optimizer, batch_data, batch_size, cuda=False, grad_clip=0.5, trunc_k=10):
     """
@@ -205,6 +207,14 @@ def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, rende
 
 
 def verbose_data_dict(perf_data, epoch_losses, batch_losses):
+    """
+    Makes data(losses and performance) into a dictionary for the sake of data plotting.
+
+    :param perf_data: test performance
+    :param epoch_losses: MSE and CE epoch loss
+    :param batch_losses: MSE and CE batch loss
+    :return: returns data info dictionary
+    """
     data_dict = []
     if epoch_losses is not None and len(epoch_losses['actor_mse']) > 0:
         data_dict.append({'title': "Actor_MSE_Loss_vs_Epoch", 'data': epoch_losses['actor_mse'],

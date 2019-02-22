@@ -1,9 +1,11 @@
-""" Activation Functions"""
+"""
+Activation Functions
+"""
 
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import torch.nn.functional as F
+from torch.autograd import Variable
 from torch.autograd import Function
 
 
@@ -79,7 +81,9 @@ class BinarySigmoid(nn.Module):
 
 
 class BinaryTanh(nn.Module):
-    """Ref: https://github.com/DingKe/pytorch_workplace/blob/master/binary/modules.py#L10"""
+    """
+    reference: https://github.com/DingKe/pytorch_workplace/blob/master/binary/modules.py#L10
+    """
 
     def __init__(self):
         super(BinaryTanh, self).__init__()
@@ -93,7 +97,9 @@ class BinaryTanh(nn.Module):
 
 
 class TernaryTanh(nn.Module):
-    """Ref: https://r2rt.com/beyond-binary-ternary-and-one-hot-neurons.html"""
+    """
+    reference: https://r2rt.com/beyond-binary-ternary-and-one-hot-neurons.html
+    """
 
     def __init__(self):
         super(TernaryTanh, self).__init__()
@@ -141,7 +147,6 @@ class DynamicGNoise(nn.Module):
             print(x.size(), self.noise.size())
             x += self.noise.expand()
         return x
-
 
 # aliases
 binarizeSig = BinarizeSigF.apply
