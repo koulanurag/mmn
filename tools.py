@@ -1,21 +1,31 @@
-import os, logging
-import numpy as np
+"""
+Useful functions that have been used through out the whole code base.
+"""
+
+import os
 import torch
-import matplotlib as mpl
-from torch.autograd import Variable
 import pickle
-
-mpl.use('Agg')  # to plot graphs over a server shell since the default display is not available on server.
-import matplotlib.pyplot as plt
 import random
+import logging
 import argparse
+import numpy as np
+import matplotlib as mpl
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
+from torch.autograd import Variable
 
+# To plot graphs over a server shell since the default display is not available on server.
+mpl.use('Agg')
 logger = logging.getLogger(__name__)
 
-
 def ensure_directory_exits(directory_path):
-    """creates directory if path doesn't exist"""
+    """
+    Creates directory if path doesn't exist.
+
+    :param directory_path: path to directory to save stuff
+    :return: existing directory path
+    """
+
     try:
         if not os.path.exists(directory_path):
             os.makedirs(directory_path)
@@ -25,12 +35,24 @@ def ensure_directory_exits(directory_path):
 
 
 def normalized_columns_initializer(weights, std=1.0):
+    """
+    Normalizing over a matrix.
+
+    :param weights: given matrix
+    :param std: standard deviation
+    :return: normalized matrix
+    """
+
     out = torch.randn(weights.size())
     out *= std / torch.sqrt(out.pow(2).unsqueeze(0).sum(1).expand_as(out))
     return out
 
 
 def weights_init(m):
+    """
+    Weight initialization.
+    """
+
     classname = m.__class__.__name__
     if classname.find('Conv') != -1:
         weight_shape = list(m.weight.data.size())
@@ -49,6 +71,13 @@ def weights_init(m):
 
 
 def plot_data(data_dict, plots_dir_path):
+    """
+    Plotting given data.
+
+    :param data_dict: dictionary containing data
+    :param plots_dir_path: path to save plots
+    """
+
     for x in data_dict:
         title = x['title']
         data = x['data']
@@ -67,9 +96,16 @@ def plot_data(data_dict, plots_dir_path):
 
 
 def write_net_readme(net, dir, info={}):
-    """ Writes the configuration of the network """
-    with open(os.path.join(dir, 'README.txt'), 'w') as _file:
-        _file.write('******Net Information********\n\n')
+    """
+    Writes the configuration of the network.
+
+    :param net: given network
+    :param dir: path to where save the file
+    :param info: additional info to save
+    """
+
+    with open(os.path.join(dir, 'NET_README.txt'), 'w') as _file:
+        _file.write('********Net Information********\n\n')
         _file.write(net.__str__() + '\n\n')
         if len(info.keys()) > 0:
             _file.write('INFO:' + '\n')
@@ -78,6 +114,16 @@ def write_net_readme(net, dir, info={}):
 
 
 def gaussian(ins, is_training, mean, std, one_sided=False):
+    """
+    Add Gaussian noise to data.
+
+    :param ins: input data
+    :param is_training: check if it's training
+    :param mean: mean of the distribution
+    :param std: standard deviation
+    :return: new data with noise added
+    """
+
     if is_training:
         noise = Variable(ins.data.new(ins.size()).normal_(mean, std))
         return ins + (abs(noise) if one_sided else noise)
@@ -95,6 +141,13 @@ def uniform(ins, is_training, low, high, enforce_pos=False):
 
 
 def set_log(logPath, suffix=''):
+    """
+    Set logging configuration.
+
+    :param logPath: where to write logs
+    :param suffix: any suffix added to the path
+    """
+
     logging.basicConfig(
         format="%(asctime)s [%(levelname)-5.5s] [%(name)s -> %(funcName)s]  %(message)s",
         handlers=[
@@ -107,6 +160,17 @@ def set_log(logPath, suffix=''):
 
 
 def generate_bottleneck_data(net, env, episodes, save_path, cuda=False, eps=(0, 0), max_steps=None):
+    """
+    Generating bottleneck data for the given network.
+
+    :param net: given network
+    :param env: given environment
+    :param episodes: number of episodes
+    :param save_path: path to save data in
+    :param cuda: check if cuda is available
+    :param max_steps: maximum number of steps to take. used for exploration.
+    :return: observation and hidden state bottleneck data
+    """
     if os.path.exists(save_path):
         # unpickling after reading the file is efficient
         hx_train_data, hx_test_data, obs_train_data, obs_test_data = pickle.loads(open(save_path, "rb").read())
@@ -159,38 +223,10 @@ def generate_bottleneck_data(net, env, episodes, save_path, cuda=False, eps=(0, 
             obs_train_data += bottleneck_data[action]['obs_data']
             obs_test_data += bottleneck_data[action]['obs_data']
 
-            logging.info('Action: {} Hx Data: {} Obs Data: {}'.format(action,
-                                                                      len(np.unique(bottleneck_data[action]['hx_data'],
-                                                                                    axis=0).tolist()),
-                                                                      len(np.unique(bottleneck_data[action]['obs_data'],
-                                                                                    axis=0).tolist())))
+            logging.info('Action: {} Hx Data: {} Obs Data: {}'.format(action, len(np.unique(bottleneck_data[action]['hx_data'], axis=0).tolist()), len(np.unique(bottleneck_data[action]['obs_data'], axis=0).tolist())))
 
         obs_test_data = np.unique(obs_test_data, axis=0).tolist()
         hx_test_data = np.unique(hx_test_data, axis=0).tolist()
-
-        #
-        # max_hx_count, max_obs_count = float('-inf'), float('-inf')
-        # for action in bottleneck_data.keys():
-        #     bottleneck_data[action]['hx_data'] = np.unique(bottleneck_data[action]['hx_data'], axis=0).tolist()
-        #     bottleneck_data[action]['obs_data'] = np.unique(bottleneck_data[action]['obs_data'], axis=0).tolist()
-        #     max_hx_count = max(max_hx_count, len(bottleneck_data[action]['hx_data']))
-        #     max_obs_count = max(max_obs_count, len(bottleneck_data[action]['obs_data']))
-        #
-        #     logging.info('Action: {} Hx Data: {} Obs Data: {}'.format(action, len(bottleneck_data[action]['hx_data']),
-        #                                                               len(bottleneck_data[action]['obs_data'])))
-        #
-        # hx_train_data, hx_test_data, obs_train_data, obs_test_data = [], [], [], []
-        # for action in bottleneck_data.keys():
-        #     hx_train_data += bottleneck_data[action]['hx_data']
-        #     obs_train_data += bottleneck_data[action]['obs_data']
-        #     hx_test_data += bottleneck_data[action]['hx_data']
-        #     obs_test_data += bottleneck_data[action]['obs_data']
-        #     # make the distribution uniform
-        #     hx_len, obs_len = len(bottleneck_data[action]['hx_data']), len(bottleneck_data[action]['obs_data'])
-        #     hx_train_data += [bottleneck_data[action]['hx_data'][i] for i in
-        #                       np.random.choice(hx_len, max_hx_count - hx_len)]
-        #     obs_train_data += [bottleneck_data[action]['obs_data'][i] for i in
-        #                        np.random.choice(obs_len, max_obs_count - obs_len)]
 
         random.shuffle(hx_train_data)
         random.shuffle(obs_train_data)
@@ -200,13 +236,16 @@ def generate_bottleneck_data(net, env, episodes, save_path, cuda=False, eps=(0, 
         pickle.dump((hx_train_data, hx_test_data, obs_train_data, obs_test_data), open(save_path, "wb"))
 
     logging.info('Data Sizes:')
-    logging.info('Hx Train:{} Hx Test:{} Obs Train:{} Obs Test:{}'.format(len(hx_train_data), len(hx_test_data),
-                                                                          len(obs_train_data), len(obs_test_data)))
+    logging.info('Hx Train:{} Hx Test:{} Obs Train:{} Obs Test:{}'.format(len(hx_train_data), len(hx_test_data), len(obs_train_data), len(obs_test_data)))
 
     return hx_train_data, hx_test_data, obs_train_data, obs_test_data
 
 
 def get_args():
+    """
+    Arguments used to get input from command line.
+    :return: given arguments in command line
+    """
     parser = argparse.ArgumentParser(description='GRU to FSM')
     parser.add_argument('--generate_train_data', action='store_true', default=False, help='Generate Train Data')
     parser.add_argument('--generate_bn_data', action='store_true', default=False, help='Generate Bottle-Neck Data')
@@ -215,15 +254,6 @@ def get_args():
     parser.add_argument('--gru_test', action='store_true', default=False, help='Test GRU Network')
     parser.add_argument('--gru_size', type=int, help="No. of GRU Cells")
     parser.add_argument('--gru_lr', type=float, default=0.001, help="No. of GRU Cells")
-
-    # parser = argparse.ArgumentParser(description='LSTM to FSM')
-    # parser.add_argument('--generate_train_data', action='store_true', default=False, help='Generate Train Data')
-    # parser.add_argument('--generate_bn_data', action='store_true', default=False, help='Generate Bottle-Neck Data')
-    # parser.add_argument('--generate_max_steps', type=int, help='Maximum number of steps to be used for data generation')
-    # parser.add_argument('--lstm_train', action='store_true', default=False, help='Train LSTM Network')
-    # parser.add_argument('--lstm_test', action='store_true', default=False, help='Test LSTM Network')
-    # parser.add_argument('--lstm_size', type=int, help="No. of LSTM Cells")
-    # parser.add_argument('--lstm_lr', type=float, default=0.001, help="No. of LSTM Cells")
 
     parser.add_argument('--bhx_train', action='store_true', default=False, help='Train bx network')
     parser.add_argument('--ox_train', action='store_true', default=False, help='Train ox network')
@@ -264,6 +294,17 @@ def get_args():
 
 
 def generate_trajectories(env, batches, batch_size, save_path, guide=None, cuda=False, render=False):
+    """
+    Generate trajectories used as training data.
+
+    :param env: given environment
+    :param batches: number of batches
+    :param batch_size: batch size
+    :param save_path: path to save generated data
+    :param cuda: check if cuda is available
+    :param render: check to render environment
+    :return: generated trajectory data
+    """
     if os.path.exists(save_path):
         logging.info('Loading Saved data .. ')
         # unpickling after reading the file is efficient
