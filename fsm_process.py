@@ -1,3 +1,7 @@
+"""
+Generating data, training and testing functions are implemented here.
+"""
+
 import os
 import qbn
 import time
