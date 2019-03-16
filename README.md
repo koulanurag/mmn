@@ -1,5 +1,5 @@
 # Introduction
-In this document, a step by step manual on how to work with the *LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS*'s code is described. A simple environment such as TomitaB has been used as a toy example, but the main procedure would be the same with different environments, such as GoldRush, Pong etc.
+In this document, a step by step manual on how to work with the *LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS*'s code is described. The procedure would be the same in different environments.
 
 ### Step 0 - Generate training data
 In this step, the trajectory data will be created. The data model will be saved in the folder named after the environment in this directory: <br/>`results/Atari/**ENVIRONMENT**/trajectories_data.p`
@@ -8,11 +8,11 @@ Use the below command to generate and save the data:
 <br/>`python main_gold_rush.py --env **ENVIRONMENT** --generate_train_data`
 
 ### Step 1 - Train the GRU
-Train the RNN(**GRU**) network from **scratch**. This training doesn't include the QBNs. The aim of this step is to train a model to be used for training the QBNs.
+Train the RNN(**GRU**) network from **scratch**. This training does not include the QBNs. This step aims to train a model to be used for training the QBNs.
 Use the command below to do so:
 <br/>`python main_atari.py --env **ENVIRONMENT** --gru_train --gru_size 10 --generate_max_steps 100`
 
-Also, some plots to show how was the training will be save here:<br />`results/Atari/**ENVIRONMENT**/**MODEL**/plots/`
+Also, some plots to show how was the training will be saved here:<br />`results/Atari/**ENVIRONMENT**/**MODEL**/plots/`
 
 ### Step 2 - Test the GRU
 This step is to be used to test how was training. Use the command below for that:
@@ -23,11 +23,10 @@ Now QBNs data should be generated. This means that quantizing the continuous dat
 <br/>`python main_atari.py --env **ENVIRONMENT** --generate_bn_data --gru_size 10 --generate_max_steps 100`
 
 ### Step 4 - BHX net training
-Now, the hidden state QBN can be trained based on the RNN(**GRU**) model trained earlier and the data generated in the previous step. To do this, the following command should be run to train the Bottleneck Hidden State(bhx) net:
+Now, the hidden state QBN can be trained based on the RNN(**GRU**) model trained earlier and the data generated in the previous step. To do this, the following command should be run to train the Bottleneck Hidden State(BHX) net:
 <br/>`python main_atari.py --env **ENVIRONMENT** --bhx_train --bhx_size 8 --gru_size 10 --generate_max_steps 100`
 
 After it's done, the model will be saved here:<br/>`results/Atari/**ENVIRONMENT**/**MODEL**/model.p`
-
 
 ### Step 5 - BHX net test
 Now it's time to test the new model that was trained using the QBNs(BX net). Run the following command:<br/>
@@ -52,7 +51,7 @@ Here the trained model in previous step is going to be tested by the following c
 `python main_atari.py --env **ENVIRONMENT** --bgru_test --bhx_size 8 --ox_size 8 --gru_size 10 --generate_max_steps 100`
 
 ### Step 10 - Generating the Finite State Machine(FSM)
-Congrats, you've made it so far :). It's the final step. Here the final results will be converted into a finite state machine explanation text file. Run the following command for that:<br/>
-`python main_atari.py --env TomitaB-v0 --generate_fsm --bhx_size 8 --ox_size 8 --gru_size 10 --generate_max_steps 100`
+Congrats, you have made it so far :). It is the final step. Here the final results will be converted into a finite state machine explanation text file. Run the following command for that:<br/>
+`python main_atari.py --env **ENVIRONMENT** --generate_fsm --bhx_size 8 --ox_size 8 --gru_size 10 --generate_max_steps 100`
 
 And the FSM explanation files will be saved as text files here:<br/>`results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru/fsm.txt`
