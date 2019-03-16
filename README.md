@@ -2,7 +2,7 @@
 In this document, a step by step manual on how to work with the *LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS*'s code is described. A simple environment such as TomitaB has been used as a toy example, but the main procedure would be the same with different environments, such as GoldRush, Pong etc.
 
 ### Step 0 - Generate training data
-In this step, the trajectory data will be created. The data model will be saved in the folder named after the environment in this directory: `results/Atari/**ENVIRONMENT**/trajectories_data.p`
+In this step, the trajectory data will be created. The data model will be saved in the folder named after the environment in this directory: <br/>`results/Atari/**ENVIRONMENT**/trajectories_data.p`
 
 Use the below command to generate and save the data:
 <br/>`python main_gold_rush.py --env **ENVIRONMENT** --generate_train_data`
