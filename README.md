@@ -5,7 +5,7 @@ In this document, a step by step manual on how to work with the *LEARNING FINITE
 In this step, the trajectory data will be created. The data model will be saved in the folder named after the environment in this directory: <br/>`results/Atari/**ENVIRONMENT**/trajectories_data.p`
 
 Use the below command to generate and save the data:
-<br/>`python main_gold_rush.py --env **ENVIRONMENT** --generate_train_data`
+<br/>`python main_atari.py --env **ENVIRONMENT** --generate_train_data`
 
 ### Step 1 - Train the GRU
 Train the RNN(**GRU**) network from **scratch**. This training does not include the QBNs. This step aims to train a model to be used for training the QBNs.
