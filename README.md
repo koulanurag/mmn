@@ -1,13 +1,17 @@
 # Introduction
 In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described.
-Topics covered in this README file is as follows: [general documentation about the code](), [how to use the pretrained models](), [a summary of results](), [how to run the code step by step](#step-by-step-manual), and [how to run the code with the prepared script](#use-prepared-scripts).
+Topics covered in this README file is as follows: [general documentation about the code](), [how to use the pretrained models](), [a summary of results](#a-summary-of-results), [how to run the code step by step](#step-by-step-manual), and [how to run the code with the prepared script](#use-prepared-scripts).
+
+### Using pretrained models
+For results to be easily reproducible, previously trained GRU models on different environments have been provided. You can simply use them to train new QBNs and reproduce the results presented in the paper. Models are accessible through this directory: `results/Atari/`. The GRU cell size can be determined from the models' path, e.i. if a model is saved in a folder named as `gru_32`, then the GRU cell size is 32. 
+
 
 ### A summary of results
 Presenting the Mode Counter Environments(MCE) results, number of states and observations of the MMs extracted from the MMNs both before and after minimization. Moore Machine extraction for MCE(table 1 in paper):
 
 |   Game	|   B<sub>h</sub>, B<sub>f</sub>    |   Fine-Tuning Score |  Before Minimization	|   After Minization    |
 |:---------:|:---------------------------------:|:-------------------:|:-----------------------:|:---------------------:|
-|          |                                  |  Before(%), After(%)|&#124;H&#124;, &#124;O&#124;. Accuracy(%)| &#124;H&#124;, &#124;O&#124;. Accuracy(%)|
+|          |                                  |  Before(%), After(%)|&#124;H&#124;, &#124;O&#124;, Accuracy(%)| &#124;H&#124;, &#124;O&#124;, Accuracy(%)|
 |   Amnesia	|   4,4	|  0.98, 1 |    7, 5, 1 |  4, 4, 1 	|
 |   Amnesia	|   4,8	|  0.99, 1 	|   7, 7, 1	|  4, 4, 1 	|
 |  Amnesia 	|   8,4	|   1, -	|   6, 5, 1	|  4, 4, 1 	|
@@ -43,11 +47,11 @@ The bellow table presents the test results for the trained RNNs giving the accur
 |   7   |   100	|  16 	|   100, -	|  107, 100	|5, 100|
 
 
- This table gives the performance of the trained MMNs before and after finetuning for different combinations of B<sub>h</sub> and B<sub>f</sub>. Moore Machine extraction for trained Atari RNN policies(table 3 in paper):
+ This table shows the performance of the trained MMNs before and after finetuning for different combinations of B<sub>h</sub> and B<sub>f</sub>. A few more games investigated and the results are added to the table 3 of the paper:
 
 |Game(# of actions)|DQN(score)|A3C LSTM(score)|RNN(score)|B<sub>h</sub>, B<sub>f</sub>    |   Fine-Tuning Score |  Before Minimization	|   After Minization    |
 |:---:|:---:|:---:|:---:|:---:|:-------------------:|:-----------------------:|:---------------------:|
-|          |               | | |                   |  Before, After|&#124;H&#124;, &#124;O&#124;. Score| &#124;H&#124;, &#124;O&#124;. Score|
+|          |               | | |                   |  Before, After|&#124;H&#124;, &#124;O&#124;, Score| &#124;H&#124;, &#124;O&#124;, Score|
 |Pong(3)|   18.9	|10.7|21|  64, 100 	|20, 21|380, 374, 21|4, 12, 21|
 |Pong(3)|   18.9	|10.7|21|  64, 400 	|20, 21|373, 372, 21|3, 10, 21|
 |Pong(3)|   18.9	|10.7|21|  128, 100 |20, 21|383, 373, 21|3, 12, 21|
@@ -72,8 +76,16 @@ The bellow table presents the test results for the trained RNNs giving the accur
 |Boxing(18)|   71.8	|  37.3 	|100|   64, 400 |98, 100|2621, 2605, 100|14, 119, 100|
 |Boxing(18)|   71.8	|  37.3 	|100|   128, 100|94, 97|2499, 2482, 97|14, 106, 97|
 |Boxing(18)|   71.8	|  37.3 	|100|   128, 400|97, 100|1173, 1169, 100|14, 88, 100|
+|Chopper Command(18) | 5017 | 10150 |  | 64, 100 |  | 3710, 3731, 4000 | 38, 182, 1890| 
 
-Also, more environments tested with the QBNs are presented in the following table:
+Also, more experiments on classic control and Box2D environments have been done. Results are presented in the following table:
+
+|Game(# of actions)|B<sub>h</sub>, B<sub>f</sub>    |  Before Minimization	|   After Minization    |
+|:---:|:---:|:-------------------:|:---------------------:|
+|          |               |&#124;H&#124;, &#124;O&#124;, Score| &#124;H&#124;, &#124;O&#124;, Score|
+|CartPole(2)|   8, 8 	|10, 27, 500|5, 25, 500|
+|LunarLander(4)|   128, 100 	|2550, 2197, 172|75, 77, 134|
+|LunarLander(4)|   128, 400 	|2194, 1996, 201|27, 37, 205|
 
 ### Step by step manual
 In the first step, the given model should be tested to see if it gets relatively good results or not. This command is to be used to test how the model performs during the test:
