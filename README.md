@@ -1,9 +1,10 @@
 # Introduction
-In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described. The topics covered in this README file is as follows: how to use the pretrained models, a summary of the results, and how to run the code step by step.
+In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described.
+Topics covered in this README file is as follows: [how to use the pretrained models](#use-prepared-scripts), a summary of the results, and how to run the code step by step.
 
 
 #### Step by step manual
----
+
 In the first step, the trajectory data will be created. The data model will be saved in the folder named after the environment in this directory: <br/>`results/Atari/**ENVIRONMENT**/trajectories_data.p`
 
 Use the below command to generate and save the data:
@@ -48,7 +49,7 @@ Congrats, you have made it so far :). It is the final step. Here the final resul
 
 And the FSM explanation files will be saved as text files here:<br/>`results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru/fsm.txt`
 
----
+
 #### Use prepared scripts
----
+
 Instead of going through the step by step manual described above, one can use the prepared scripts. This script starts from training a GRU model on a defined environment and ends by generating the FSM. One can do this by running the `run_atari.sh`. 
