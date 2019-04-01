@@ -7,7 +7,7 @@ Topics covered in this README file is as follows: [general documentation about t
 
 |   Game	|   B<sub>h</sub>, B<sub>f</sub>    |   Fine-Tuning Score |  Before Minimization	|   After Minization    |
 |:---------:|:---------------------------------:|:-------------------:|:-----------------------:|:---------------------:|
-|   >       | >                                 |  Before(%), After(%)|&#124;H&#124;, &#124;O&#124;. Accuracy(%)| &#124;H&#124;, &#124;O&#124;. Accuracy(%)|
+|        |                                  |  Before(%), After(%)|&#124;H&#124;, &#124;O&#124;. Accuracy(%)| &#124;H&#124;, &#124;O&#124;. Accuracy(%)|
 |   	|   4,4	|  0.98, 1 |    7, 5, 1 |  4, 4, 1 	|
 |   Amnesia	|   4,8	|  0.99, 1 	|   7, 7, 1	|  4, 4, 1 	|
 |   	|   8,4	|   1, -	|   6, 5, 1	|  4, 4, 1 	|
