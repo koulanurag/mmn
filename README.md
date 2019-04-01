@@ -2,8 +2,24 @@
 In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described.
 Topics covered in this README file is as follows: [general documentation about the code](), [how to use the pretrained models](), [a summary of results](), [how to run the code step by step](#step-by-step-manual), and [how to run the code with the prepared script](#use-prepared-scripts).
 
+### A summary of results
+#### Mode Counter Environments(MCE)
 
-#### Step by step manual
++-------+----------+------+
+| Table Headings   | Here |
++-------+----------+------+
+| Sub   | Headings | Too  |
++=======+==========+======+
+| cell  | column spanning |
++ spans +----------+------+
+| rows  | normal   | cell |
++-------+----------+------+
+
+
+
+
+
+### Step by step manual
 In the first step, the given model should be tested to see if it gets relatively good results or not. This command is to be used to test how the model performs during the test:
 <br/>`python main_atari.py --env **ENVIRONMENT** --gru_test --gru_size 32`
 
@@ -45,7 +61,7 @@ And the FSM explanation files will be saved as text files here:
 <br/>In this directory two most important, files containing the observation space and hidden state space beبore minimization(in the file named as: "fsm.txt") and after minimization(in the file named as: "minimized_moore_machine.txt")
 
 
-#### Use prepared scripts
+### Use prepared scripts
 
 Instead of going through the step by step manual described above, one can use the prepared scripts. This script starts from testing a given GRU model on a defined environment and ends by generating the FSM. One can do this by simply running:
 <br/>`sh run_atari.sh` 
