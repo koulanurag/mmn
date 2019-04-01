@@ -1,5 +1,6 @@
 # Introduction
-In this document, a manual on how to work with the *LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS*'s code is described.
+In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described. The topics covered in this README file is as follows: how to use the pretrained models, a summary of the results, and how to run the code step by step.
+
 
 #### Step by step manual
 ---
