@@ -8,11 +8,165 @@ Topics covered in this document:
 * [how to run the code with the prepared script](#use-prepared-scripts)
 
 
+## Installation
+* Python 3.5+
+* Pytorch 0.4.0
+* gym_x
+* To install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+In this section, a guide on how to use the code is presented.
+
+## Parameters
+To run the code, there are several parameters that should be set. Below is a list of them:
+```python
+usage: main_atari.py [-h] [--generate_train_data] [--generate_bn_data]
+                     [--generate_max_steps GENERATE_MAX_STEPS] [--gru_train]
+                     [--gru_test] [--gru_size GRU_SIZE] [--gru_lr GRU_LR]
+                     [--bhx_train] [--ox_train] [--bhx_test] [--ox_test]
+                     [--bgru_train] [--bgru_test] [--bhx_size BHX_SIZE]
+                     [--bhx_suffix BHX_SUFFIX] [--ox_size OX_SIZE]
+                     [--train_epochs TRAIN_EPOCHS] [--batch_size BATCH_SIZE]
+                     [--bgru_lr BGRU_LR] [--gru_scratch] [--bx_scratch]
+                     [--generate_fsm] [--evaluate_fsm]
+                     [--bn_episodes BN_EPISODES] [--bn_epochs BN_EPOCHS]
+                     [--no_cuda] [--env ENV] [--env_seed ENV_SEED]
+                     [--result_dir RESULT_DIR]
+
+GRU to FSM
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --generate_train_data
+                        Generate Train Data
+  --generate_bn_data    Generate Bottle-Neck Data
+  --generate_max_steps GENERATE_MAX_STEPS
+                        Maximum number of steps to be used for data generation
+  --gru_train           Train GRU Network
+  --gru_test            Test GRU Network
+  --gru_size GRU_SIZE   No. of GRU Cells
+  --gru_lr GRU_LR       No. of GRU Cells
+  --bhx_train           Train bx network
+  --ox_train            Train ox network
+  --bhx_test            Test bx network
+  --ox_test             Test ox network
+  --bgru_train          Train binary gru network
+  --bgru_test           Test binary gru network
+  --bhx_size BHX_SIZE   binary encoding size
+  --bhx_suffix BHX_SUFFIX
+                        suffix fo bhx folder
+  --ox_size OX_SIZE     binary encoding size
+  --train_epochs TRAIN_EPOCHS
+                        No. of training episodes
+  --batch_size BATCH_SIZE
+                        batch size used for training
+  --bgru_lr BGRU_LR     Learning rate for binary GRU
+  --gru_scratch         use scratch gru for BGRU
+  --bx_scratch          use scratch bx network for BGRU
+  --generate_fsm        extract fsm from fmm net
+  --evaluate_fsm        evaluate fsm
+  --bn_episodes BN_EPISODES
+                        No. of episodes for generating data for Bottleneck
+                        Network
+  --bn_epochs BN_EPOCHS
+                        No. of Training epochs
+  --no_cuda             no cuda usage
+  --env ENV             Name of the environment
+  --env_seed ENV_SEED   Seed for the environment
+  --result_dir RESULT_DIR
+                        Directory Path to store results
+```
+
+By having the proper set of parameters, now you can run the ```main_atari.py``` code to start the process. For a step by step manual click [here](#step-by-step-manual).
+
+
+### Use prepared scripts
+
+Instead of going through the step by step manual described below, you can use the prepared scripts. This script starts from testing a given GRU model on a defined environment and ends by generating the FSM. You can do this by simply running:
+```bash
+sh run_atari.sh
+``` 
+
+
+### Step by step manual
+In the first step, the given model should be tested to see if it gets relatively good results or not. This command is to be used to test how the model performs during the test:
+```bash
+python main_atari.py --env **ENVIRONMENT** --gru_test --gru_size 32
+```
+
+Before training the QBNs, the discrete data should be generated. This means that quantizing the continuous data into a discrete form. This can be done by the following command:
+```bash
+python main_atari.py --env **ENVIRONMENT** --generate_bn_data --gru_size 32 --generate_max_steps 100
+```
+
+Now, the hidden state QBN should be trained based on the previously trained RNN(**GRU**) model and using the data generated in the last step. To do this, the following command should be run to train the Bottleneck Hidden State(BHX) net:
+```bash
+python main_atari.py --env **ENVIRONMENT** --bhx_train --bhx_size 64 --gru_size 32 --generate_max_steps 100
+```
+
+After it's done, the model and plots will be saved here:
+```bash
+results/Atari/**ENVIRONMENT**/gru_32_bhx_64/
+```
+
+Now, it's time to test the new model that was trained using the QBNs(BHX net). Run the following command:
+```bash
+python main_atari.py --env **ENVIRONMENT** --bhx_test --bhx_size 64 --gru_size 32 --generate_max_steps 100
+```
+
+Now, the observation QBN should be trained. To do this, the following command should be run to train the Bottleneck Observation State(OX) net:
+```bash
+python main_atari.py --env **ENVIRONMENT** --ox_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+```
+
+After it's done, the model and plots will be saved here:
+```bash
+results/Atari/**ENVIRONMENT**/gru_32_ox_100/
+```
+
+When the OX net is trained, it can be tested. Run the following command to do so:
+```bash
+python main_atari.py --env **ENVIRONMENT** --ox_test --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+```
+
+Having the QBNs, it's time to fine-tune the RNN(**GRU**) model based on them. Following command would do that:
+```bash
+python main_atari.py --env **ENVIRONMENT** --bgru_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+```
+
+When the fine-tuning is done, model and plots will be saved here:
+```bash
+results/Atari/**ENVIRONMENT**/gru_32_hx_(64,100)_bgru
+```
+
+In this step the trained model in previous step is going to be tested by the following command:
+```bash
+python main_atari.py --env **ENVIRONMENT** --bgru_test --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
+```
+
+Congrats, you've made it so far :). It is the final step. Here the final results will be converted into a finite state machine explanation text file. Run the following command for that:
+```bash
+python main_atari.py --env **ENVIRONMENT** --generate_fsm --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
+```
+
+And the FSM explanation files will be saved as text files here:
+
+```bash
+results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru/
+```
+In this directory two most important, files containing the observation space and hidden state space beبore minimization(in the file named as: "fsm.txt") and after minimization(in the file named as: "minimized_moore_machine.txt")
+
+
+
+
 ### Using pretrained models
 For results to be easily reproducible, previously trained GRU models on different environments have been provided. You can simply use them to train new QBNs and reproduce the results presented in the paper. Models are accessible through this directory: ```results/Atari/```. The GRU cell size can be determined from the models' path, e.i. if a model is saved in a folder named as ```gru_32```, then the GRU cell size is 32. 
 Having the pretrained GRU model, you can go to [how to run the code step by step](#step-by-step-manual) to start training the QBNs.
 
-### A summary of results
+## A summary of results
 Presenting the Mode Counter Environments(MCE) results, number of states and observations of the MMs extracted from the MMNs both before and after minimization. Moore Machine extraction for MCE(table 1 in paper):
 
 |   Game	|   B<sub>h</sub>, B<sub>f</sub>    |   Fine-Tuning Score |  Before Minimization	|   After Minization    |
@@ -96,69 +250,4 @@ More experiments on control tasks have been done. Results are presented in the f
 
 
 
-### Code walk-through
-To run the code, there are several parameters that should be set. Below is a list of them:
->generate_bn_data: used to generate data for QBNs training and testing\
-generate_max_steps: Maximum number of steps to be used for data generation\
-gru_size: number of GRU cells\
-bhx_size: size of the hidden state space QBN\
-ox_size: size of the observation space QBN\
-train_epochs: number of training episodes\
-bhx_train: use it if you want to train the BHX net\
-bhx_test: use it if you want to test the BHX net\
-ox_train: use it if you want to train the OX net\
-ox_test: use it if you want to test the OX net\
-bgru_train: use it if you want to finetune the GRU net using the QBNs\
-bgru_test: use it if you want to test the finetuned GRU net using the QBNs\
-generate_fsm: use it if you want to generate the minimized FSM\
-evaluate_fsm: use it if you want to evaluate the minimized FSM
->
 
-By having the proper set of parameters, now you can run the ```main_atari.py``` code to start the process. For a step by step manual click [here](#step-by-step-manual).
-
-### Step by step manual
-In the first step, the given model should be tested to see if it gets relatively good results or not. This command is to be used to test how the model performs during the test:
-<br/>```python main_atari.py --env **ENVIRONMENT** --gru_test --gru_size 32```
-
-Before training the QBNs, the discrete data should be generated. This means that quantizing the continuous data into a discrete form. This can be done by the following command:
-<br/>```python main_atari.py --env **ENVIRONMENT** --generate_bn_data --gru_size 32 --generate_max_steps 100```
-
-Now, the hidden state QBN should be trained based on the previously trained RNN(**GRU**) model and using the data generated in the last step. To do this, the following command should be run to train the Bottleneck Hidden State(BHX) net:
-<br/>```python main_atari.py --env **ENVIRONMENT** --bhx_train --bhx_size 64 --gru_size 32 --generate_max_steps 100```
-
-After it's done, the model and plots will be saved here:
-<br/>```results/Atari/**ENVIRONMENT**/gru_32_bhx_64/```
-
-Now, it's time to test the new model that was trained using the QBNs(BHX net). Run the following command:
-<br/>```python main_atari.py --env **ENVIRONMENT** --bhx_test --bhx_size 64 --gru_size 32 --generate_max_steps 100```
-
-Now, the observation QBN should be trained. To do this, the following command should be run to train the Bottleneck Observation State(OX) net:
-<br/>```python main_atari.py --env **ENVIRONMENT** --ox_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100```
-
-After it's done, the model and plots will be saved here:
-<br/>```results/Atari/**ENVIRONMENT**/gru_32_ox_100/```
-
-When the OX net is trained, it can be tested. Run the following command to do so:
-<br/>```python main_atari.py --env **ENVIRONMENT** --ox_test --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100```
-
-Having the QBNs, it's time to fine-tune the RNN(**GRU**) model based on them. Following command would do that:
-<br/>```python main_atari.py --env **ENVIRONMENT** --bgru_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100```
-
-When the fine-tuning is done, model and plots will be saved here:
-<br/>```results/Atari/**ENVIRONMENT**/gru_32_hx_(64,100)_bgru```
-
-In this step the trained model in previous step is going to be tested by the following command:
-<br/>```python main_atari.py --env **ENVIRONMENT** --bgru_test --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100```
-
-Congrats, you've made it so far :). It is the final step. Here the final results will be converted into a finite state machine explanation text file. Run the following command for that:
-<br/>```python main_atari.py --env **ENVIRONMENT** --generate_fsm --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100```
-
-And the FSM explanation files will be saved as text files here:
-<br/>```results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru/```
-<br/>In this directory two most important, files containing the observation space and hidden state space beبore minimization(in the file named as: "fsm.txt") and after minimization(in the file named as: "minimized_moore_machine.txt")
-
-
-### Use prepared scripts
-
-Instead of going through the step by step manual described above, one can use the prepared scripts. This script starts from testing a given GRU model on a defined environment and ends by generating the FSM. One can do this by simply running:
-<br/>```sh run_atari.sh``` 
