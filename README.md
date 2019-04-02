@@ -188,161 +188,161 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
     <th colspan="3">After Minimization</th>
   </tr>
   <tr>
-    <td>Before(%)</td>
-    <td>After(%)</td>
-    <td>|H|</td>
-    <td>|O|</td>
-    <td>Acc(%)</td>
-    <td>|H|</td>
-    <td>|O|</td>
-    <td>Acc(%)</td>
+    <td align="center">Before(%)</td>
+    <td align="center">After(%)</td>
+    <td align="center">|H|</td>
+    <td align="center">|O|</td>
+    <td align="center">Acc(%)</td>
+    <td align="center">|H|</td>
+    <td align="center">|O|</td>
+    <td align="center">Acc(%)</td>
   </tr>
   <tr>
     <td rowspan="4">Amnesia</td>
-    <td>4</td>
-    <td>4</td>
-    <td>98</td>
-    <td>100</td>
-    <td>7</td>
-    <td>5</td>
-    <td>100</td>
-    <td>4</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">4</td>
+    <td align="center">4</td>
+    <td align="center">98</td>
+    <td align="center">100</td>
+    <td align="center">7</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
+    <td align="center">4</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>4</td>
-    <td>8</td>
-    <td>99</td>
-    <td>100</td>
-    <td>7</td>
-    <td>7</td>
-    <td>100</td>
-    <td>4</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">4</td>
+    <td align="center">8</td>
+    <td align="center">99</td>
+    <td align="center">100</td>
+    <td align="center">7</td>
+    <td align="center">7</td>
+    <td align="center">100</td>
+    <td align="center">4</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>8</td>
-    <td>4</td>
-    <td>100</td>
-    <td>-</td>
-    <td>6</td>
-    <td>5</td>
-    <td>100</td>
-    <td>4</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">8</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">6</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
+    <td align="center">4</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>8</td>
-    <td>8</td>
-    <td>99</td>
-    <td>100</td>
-    <td>7</td>
-    <td>7</td>
-    <td>100</td>
-    <td>4</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">8</td>
+    <td align="center">8</td>
+    <td align="center">99</td>
+    <td align="center">100</td>
+    <td align="center">7</td>
+    <td align="center">7</td>
+    <td align="center">100</td>
+    <td align="center">4</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
     <td rowspan="4">Blind</td>
-    <td>4</td>
-    <td>4</td>
-    <td>100</td>
-    <td>-</td>
-    <td>12</td>
-    <td>6</td>
-    <td>100</td>
-    <td>10</td>
-    <td>1</td>
-    <td>100</td>
+    <td align="center">4</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">12</td>
+    <td align="center">6</td>
+    <td align="center">100</td>
+    <td align="center">10</td>
+    <td align="center">1</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>4</td>
-    <td>8</td>
-    <td>100</td>
-    <td>-</td>
-    <td>12</td>
-    <td>8</td>
-    <td>100</td>
-    <td>10</td>
-    <td>1</td>
-    <td>100</td>
+    <td align="center">4</td>
+    <td align="center">8</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">12</td>
+    <td align="center">8</td>
+    <td align="center">100</td>
+    <td align="center">10</td>
+    <td align="center">1</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>8</td>
-    <td>4</td>
-    <td>100</td>
-    <td>-</td>
-    <td>5</td>
-    <td>6</td>
-    <td>100</td>
-    <td>10</td>
-    <td>1</td>
-    <td>100</td>
+    <td align="center">8</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">5</td>
+    <td align="center">6</td>
+    <td align="center">100</td>
+    <td align="center">10</td>
+    <td align="center">1</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>8</td>
-    <td>8</td>
-    <td>78</td>
-    <td>100</td>
-    <td>13</td>
-    <td>8</td>
-    <td>100</td>
-    <td>10</td>
-    <td>1</td>
-    <td>100</td>
+    <td align="center">8</td>
+    <td align="center">8</td>
+    <td align="center">78</td>
+    <td align="center">100</td>
+    <td align="center">13</td>
+    <td align="center">8</td>
+    <td align="center">100</td>
+    <td align="center">10</td>
+    <td align="center">1</td>
+    <td align="center">100</td>
   </tr>
   <tr>
     <td rowspan="4">Tracker</td>
-    <td>4</td>
-    <td>4</td>
-    <td>98</td>
-    <td>98</td>
-    <td>58</td>
-    <td>5</td>
-    <td>98</td>
-    <td>50</td>
-    <td>4</td>
-    <td>98</td>
+    <td align="center">4</td>
+    <td align="center">4</td>
+    <td align="center">98</td>
+    <td align="center">98</td>
+    <td align="center">58</td>
+    <td align="center">5</td>
+    <td align="center">98</td>
+    <td align="center">50</td>
+    <td align="center">4</td>
+    <td align="center">98</td>
   </tr>
   <tr>
-    <td>4</td>
-    <td>8</td>
-    <td>99</td>
-    <td>100</td>
-    <td>23</td>
-    <td>5</td>
-    <td>100</td>
-    <td>10</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">4</td>
+    <td align="center">8</td>
+    <td align="center">99</td>
+    <td align="center">100</td>
+    <td align="center">23</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
+    <td align="center">10</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>8</td>
-    <td>4</td>
-    <td>98</td>
-    <td>100</td>
-    <td>91</td>
-    <td>5</td>
-    <td>100</td>
-    <td>10</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">8</td>
+    <td align="center">4</td>
+    <td align="center">98</td>
+    <td align="center">100</td>
+    <td align="center">91</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
+    <td align="center">10</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>8</td>
-    <td>8</td>
-    <td>99</td>
-    <td>100</td>
-    <td>85</td>
-    <td>5</td>
-    <td>100</td>
-    <td>10</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">8</td>
+    <td align="center">8</td>
+    <td align="center">99</td>
+    <td align="center">100</td>
+    <td align="center">85</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
+    <td align="center">10</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
 </table>
 
@@ -359,159 +359,159 @@ The below table presents the test results for the trained RNNs giving the accura
     <th colspan="2">After Minimization</th>
   </tr>
   <tr>
-    <td>Before(%)</td>
-    <td>After(%)</td>
-    <td>|H|</td>
-    <td>Acc(%)</td>
-    <td>|H|</td>
-    <td>Acc(%)</td>
+    <td align="center">Before(%)</td>
+    <td align="center">After(%)</td>
+    <td align="center">|H|</td>
+    <td align="center">Acc(%)</td>
+    <td align="center">|H|</td>
+    <td align="center">Acc(%)</td>
   </tr>
   <tr>
     <td rowspan="2">1</td>
-    <td>100</td>
-    <td>8</td>
-    <td>100</td>
-    <td>-</td>
-    <td>13</td>
-    <td>100</td>
-    <td>2</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">8</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">13</td>
+    <td align="center">100</td>
+    <td align="center">2</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>100</td>
-    <td>16</td>
-    <td>100</td>
-    <td>-</td>
-    <td>28</td>
-    <td>100</td>
-    <td>2</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">16</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">28</td>
+    <td align="center">100</td>
+    <td align="center">2</td>
+    <td align="center">100</td>
   </tr>
   <tr>
     <td rowspan="2">2</td>
-    <td>100</td>
-    <td>8</td>
-    <td>100</td>
-    <td>-</td>
-    <td>13</td>
-    <td>100</td>
-    <td>3</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">8</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">13</td>
+    <td align="center">100</td>
+    <td align="center">3</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>100</td>
-    <td>16</td>
-    <td>100</td>
-    <td>-</td>
-    <td>14</td>
-    <td>100</td>
-    <td>3</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">16</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">14</td>
+    <td align="center">100</td>
+    <td align="center">3</td>
+    <td align="center">100</td>
   </tr>
   <tr>
     <td rowspan="2">3</td>
-    <td>100</td>
-    <td>8</td>
-    <td>100</td>
-    <td>-</td>
-    <td>34</td>
-    <td>100</td>
-    <td>5</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">8</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">34</td>
+    <td align="center">100</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>100</td>
-    <td>16</td>
-    <td>100</td>
-    <td>-</td>
-    <td>39</td>
-    <td>100</td>
-    <td>5</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">16</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">39</td>
+    <td align="center">100</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
   </tr>
   <tr>
     <td rowspan="2">4</td>
-    <td>100</td>
-    <td>8</td>
-    <td>100</td>
-    <td>-</td>
-    <td>17</td>
-    <td>100</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">8</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">17</td>
+    <td align="center">100</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>100</td>
-    <td>16</td>
-    <td>100</td>
-    <td>-</td>
-    <td>18</td>
-    <td>100</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">16</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">18</td>
+    <td align="center">100</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
     <td rowspan="2">5</td>
-    <td>100</td>
-    <td>8</td>
-    <td>95</td>
-    <td>96</td>
-    <td>192</td>
-    <td>96</td>
-    <td>115</td>
-    <td>96</td>
+    <td align="center">100</td>
+    <td align="center">8</td>
+    <td align="center">95</td>
+    <td align="center">96</td>
+    <td align="center">192</td>
+    <td align="center">96</td>
+    <td align="center">115</td>
+    <td align="center">96</td>
   </tr>
   <tr>
-    <td>100</td>
-    <td>16</td>
-    <td>100</td>
-    <td>-</td>
-    <td>316</td>
-    <td>100</td>
-    <td>4</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">16</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">316</td>
+    <td align="center">100</td>
+    <td align="center">4</td>
+    <td align="center">100</td>
   </tr>
   <tr>
     <td rowspan="2">6</td>
-    <td>99</td>
-    <td>8</td>
-    <td>98</td>
-    <td>98</td>
-    <td>100</td>
-    <td>98</td>
-    <td>12</td>
-    <td>98</td>
+    <td align="center">99</td>
+    <td align="center">8</td>
+    <td align="center">98</td>
+    <td align="center">98</td>
+    <td align="center">100</td>
+    <td align="center">98</td>
+    <td align="center">12</td>
+    <td align="center">98</td>
   </tr>
   <tr>
-    <td>99</td>
-    <td>16</td>
-    <td>99</td>
-    <td>99</td>
-    <td>518</td>
-    <td>99</td>
-    <td>11</td>
-    <td>99</td>
+    <td align="center">99</td>
+    <td align="center">16</td>
+    <td align="center">99</td>
+    <td align="center">99</td>
+    <td align="center">518</td>
+    <td align="center">99</td>
+    <td align="center">11</td>
+    <td align="center">99</td>
   </tr>
   <tr>
     <td rowspan="2">7</td>
-    <td>100</td>
-    <td>8</td>
-    <td>100</td>
-    <td>-</td>
-    <td>25</td>
-    <td>100</td>
-    <td>5</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">8</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">25</td>
+    <td align="center">100</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>100</td>
-    <td>16</td>
-    <td>100</td>
-    <td>-</td>
-    <td>107</td>
-    <td>100</td>
-    <td>5</td>
-    <td>100</td>
+    <td align="center">100</td>
+    <td align="center">16</td>
+    <td align="center">100</td>
+    <td align="center">-</td>
+    <td align="center">107</td>
+    <td align="center">100</td>
+    <td align="center">5</td>
+    <td align="center">100</td>
   </tr>
 </table>
 
@@ -527,44 +527,44 @@ More experiments on control tasks have been done. Results are presented in the f
     <th colspan="3">After Minimization</th>
   </tr>
   <tr>
-    <td>|H|</td>
-    <td>|O|</td>
-    <td>Score</td>
-    <td>|H|</td>
-    <td>|O|</td>
-    <td>Score</td>
+    <td align="center">|H|</td>
+    <td align="center">|O|</td>
+    <td align="center">Score</td>
+    <td align="center">|H|</td>
+    <td align="center">|O|</td>
+    <td align="center">Score</td>
   </tr>
   <tr>
-    <td>Cart Pole(2)</td>
-    <td>8</td>
-    <td>8</td>
-    <td>10</td>
-    <td>27</td>
-    <td>500</td>
-    <td>5</td>
-    <td>25</td>
-    <td>500</td>
+    <td align="center">Cart Pole(2)</td>
+    <td align="center">8</td>
+    <td align="center">8</td>
+    <td align="center">10</td>
+    <td align="center">27</td>
+    <td align="center">500</td>
+    <td align="center">5</td>
+    <td align="center">25</td>
+    <td align="center">500</td>
   </tr>
   <tr>
     <td rowspan="2">Lunar Lander(4)</td>
-    <td>128</td>
-    <td>100</td>
-    <td>2550</td>
-    <td>2197</td>
-    <td>172</td>
-    <td>75</td>
-    <td>77</td>
-    <td>134</td>
+    <td align="center">128</td>
+    <td align="center">100</td>
+    <td align="center">2550</td>
+    <td align="center">2197</td>
+    <td align="center">172</td>
+    <td align="center">75</td>
+    <td align="center">77</td>
+    <td align="center">134</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>400</td>
-    <td>2194</td>
-    <td>1996</td>
-    <td>201</td>
-    <td>27</td>
-    <td>37</td>
-    <td>205</td>
+    <td align="center">128</td>
+    <td align="center">400</td>
+    <td align="center">2194</td>
+    <td align="center">1996</td>
+    <td align="center">201</td>
+    <td align="center">27</td>
+    <td align="center">37</td>
+    <td align="center">205</td>
   </tr>
 </table>
 
@@ -582,327 +582,327 @@ More experiments on control tasks have been done. Results are presented in the f
     <th colspan="3">After Minimization</th>
   </tr>
   <tr>
-    <td>Before</td>
-    <td>After</td>
-    <td>|H|</td>
-    <td>|O|</td>
-    <td>Score</td>
-    <td>|H|</td>
-    <td>|O|</td>
-    <td>Score</td>
+    <td align="center">Before</td>
+    <td align="center">After</td>
+    <td align="center">|H|</td>
+    <td align="center">|O|</td>
+    <td align="center">Score</td>
+    <td align="center">|H|</td>
+    <td align="center">|O|</td>
+    <td align="center">Score</td>
   </tr>
   <tr>
     <td rowspan="4">Pong(3)</td>
     <td rowspan="4">21</td>
-    <td>64</td>
-    <td>100</td>
-    <td>20</td>
-    <td>21</td>
-    <td>380</td>
-    <td>374</td>
-    <td>21</td>
-    <td>4</td>
-    <td>12</td>
-    <td>21</td>
+    <td align="center">64</td>
+    <td align="center">100</td>
+    <td align="center">20</td>
+    <td align="center">21</td>
+    <td align="center">380</td>
+    <td align="center">374</td>
+    <td align="center">21</td>
+    <td align="center">4</td>
+    <td align="center">12</td>
+    <td align="center">21</td>
   </tr>
   <tr>
-    <td>64</td>
-    <td>400</td>
-    <td>20</td>
-    <td>21</td>
-    <td>373</td>
-    <td>372</td>
-    <td>21</td>
-    <td>3</td>
-    <td>10</td>
-    <td>21</td>
+    <td align="center">64</td>
+    <td align="center">400</td>
+    <td align="center">20</td>
+    <td align="center">21</td>
+    <td align="center">373</td>
+    <td align="center">372</td>
+    <td align="center">21</td>
+    <td align="center">3</td>
+    <td align="center">10</td>
+    <td align="center">21</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>100</td>
-    <td>20</td>
-    <td>21</td>
-    <td>383</td>
-    <td>373</td>
-    <td>21</td>
-    <td>3</td>
-    <td>12</td>
-    <td>21</td>
+    <td align="center">128</td>
+    <td align="center">100</td>
+    <td align="center">20</td>
+    <td align="center">21</td>
+    <td align="center">383</td>
+    <td align="center">373</td>
+    <td align="center">21</td>
+    <td align="center">3</td>
+    <td align="center">12</td>
+    <td align="center">21</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>400</td>
-    <td>20</td>
-    <td>21</td>
-    <td>379</td>
-    <td>371</td>
-    <td>21</td>
-    <td>3</td>
-    <td>11</td>
-    <td>21</td>
+    <td align="center">128</td>
+    <td align="center">400</td>
+    <td align="center">20</td>
+    <td align="center">21</td>
+    <td align="center">379</td>
+    <td align="center">371</td>
+    <td align="center">21</td>
+    <td align="center">3</td>
+    <td align="center">11</td>
+    <td align="center">21</td>
   </tr>
   <tr>
     <td rowspan="4">Freeway(3)</td>
     <td rowspan="4">21</td>
-    <td>64</td>
-    <td>100</td>
-    <td>21</td>
-    <td>-</td>
-    <td>1</td>
-    <td>1</td>
-    <td>21</td>
-    <td>1</td>
-    <td>1</td>
-    <td>21</td>
+    <td align="center">64</td>
+    <td align="center">100</td>
+    <td align="center">21</td>
+    <td align="center">-</td>
+    <td align="center">1</td>
+    <td align="center">1</td>
+    <td align="center">21</td>
+    <td align="center">1</td>
+    <td align="center">1</td>
+    <td align="center">21</td>
   </tr>
   <tr>
-    <td>64</td>
-    <td>400</td>
-    <td>21</td>
-    <td>-</td>
-    <td>1</td>
-    <td>1</td>
-    <td>21</td>
-    <td>1</td>
-    <td>1</td>
-    <td>21</td>
+    <td align="center">64</td>
+    <td align="center">400</td>
+    <td align="center">21</td>
+    <td align="center">-</td>
+    <td align="center">1</td>
+    <td align="center">1</td>
+    <td align="center">21</td>
+    <td align="center">1</td>
+    <td align="center">1</td>
+    <td align="center">21</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>100</td>
-    <td>21</td>
-    <td>-</td>
-    <td>1</td>
-    <td>1</td>
-    <td>21</td>
-    <td>1</td>
-    <td>1</td>
-    <td>21</td>
+    <td align="center">128</td>
+    <td align="center">100</td>
+    <td align="center">21</td>
+    <td align="center">-</td>
+    <td align="center">1</td>
+    <td align="center">1</td>
+    <td align="center">21</td>
+    <td align="center">1</td>
+    <td align="center">1</td>
+    <td align="center">21</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>400</td>
-    <td>21</td>
-    <td>-</td>
-    <td>1</td>
-    <td>1</td>
-    <td>21</td>
-    <td>1</td>
-    <td>1</td>
-    <td>21</td>
+    <td align="center">128</td>
+    <td align="center">400</td>
+    <td align="center">21</td>
+    <td align="center">-</td>
+    <td align="center">1</td>
+    <td align="center">1</td>
+    <td align="center">21</td>
+    <td align="center">1</td>
+    <td align="center">1</td>
+    <td align="center">21</td>
   </tr>
   <tr>
     <td rowspan="4">Breakout(4)</td>
     <td rowspan="4">773</td>
-    <td>64</td>
-    <td>100</td>
-    <td>32</td>
-    <td>423</td>
-    <td>1898</td>
-    <td>1874</td>
-    <td>423</td>
-    <td>8</td>
-    <td>30</td>
-    <td>423</td>
+    <td align="center">64</td>
+    <td align="center">100</td>
+    <td align="center">32</td>
+    <td align="center">423</td>
+    <td align="center">1898</td>
+    <td align="center">1874</td>
+    <td align="center">423</td>
+    <td align="center">8</td>
+    <td align="center">30</td>
+    <td align="center">423</td>
   </tr>
   <tr>
-    <td>64</td>
-    <td>400</td>
-    <td>25</td>
-    <td>415</td>
-    <td>1888</td>
-    <td>1871</td>
-    <td>415</td>
-    <td>8</td>
-    <td>30</td>
-    <td>415</td>
+    <td align="center">64</td>
+    <td align="center">400</td>
+    <td align="center">25</td>
+    <td align="center">415</td>
+    <td align="center">1888</td>
+    <td align="center">1871</td>
+    <td align="center">415</td>
+    <td align="center">8</td>
+    <td align="center">30</td>
+    <td align="center">415</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>100</td>
-    <td>41</td>
-    <td>377</td>
-    <td>1583</td>
-    <td>1514</td>
-    <td>377</td>
-    <td>11</td>
-    <td>27</td>
-    <td>377</td>
+    <td align="center">128</td>
+    <td align="center">100</td>
+    <td align="center">41</td>
+    <td align="center">377</td>
+    <td align="center">1583</td>
+    <td align="center">1514</td>
+    <td align="center">377</td>
+    <td align="center">11</td>
+    <td align="center">27</td>
+    <td align="center">377</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>400</td>
-    <td>85</td>
-    <td>379</td>
-    <td>1729</td>
-    <td>1769</td>
-    <td>379</td>
-    <td>8</td>
-    <td>30</td>
-    <td>379</td>
+    <td align="center">128</td>
+    <td align="center">400</td>
+    <td align="center">85</td>
+    <td align="center">379</td>
+    <td align="center">1729</td>
+    <td align="center">1769</td>
+    <td align="center">379</td>
+    <td align="center">8</td>
+    <td align="center">30</td>
+    <td align="center">379</td>
   </tr>
   <tr>
     <td rowspan="4">Space Invaders(4)</td>
     <td rowspan="4">1820</td>
-    <td>64</td>
-    <td>100</td>
-    <td>520</td>
-    <td>1335</td>
-    <td>1495</td>
-    <td>1502</td>
-    <td>1335</td>
-    <td>8</td>
-    <td>29</td>
-    <td>1335</td>
+    <td align="center">64</td>
+    <td align="center">100</td>
+    <td align="center">520</td>
+    <td align="center">1335</td>
+    <td align="center">1495</td>
+    <td align="center">1502</td>
+    <td align="center">1335</td>
+    <td align="center">8</td>
+    <td align="center">29</td>
+    <td align="center">1335</td>
   </tr>
   <tr>
-    <td>64</td>
-    <td>400</td>
-    <td>365</td>
-    <td>1235</td>
-    <td>1625</td>
-    <td>1620</td>
-    <td>1235</td>
-    <td>12</td>
-    <td>29</td>
-    <td>1235</td>
+    <td align="center">64</td>
+    <td align="center">400</td>
+    <td align="center">365</td>
+    <td align="center">1235</td>
+    <td align="center">1625</td>
+    <td align="center">1620</td>
+    <td align="center">1235</td>
+    <td align="center">12</td>
+    <td align="center">29</td>
+    <td align="center">1235</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>100</td>
-    <td>390</td>
-    <td>1040</td>
-    <td>1563</td>
-    <td>1457</td>
-    <td>1040</td>
-    <td>12</td>
-    <td>35</td>
-    <td>1040</td>
+    <td align="center">128</td>
+    <td align="center">100</td>
+    <td align="center">390</td>
+    <td align="center">1040</td>
+    <td align="center">1563</td>
+    <td align="center">1457</td>
+    <td align="center">1040</td>
+    <td align="center">12</td>
+    <td align="center">35</td>
+    <td align="center">1040</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>400</td>
-    <td>520</td>
-    <td>1430</td>
-    <td>1931</td>
-    <td>1921</td>
-    <td>1430</td>
-    <td>6</td>
-    <td>27</td>
-    <td>1430</td>
+    <td align="center">128</td>
+    <td align="center">400</td>
+    <td align="center">520</td>
+    <td align="center">1430</td>
+    <td align="center">1931</td>
+    <td align="center">1921</td>
+    <td align="center">1430</td>
+    <td align="center">6</td>
+    <td align="center">27</td>
+    <td align="center">1430</td>
   </tr>
   <tr>
     <td rowspan="4">Bowling(6)</td>
     <td rowspan="4">60</td>
-    <td>64</td>
-    <td>100</td>
-    <td>60</td>
-    <td>-</td>
-    <td>49</td>
-    <td>1</td>
-    <td>60</td>
-    <td>33</td>
-    <td>1</td>
-    <td>60</td>
+    <td align="center">64</td>
+    <td align="center">100</td>
+    <td align="center">60</td>
+    <td align="center">-</td>
+    <td align="center">49</td>
+    <td align="center">1</td>
+    <td align="center">60</td>
+    <td align="center">33</td>
+    <td align="center">1</td>
+    <td align="center">60</td>
   </tr>
   <tr>
-    <td>64</td>
-    <td>400</td>
-    <td>60</td>
-    <td>-</td>
-    <td>49</td>
-    <td>1</td>
-    <td>60</td>
-    <td>33</td>
-    <td>1</td>
-    <td>60</td>
+    <td align="center">64</td>
+    <td align="center">400</td>
+    <td align="center">60</td>
+    <td align="center">-</td>
+    <td align="center">49</td>
+    <td align="center">1</td>
+    <td align="center">60</td>
+    <td align="center">33</td>
+    <td align="center">1</td>
+    <td align="center">60</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>100</td>
-    <td>60</td>
-    <td>-</td>
-    <td>26</td>
-    <td>1</td>
-    <td>60</td>
-    <td>24</td>
-    <td>1</td>
-    <td>60</td>
+    <td align="center">128</td>
+    <td align="center">100</td>
+    <td align="center">60</td>
+    <td align="center">-</td>
+    <td align="center">26</td>
+    <td align="center">1</td>
+    <td align="center">60</td>
+    <td align="center">24</td>
+    <td align="center">1</td>
+    <td align="center">60</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>400</td>
-    <td>60</td>
-    <td>-</td>
-    <td>26</td>
-    <td>1</td>
-    <td>60</td>
-    <td>24</td>
-    <td>1</td>
-    <td>60</td>
+    <td align="center">128</td>
+    <td align="center">400</td>
+    <td align="center">60</td>
+    <td align="center">-</td>
+    <td align="center">26</td>
+    <td align="center">1</td>
+    <td align="center">60</td>
+    <td align="center">24</td>
+    <td align="center">1</td>
+    <td align="center">60</td>
   </tr>
   <tr>
     <td rowspan="4">Boxing(18)</td>
     <td rowspan="4">100</td>
-    <td>64</td>
-    <td>100</td>
-    <td>94</td>
-    <td>100</td>
-    <td>1173</td>
-    <td>1167</td>
-    <td>100</td>
-    <td>13</td>
-    <td>79</td>
-    <td>100</td>
+    <td align="center">64</td>
+    <td align="center">100</td>
+    <td align="center">94</td>
+    <td align="center">100</td>
+    <td align="center">1173</td>
+    <td align="center">1167</td>
+    <td align="center">100</td>
+    <td align="center">13</td>
+    <td align="center">79</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>64</td>
-    <td>400</td>
-    <td>98</td>
-    <td>100</td>
-    <td>2621</td>
-    <td>2605</td>
-    <td>100</td>
-    <td>14</td>
-    <td>119</td>
-    <td>100</td>
+    <td align="center">64</td>
+    <td align="center">400</td>
+    <td align="center">98</td>
+    <td align="center">100</td>
+    <td align="center">2621</td>
+    <td align="center">2605</td>
+    <td align="center">100</td>
+    <td align="center">14</td>
+    <td align="center">119</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>100</td>
-    <td>94</td>
-    <td>97</td>
-    <td>2499</td>
-    <td>2482</td>
-    <td>97</td>
-    <td>14</td>
-    <td>106</td>
-    <td>97</td>
+    <td align="center">128</td>
+    <td align="center">100</td>
+    <td align="center">94</td>
+    <td align="center">97</td>
+    <td align="center">2499</td>
+    <td align="center">2482</td>
+    <td align="center">97</td>
+    <td align="center">14</td>
+    <td align="center">106</td>
+    <td align="center">97</td>
   </tr>
   <tr>
-    <td>128</td>
-    <td>400</td>
-    <td>97</td>
-    <td>100</td>
-    <td>1173</td>
-    <td>1169</td>
-    <td>100</td>
-    <td>14</td>
-    <td>88</td>
-    <td>100</td>
+    <td align="center">128</td>
+    <td align="center">400</td>
+    <td align="center">97</td>
+    <td align="center">100</td>
+    <td align="center">1173</td>
+    <td align="center">1169</td>
+    <td align="center">100</td>
+    <td align="center">14</td>
+    <td align="center">88</td>
+    <td align="center">100</td>
   </tr>
   <tr>
-    <td>Chopper Command(18)</td>
-    <td>5300</td>
-    <td>64</td>
-    <td>100</td>
-    <td></td>
-    <td>4000</td>
-    <td>3710</td>
-    <td>3731</td>
-    <td>4000</td>
-    <td>38</td>
-    <td>182</td>
-    <td>1890</td>
+    <td align="center">Chopper Command(18)</td>
+    <td align="center">5300</td>
+    <td align="center">64</td>
+    <td align="center">100</td>
+    <td align="center"></td>
+    <td align="center">4000</td>
+    <td align="center">3710</td>
+    <td align="center">3731</td>
+    <td align="center">4000</td>
+    <td align="center">38</td>
+    <td align="center">182</td>
+    <td align="center">1890</td>
   </tr>
 </table>
