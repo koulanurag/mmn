@@ -180,12 +180,12 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
 
 <table>
   <tr>
-    <th rowspan="2">Game</th>
-    <th rowspan="2">Bh</th>
-    <th rowspan="2">Bf</th>
-    <th colspan="2">Fine-Tuning Score</th>
-    <th colspan="3">Before Minimization</th>
-    <th colspan="3">After Minimization</th>
+    <th align="center" rowspan="2">Game</th>
+    <th align="center" rowspan="2">Bh</th>
+    <th align="center" rowspan="2">Bf</th>
+    <th align="center" colspan="2">Fine-Tuning Score</th>
+    <th align="center" colspan="3">Before Minimization</th>
+    <th align="center" colspan="3">After Minimization</th>
   </tr>
   <tr>
     <td align="center">Before(%)</td>
@@ -198,7 +198,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
     <td align="center">Acc(%)</td>
   </tr>
   <tr>
-    <td rowspan="4">Amnesia</td>
+    <td align="center" rowspan="4">Amnesia</td>
     <td align="center">4</td>
     <td align="center">4</td>
     <td align="center">98</td>
@@ -247,7 +247,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
     <td align="center">100</td>
   </tr>
   <tr>
-    <td rowspan="4">Blind</td>
+    <td align="center" rowspan="4">Blind</td>
     <td align="center">4</td>
     <td align="center">4</td>
     <td align="center">100</td>
@@ -351,12 +351,12 @@ The below table presents the test results for the trained RNNs giving the accura
 
 <table>
   <tr>
-    <th rowspan="2">Grammar</th>
-    <th rowspan="2">RNN Acc(%)</th>
-    <th rowspan="2">Bh</th>
-    <th colspan="2">Fine-Tuning Score</th>
-    <th colspan="2">Before Minimization</th>
-    <th colspan="2">After Minimization</th>
+    <th align="center" rowspan="2">Grammar</th>
+    <th align="center" rowspan="2">RNN Acc(%)</th>
+    <th align="center" rowspan="2">Bh</th>
+    <th align="center" colspan="2">Fine-Tuning Score</th>
+    <th align="center" colspan="2">Before Minimization</th>
+    <th align="center" colspan="2">After Minimization</th>
   </tr>
   <tr>
     <td align="center">Before(%)</td>
@@ -367,7 +367,7 @@ The below table presents the test results for the trained RNNs giving the accura
     <td align="center">Acc(%)</td>
   </tr>
   <tr>
-    <td rowspan="2">1</td>
+    <td align="center" rowspan="2">1</td>
     <td align="center">100</td>
     <td align="center">8</td>
     <td align="center">100</td>
@@ -388,7 +388,7 @@ The below table presents the test results for the trained RNNs giving the accura
     <td align="center">100</td>
   </tr>
   <tr>
-    <td rowspan="2">2</td>
+    <td align="center" rowspan="2">2</td>
     <td align="center">100</td>
     <td align="center">8</td>
     <td align="center">100</td>
@@ -409,7 +409,7 @@ The below table presents the test results for the trained RNNs giving the accura
     <td align="center">100</td>
   </tr>
   <tr>
-    <td rowspan="2">3</td>
+    <td align="center" rowspan="2">3</td>
     <td align="center">100</td>
     <td align="center">8</td>
     <td align="center">100</td>
@@ -430,7 +430,7 @@ The below table presents the test results for the trained RNNs giving the accura
     <td align="center">100</td>
   </tr>
   <tr>
-    <td rowspan="2">4</td>
+    <td align="center" rowspan="2">4</td>
     <td align="center">100</td>
     <td align="center">8</td>
     <td align="center">100</td>
@@ -451,7 +451,7 @@ The below table presents the test results for the trained RNNs giving the accura
     <td align="center">100</td>
   </tr>
   <tr>
-    <td rowspan="2">5</td>
+    <td align="center" rowspan="2">5</td>
     <td align="center">100</td>
     <td align="center">8</td>
     <td align="center">95</td>
@@ -472,7 +472,7 @@ The below table presents the test results for the trained RNNs giving the accura
     <td align="center">100</td>
   </tr>
   <tr>
-    <td rowspan="2">6</td>
+    <td align="center" rowspan="2">6</td>
     <td align="center">99</td>
     <td align="center">8</td>
     <td align="center">98</td>
@@ -493,7 +493,7 @@ The below table presents the test results for the trained RNNs giving the accura
     <td align="center">99</td>
   </tr>
   <tr>
-    <td rowspan="2">7</td>
+    <td align="center" rowspan="2">7</td>
     <td align="center">100</td>
     <td align="center">8</td>
     <td align="center">100</td>
@@ -520,11 +520,11 @@ More experiments on control tasks have been done. Results are presented in the f
 
 <table>
   <tr>
-    <th rowspan="2">Game(# of actions)</th>
-    <th rowspan="2">Bh</th>
-    <th rowspan="2">Bf</th>
-    <th colspan="3">Before Minimization</th>
-    <th colspan="3">After Minimization</th>
+    <th align="center" rowspan="2">Game(# of actions)</th>
+    <th align="center" rowspan="2">Bh</th>
+    <th align="center" rowspan="2">Bf</th>
+    <th align="center" colspan="3">Before Minimization</th>
+    <th align="center" colspan="3">After Minimization</th>
   </tr>
   <tr>
     <td align="center">|H|</td>
@@ -546,7 +546,7 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">500</td>
   </tr>
   <tr>
-    <td rowspan="2">Lunar Lander(4)</td>
+    <td align="center" rowspan="2">Lunar Lander(4)</td>
     <td align="center">128</td>
     <td align="center">100</td>
     <td align="center">2550</td>
@@ -573,13 +573,13 @@ More experiments on control tasks have been done. Results are presented in the f
 
 <table>
   <tr>
-    <th rowspan="2">Game(# of actions)</th>
-    <th rowspan="2">RNN(score)</th>
-    <th rowspan="2">Bh</th>
-    <th rowspan="2">Bf</th>
-    <th colspan="2">Fine-Tuning Score</th>
-    <th colspan="3">Before Minimization</th>
-    <th colspan="3">After Minimization</th>
+    <th align="center" rowspan="2">Game(# of actions)</th>
+    <th align="center" rowspan="2">RNN(score)</th>
+    <th align="center" rowspan="2">Bh</th>
+    <th align="center" rowspan="2">Bf</th>
+    <th align="center" colspan="2">Fine-Tuning Score</th>
+    <th align="center" colspan="3">Before Minimization</th>
+    <th align="center" colspan="3">After Minimization</th>
   </tr>
   <tr>
     <td align="center">Before</td>
@@ -592,8 +592,8 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">Score</td>
   </tr>
   <tr>
-    <td rowspan="4">Pong(3)</td>
-    <td rowspan="4">21</td>
+    <td align="center" rowspan="4">Pong(3)</td>
+    <td align="center" rowspan="4">21</td>
     <td align="center">64</td>
     <td align="center">100</td>
     <td align="center">20</td>
@@ -642,8 +642,8 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">21</td>
   </tr>
   <tr>
-    <td rowspan="4">Freeway(3)</td>
-    <td rowspan="4">21</td>
+    <td align="center" rowspan="4">Freeway(3)</td>
+    <td align="center" rowspan="4">21</td>
     <td align="center">64</td>
     <td align="center">100</td>
     <td align="center">21</td>
@@ -692,8 +692,8 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">21</td>
   </tr>
   <tr>
-    <td rowspan="4">Breakout(4)</td>
-    <td rowspan="4">773</td>
+    <td align="center" rowspan="4">Breakout(4)</td>
+    <td align="center" rowspan="4">773</td>
     <td align="center">64</td>
     <td align="center">100</td>
     <td align="center">32</td>
@@ -742,8 +742,8 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">379</td>
   </tr>
   <tr>
-    <td rowspan="4">Space Invaders(4)</td>
-    <td rowspan="4">1820</td>
+    <td align="center" rowspan="4">Space Invaders(4)</td>
+    <td align="center" rowspan="4">1820</td>
     <td align="center">64</td>
     <td align="center">100</td>
     <td align="center">520</td>
@@ -792,8 +792,8 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">1430</td>
   </tr>
   <tr>
-    <td rowspan="4">Bowling(6)</td>
-    <td rowspan="4">60</td>
+    <td align="center" rowspan="4">Bowling(6)</td>
+    <td align="center" rowspan="4">60</td>
     <td align="center">64</td>
     <td align="center">100</td>
     <td align="center">60</td>
@@ -842,8 +842,8 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">60</td>
   </tr>
   <tr>
-    <td rowspan="4">Boxing(18)</td>
-    <td rowspan="4">100</td>
+    <td align="center" rowspan="4">Boxing(18)</td>
+    <td align="center" rowspan="4">100</td>
     <td align="center">64</td>
     <td align="center">100</td>
     <td align="center">94</td>
