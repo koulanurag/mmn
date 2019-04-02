@@ -31,7 +31,7 @@ In this section, a guide on how to use the code is presented.
 
 ## Parameters
 To run the code, there are several parameters that should be set. Below is a list of them:
-```python
+```
 usage: main_atari.py [-h] [--generate_train_data] [--generate_bn_data]
                      [--generate_max_steps GENERATE_MAX_STEPS] [--gru_train]
                      [--gru_test] [--gru_size GRU_SIZE] [--gru_lr GRU_LR]
@@ -193,6 +193,180 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
 |   Tracker	|   4,8	|  0.99, 1 	|   23, 5, 1|   10, 4, 1|
 |   Tracker	|   8,4	|  0.98, 1 	|   91, 5, 1|   10, 4, 1|
 |  Tracker 	|   8,8	|  0.99, 1 	|   85, 5, 1|   10, 4, 1|
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+  <tr>
+    <th class="tg-0pky" rowspan="2">Game</th>
+    <th class="tg-0pky" colspan="2" rowspan="2">Bh, Bf</th>
+    <th class="tg-0pky" colspan="2">Fine-Tuning Score</th>
+    <th class="tg-0lax" colspan="3">Before Minimization</th>
+    <th class="tg-0lax" colspan="3">After Minimization</th>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Before(%)</td>
+    <td class="tg-0pky">After(%)</td>
+    <td class="tg-0lax">|H|</td>
+    <td class="tg-0lax">|O|</td>
+    <td class="tg-0lax">Acc(%)</td>
+    <td class="tg-0lax">|H|</td>
+    <td class="tg-0lax">|O|</td>
+    <td class="tg-0lax">Acc(%)</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky" rowspan="4">Amnesia</td>
+    <td class="tg-0pky">4</td>
+    <td class="tg-0pky">4</td>
+    <td class="tg-0pky">98</td>
+    <td class="tg-0pky">100</td>
+    <td class="tg-0lax">7</td>
+    <td class="tg-0lax">5</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">4</td>
+    <td class="tg-0pky">8</td>
+    <td class="tg-0pky">99</td>
+    <td class="tg-0pky">100</td>
+    <td class="tg-0lax">7</td>
+    <td class="tg-0lax">7</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">8</td>
+    <td class="tg-0pky">4</td>
+    <td class="tg-0pky">100</td>
+    <td class="tg-0pky">-</td>
+    <td class="tg-0lax">6</td>
+    <td class="tg-0lax">5</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">99</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">7</td>
+    <td class="tg-0lax">7</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax" rowspan="4">Blind</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">12</td>
+    <td class="tg-0lax">6</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">10</td>
+    <td class="tg-0lax">1</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">12</td>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">10</td>
+    <td class="tg-0lax">1</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">5</td>
+    <td class="tg-0lax">6</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">10</td>
+    <td class="tg-0lax">1</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">78</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">13</td>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">10</td>
+    <td class="tg-0lax">1</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax" rowspan="4">Tracker</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">98</td>
+    <td class="tg-0lax">98</td>
+    <td class="tg-0lax">58</td>
+    <td class="tg-0lax">5</td>
+    <td class="tg-0lax">98</td>
+    <td class="tg-0lax">50</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">98</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">99</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">23</td>
+    <td class="tg-0lax">5</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">10</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">98</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">91</td>
+    <td class="tg-0lax">5</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">10</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">8</td>
+    <td class="tg-0lax">99</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">85</td>
+    <td class="tg-0lax">5</td>
+    <td class="tg-0lax">100</td>
+    <td class="tg-0lax">10</td>
+    <td class="tg-0lax">4</td>
+    <td class="tg-0lax">100</td>
+  </tr>
+</table>
 
 
 The below table presents the test results for the trained RNNs giving the accuracy over a test set of 100 strings drawn from the same distribution as used for training. Moore Machine extraction for Tomita grammar(table 2 in paper):
