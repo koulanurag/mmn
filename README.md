@@ -1,5 +1,5 @@
 # Introduction
-In this document, a manual on how to work with the **[LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS](https://openreview.net/pdf?id=S1gOpsCctm)**'s code is described.
+In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described.
 Topics covered in this document:
 * [how to use the pretrained models](#using-pretrained-models)
 * [a summary of results](#a-summary-of-results)
@@ -7,7 +7,16 @@ Topics covered in this document:
 * [how to run the code step by step](#step-by-step-manual)
 * [how to run the code with the prepared script](#use-prepared-scripts)
 
-
+A paper for this work is available [here](https://openreview.net/pdf?id=S1gOpsCctm). Below is the BibTeX entry in case you want to cite it:
+```
+@inproceedings{koul2018learning,
+    title={Learning Finite State Representations of Recurrent Policy Networks},
+    author={Anurag Koul and Alan Fern and Sam Greydanus},
+    booktitle={International Conference on Learning Representations},
+    year={2019},
+    url={https://openreview.net/forum?id=S1gOpsCctm},
+}
+```
 ## Installation
 * Python 3.5+
 * Pytorch 0.4.0
