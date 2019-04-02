@@ -178,170 +178,171 @@ Having the pretrained GRU model, you can go to [how to run the code step by step
 ## A summary of results
 Presenting the Mode Counter Environments(MCE) results, number of states and observations of the MMs extracted from the MMNs both before and after minimization. Moore Machine extraction for MCE(table 1 in paper):
 
-<table class="tg">
+<table>
   <tr>
-    <th class="tg-0pky" rowspan="2">Game</th>
-    <th class="tg-0pky" rowspan="2">Bh, Bf</th>
-    <th class="tg-0pky" colspan="2">Fine-Tuning Score</th>
-    <th class="tg-0lax" colspan="3">Before Minimization</th>
-    <th class="tg-0lax" colspan="3">After Minimization</th>
+    <th rowspan="2">Game</th>
+    <th rowspan="2">Bh</th>
+    <th rowspan="2">Bf</th>
+    <th colspan="2">Fine-Tuning Score</th>
+    <th colspan="3">Before Minimization</th>
+    <th colspan="3">After Minimization</th>
   </tr>
   <tr>
-    <td class="tg-0pky">Before(%)</td>
-    <td class="tg-0pky">After(%)</td>
-    <td class="tg-0lax">|H|</td>
-    <td class="tg-0lax">|O|</td>
-    <td class="tg-0lax">Acc(%)</td>
-    <td class="tg-0lax">|H|</td>
-    <td class="tg-0lax">|O|</td>
-    <td class="tg-0lax">Acc(%)</td>
+    <td>Before(%)</td>
+    <td>After(%)</td>
+    <td>|H|</td>
+    <td>|O|</td>
+    <td>Acc(%)</td>
+    <td>|H|</td>
+    <td>|O|</td>
+    <td>Acc(%)</td>
   </tr>
   <tr>
-    <td class="tg-0pky" rowspan="4">Amnesia</td>
-    <td class="tg-0pky">4</td>
-    <td class="tg-0pky">4</td>
-    <td class="tg-0pky">98</td>
-    <td class="tg-0pky">100</td>
-    <td class="tg-0lax">7</td>
-    <td class="tg-0lax">5</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
+    <td rowspan="4">Amnesia</td>
+    <td>4</td>
+    <td>4</td>
+    <td>98</td>
+    <td>100</td>
+    <td>7</td>
+    <td>5</td>
+    <td>100</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0pky">4</td>
-    <td class="tg-0pky">8</td>
-    <td class="tg-0pky">99</td>
-    <td class="tg-0pky">100</td>
-    <td class="tg-0lax">7</td>
-    <td class="tg-0lax">7</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
+    <td>4</td>
+    <td>8</td>
+    <td>99</td>
+    <td>100</td>
+    <td>7</td>
+    <td>7</td>
+    <td>100</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0pky">8</td>
-    <td class="tg-0pky">4</td>
-    <td class="tg-0pky">100</td>
-    <td class="tg-0pky">-</td>
-    <td class="tg-0lax">6</td>
-    <td class="tg-0lax">5</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
+    <td>8</td>
+    <td>4</td>
+    <td>100</td>
+    <td>-</td>
+    <td>6</td>
+    <td>5</td>
+    <td>100</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">99</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">7</td>
-    <td class="tg-0lax">7</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
+    <td>8</td>
+    <td>8</td>
+    <td>99</td>
+    <td>100</td>
+    <td>7</td>
+    <td>7</td>
+    <td>100</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0lax" rowspan="4">Blind</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">-</td>
-    <td class="tg-0lax">12</td>
-    <td class="tg-0lax">6</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">10</td>
-    <td class="tg-0lax">1</td>
-    <td class="tg-0lax">100</td>
+    <td rowspan="4">Blind</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
+    <td>-</td>
+    <td>12</td>
+    <td>6</td>
+    <td>100</td>
+    <td>10</td>
+    <td>1</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">-</td>
-    <td class="tg-0lax">12</td>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">10</td>
-    <td class="tg-0lax">1</td>
-    <td class="tg-0lax">100</td>
+    <td>4</td>
+    <td>8</td>
+    <td>100</td>
+    <td>-</td>
+    <td>12</td>
+    <td>8</td>
+    <td>100</td>
+    <td>10</td>
+    <td>1</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">-</td>
-    <td class="tg-0lax">5</td>
-    <td class="tg-0lax">6</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">10</td>
-    <td class="tg-0lax">1</td>
-    <td class="tg-0lax">100</td>
+    <td>8</td>
+    <td>4</td>
+    <td>100</td>
+    <td>-</td>
+    <td>5</td>
+    <td>6</td>
+    <td>100</td>
+    <td>10</td>
+    <td>1</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">78</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">13</td>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">10</td>
-    <td class="tg-0lax">1</td>
-    <td class="tg-0lax">100</td>
+    <td>8</td>
+    <td>8</td>
+    <td>78</td>
+    <td>100</td>
+    <td>13</td>
+    <td>8</td>
+    <td>100</td>
+    <td>10</td>
+    <td>1</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0lax" rowspan="4">Tracker</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">98</td>
-    <td class="tg-0lax">98</td>
-    <td class="tg-0lax">58</td>
-    <td class="tg-0lax">5</td>
-    <td class="tg-0lax">98</td>
-    <td class="tg-0lax">50</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">98</td>
+    <td rowspan="4">Tracker</td>
+    <td>4</td>
+    <td>4</td>
+    <td>98</td>
+    <td>98</td>
+    <td>58</td>
+    <td>5</td>
+    <td>98</td>
+    <td>50</td>
+    <td>4</td>
+    <td>98</td>
   </tr>
   <tr>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">99</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">23</td>
-    <td class="tg-0lax">5</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">10</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
+    <td>4</td>
+    <td>8</td>
+    <td>99</td>
+    <td>100</td>
+    <td>23</td>
+    <td>5</td>
+    <td>100</td>
+    <td>10</td>
+    <td>4</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">98</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">91</td>
-    <td class="tg-0lax">5</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">10</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
+    <td>8</td>
+    <td>4</td>
+    <td>98</td>
+    <td>100</td>
+    <td>91</td>
+    <td>5</td>
+    <td>100</td>
+    <td>10</td>
+    <td>4</td>
+    <td>100</td>
   </tr>
   <tr>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">8</td>
-    <td class="tg-0lax">99</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">85</td>
-    <td class="tg-0lax">5</td>
-    <td class="tg-0lax">100</td>
-    <td class="tg-0lax">10</td>
-    <td class="tg-0lax">4</td>
-    <td class="tg-0lax">100</td>
+    <td>8</td>
+    <td>8</td>
+    <td>99</td>
+    <td>100</td>
+    <td>85</td>
+    <td>5</td>
+    <td>100</td>
+    <td>10</td>
+    <td>4</td>
+    <td>100</td>
   </tr>
 </table>
 
