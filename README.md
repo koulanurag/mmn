@@ -31,7 +31,7 @@ In this section, a guide on how to use the code is presented.
 
 ## Parameters
 To run the code, there are several parameters that should be set. Below is a list of them:
-```python
+```
 usage: main_atari.py [-h] [--generate_train_data] [--generate_bn_data]
                      [--generate_max_steps GENERATE_MAX_STEPS] [--gru_train]
                      [--gru_test] [--gru_size GRU_SIZE] [--gru_lr GRU_LR]
@@ -178,84 +178,734 @@ Having the pretrained GRU model, you can go to [how to run the code step by step
 ## A summary of results
 Presenting the Mode Counter Environments(MCE) results, number of states and observations of the MMs extracted from the MMNs both before and after minimization. Moore Machine extraction for MCE(table 1 in paper):
 
-|   Game	|   B<sub>h</sub>, B<sub>f</sub>    |   Fine-Tuning Score |  Before Minimization	|   After Minization    |
-|:---------:|:---------------------------------:|:-------------------:|:-----------------------:|:---------------------:|
-|          |                                  |  Before(%), After(%)|&#124;H&#124;, &#124;O&#124;, Accuracy(%)| &#124;H&#124;, &#124;O&#124;, Accuracy(%)|
-|   Amnesia	|   4,4	|  0.98, 1 |    7, 5, 1 |  4, 4, 1 	|
-|   Amnesia	|   4,8	|  0.99, 1 	|   7, 7, 1	|  4, 4, 1 	|
-|  Amnesia 	|   8,4	|   1, -	|   6, 5, 1	|  4, 4, 1 	|
-|   Amnesia	|   8,8	|   0.99, 1	|   7, 7, 1	|  4, 4, 1 	|
-|   Blind	|   4,4	|  1, - 	|   12, 6, 1|  10, 1, 1	|
-|   Blind	|   4,8	|  1, - 	|   12, 8, 1|  10, 1, 1	|
-|  Blind 	|   8,4	|  1, - 	|   5, 6, 1|   10, 1, 1	|
-|  Blind 	|   8,8	|  0.78, 1 	|   13, 8, 1|  10, 1, 1	|
-|  Tracker 	|   4,4	|  0.98, 0.98 	|   58, 5, 0.98|  50, 4, 0.98|
-|   Tracker	|   4,8	|  0.99, 1 	|   23, 5, 1|   10, 4, 1|
-|   Tracker	|   8,4	|  0.98, 1 	|   91, 5, 1|   10, 4, 1|
-|  Tracker 	|   8,8	|  0.99, 1 	|   85, 5, 1|   10, 4, 1|
+<table>
+  <tr>
+    <th rowspan="2">Game</th>
+    <th rowspan="2">Bh</th>
+    <th rowspan="2">Bf</th>
+    <th colspan="2">Fine-Tuning Score</th>
+    <th colspan="3">Before Minimization</th>
+    <th colspan="3">After Minimization</th>
+  </tr>
+  <tr>
+    <td>Before(%)</td>
+    <td>After(%)</td>
+    <td>|H|</td>
+    <td>|O|</td>
+    <td>Acc(%)</td>
+    <td>|H|</td>
+    <td>|O|</td>
+    <td>Acc(%)</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Amnesia</td>
+    <td>4</td>
+    <td>4</td>
+    <td>98</td>
+    <td>100</td>
+    <td>7</td>
+    <td>5</td>
+    <td>100</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>8</td>
+    <td>99</td>
+    <td>100</td>
+    <td>7</td>
+    <td>7</td>
+    <td>100</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>4</td>
+    <td>100</td>
+    <td>-</td>
+    <td>6</td>
+    <td>5</td>
+    <td>100</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>8</td>
+    <td>99</td>
+    <td>100</td>
+    <td>7</td>
+    <td>7</td>
+    <td>100</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Blind</td>
+    <td>4</td>
+    <td>4</td>
+    <td>100</td>
+    <td>-</td>
+    <td>12</td>
+    <td>6</td>
+    <td>100</td>
+    <td>10</td>
+    <td>1</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>8</td>
+    <td>100</td>
+    <td>-</td>
+    <td>12</td>
+    <td>8</td>
+    <td>100</td>
+    <td>10</td>
+    <td>1</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>4</td>
+    <td>100</td>
+    <td>-</td>
+    <td>5</td>
+    <td>6</td>
+    <td>100</td>
+    <td>10</td>
+    <td>1</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>8</td>
+    <td>78</td>
+    <td>100</td>
+    <td>13</td>
+    <td>8</td>
+    <td>100</td>
+    <td>10</td>
+    <td>1</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Tracker</td>
+    <td>4</td>
+    <td>4</td>
+    <td>98</td>
+    <td>98</td>
+    <td>58</td>
+    <td>5</td>
+    <td>98</td>
+    <td>50</td>
+    <td>4</td>
+    <td>98</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>8</td>
+    <td>99</td>
+    <td>100</td>
+    <td>23</td>
+    <td>5</td>
+    <td>100</td>
+    <td>10</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>4</td>
+    <td>98</td>
+    <td>100</td>
+    <td>91</td>
+    <td>5</td>
+    <td>100</td>
+    <td>10</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>8</td>
+    <td>99</td>
+    <td>100</td>
+    <td>85</td>
+    <td>5</td>
+    <td>100</td>
+    <td>10</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+</table>
 
 
 The below table presents the test results for the trained RNNs giving the accuracy over a test set of 100 strings drawn from the same distribution as used for training. Moore Machine extraction for Tomita grammar(table 2 in paper):
 
-|   Grammar	|   RNN Accuracy(%) | B<sub>h</sub>    |   Fine-Tuning Accuracy(%) |  Before Minimization	|   After Minization    |
-|:---------:|:-----------------:|:---------------------------------:|:-------------------:|:-----------------------:|:---------------------:|
-|          |                    |             |  Before, After|&#124;H&#124;, Accuracy(%)| &#124;H&#124;, Accuracy(%)|
-|   1	|   100	|  8    |   100, -  |  13, 100 	|2, 100|
-|   1	|   100	|  16   |   100, -  |  28, 100 	|2, 100|
-|   2   |   100	|  8 	|   100, -	|  13, 100 	|3, 100|
-|   2   |   100	|  16 	|   100, -	|  14, 100 	|3, 100|
-|   3   |   100	|  8 	|   100, -	|  34, 100 	|5, 100|
-|   3   |   100	|  16 	|   100, -	|  39, 100 	|5, 100|
-|   4   |   100	|  8 	|   100, -	|  17, 100 	|4, 100|
-|   4   |   100	|  16 	|   100, -	|  18, 100 	|4, 100|
-|   5   |   100	|  8 	|   95, 96	|  192, 96 	|115, 96|
-|   5   |   100	|  16 	|   100, -	|  316, 100 |4, 100|
-|   6   |   99	|  8 	|   98, 98	|  100, 98 	|12, 98|
-|   6   |   99	|  16 	|   99, 99	|  518, 99 	|11, 99|
-|   7   |   100	|  8 	|   100, -	|  25, 100 	|5, 100|
-|   7   |   100	|  16 	|   100, -	|  107, 100	|5, 100|
+<table>
+  <tr>
+    <th rowspan="2">Grammar</th>
+    <th rowspan="2">RNN Acc(%)</th>
+    <th rowspan="2">Bh</th>
+    <th colspan="2">Fine-Tuning Score</th>
+    <th colspan="2">Before Minimization</th>
+    <th colspan="2">After Minimization</th>
+  </tr>
+  <tr>
+    <td>Before(%)</td>
+    <td>After(%)</td>
+    <td>|H|</td>
+    <td>Acc(%)</td>
+    <td>|H|</td>
+    <td>Acc(%)</td>
+  </tr>
+  <tr>
+    <td rowspan="2">1</td>
+    <td>100</td>
+    <td>8</td>
+    <td>100</td>
+    <td>-</td>
+    <td>13</td>
+    <td>100</td>
+    <td>2</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td>16</td>
+    <td>100</td>
+    <td>-</td>
+    <td>28</td>
+    <td>100</td>
+    <td>2</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td rowspan="2">2</td>
+    <td>100</td>
+    <td>8</td>
+    <td>100</td>
+    <td>-</td>
+    <td>13</td>
+    <td>100</td>
+    <td>3</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td>16</td>
+    <td>100</td>
+    <td>-</td>
+    <td>14</td>
+    <td>100</td>
+    <td>3</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td rowspan="2">3</td>
+    <td>100</td>
+    <td>8</td>
+    <td>100</td>
+    <td>-</td>
+    <td>34</td>
+    <td>100</td>
+    <td>5</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td>16</td>
+    <td>100</td>
+    <td>-</td>
+    <td>39</td>
+    <td>100</td>
+    <td>5</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td rowspan="2">4</td>
+    <td>100</td>
+    <td>8</td>
+    <td>100</td>
+    <td>-</td>
+    <td>17</td>
+    <td>100</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td>16</td>
+    <td>100</td>
+    <td>-</td>
+    <td>18</td>
+    <td>100</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td rowspan="2">5</td>
+    <td>100</td>
+    <td>8</td>
+    <td>95</td>
+    <td>96</td>
+    <td>192</td>
+    <td>96</td>
+    <td>115</td>
+    <td>96</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td>16</td>
+    <td>100</td>
+    <td>-</td>
+    <td>316</td>
+    <td>100</td>
+    <td>4</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td rowspan="2">6</td>
+    <td>99</td>
+    <td>8</td>
+    <td>98</td>
+    <td>98</td>
+    <td>100</td>
+    <td>98</td>
+    <td>12</td>
+    <td>98</td>
+  </tr>
+  <tr>
+    <td>99</td>
+    <td>16</td>
+    <td>99</td>
+    <td>99</td>
+    <td>518</td>
+    <td>99</td>
+    <td>11</td>
+    <td>99</td>
+  </tr>
+  <tr>
+    <td rowspan="2">7</td>
+    <td>100</td>
+    <td>8</td>
+    <td>100</td>
+    <td>-</td>
+    <td>25</td>
+    <td>100</td>
+    <td>5</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td>16</td>
+    <td>100</td>
+    <td>-</td>
+    <td>107</td>
+    <td>100</td>
+    <td>5</td>
+    <td>100</td>
+  </tr>
+</table>
 
 
 More experiments on control tasks have been done. Results are presented in the following table:
 
-|Game(# of actions)|B<sub>h</sub>, B<sub>f</sub>    |  Before Minimization	|   After Minization    |
-|:---:|:---:|:-------------------:|:---------------------:|
-|          |               |&#124;H&#124;, &#124;O&#124;, Score| &#124;H&#124;, &#124;O&#124;, Score|
-|CartPole(2)|   8, 8 	|10, 27, 500|5, 25, 500|
-|LunarLander(4)|   128, 100 	|2550, 2197, 172|75, 77, 134|
-|LunarLander(4)|   128, 400 	|2194, 1996, 201|27, 37, 205|
+<table>
+  <tr>
+    <th rowspan="2">Game(# of actions)</th>
+    <th rowspan="2">Bh</th>
+    <th rowspan="2">Bf</th>
+    <th colspan="3">Before Minimization</th>
+    <th colspan="3">After Minimization</th>
+  </tr>
+  <tr>
+    <td>|H|</td>
+    <td>|O|</td>
+    <td>Acc(%)</td>
+    <td>|H|</td>
+    <td>|O|</td>
+    <td>Acc(%)</td>
+  </tr>
+  <tr>
+    <td>Cart Pole(2)</td>
+    <td>8</td>
+    <td>8</td>
+    <td>10</td>
+    <td>27</td>
+    <td>500</td>
+    <td>5</td>
+    <td>25</td>
+    <td>500</td>
+  </tr>
+  <tr>
+    <td rowspan="2">Lunar Lander(4)</td>
+    <td>128</td>
+    <td>100</td>
+    <td>2550</td>
+    <td>2197</td>
+    <td>172</td>
+    <td>75</td>
+    <td>77</td>
+    <td>134</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>400</td>
+    <td>2194</td>
+    <td>1996</td>
+    <td>201</td>
+    <td>27</td>
+    <td>37</td>
+    <td>205</td>
+  </tr>
+</table>
 
 
  This table shows the performance of the trained MMNs before and after finetuning for different combinations of B<sub>h</sub> and B<sub>f</sub>. A few more games investigated and the results are added to the table 3 of the paper:
 
-|Game(# of actions)|RNN(score)|B<sub>h</sub>, B<sub>f</sub>    |   Fine-Tuning Score |  Before Minimization	|   After Minization    |
-|:---:|:---:|:---:|:-------------------:|:-----------------------:|:---------------------:|
-|          |              |                   |  Before, After|&#124;H&#124;, &#124;O&#124;, Score| &#124;H&#124;, &#124;O&#124;, Score|
-|Pong(3)|21|  64, 100 	|20, 21|380, 374, 21|4, 12, 21|
-|Pong(3)|21|  64, 400 	|20, 21|373, 372, 21|3, 10, 21|
-|Pong(3)|21|  128, 100 |20, 21|383, 373, 21|3, 12, 21|
-|Pong(3)|21|  128, 400 |20, 21|379, 371, 21|3, 11, 21|
-|Freeway(3)|21| 64, 100 |21, -|1, 1, 21|1, 1, 21|
-|Freeway(3)|21| 64, 400 |21, -|1, 1, 21|1, 1, 21|
-|Freeway(3)|21| 128, 100|21, -|1, 1, 21|1, 1, 21|
-|Freeway(3)|21| 128, 400|21, -|1, 1, 21|1, 1, 21|
-|Breakout(4)|  773|  64, 100 |32, 423|1898, 1874, 423|8, 30, 423|
-|Breakout(4)|  773|  64, 400 |25, 415|1888, 1871, 415|8, 30, 415|
-|Breakout(4)|  773|  128, 100|41, 377|1583, 1514, 377|11, 27, 377
-|Breakout(4)|  773|  128, 400|85, 379|1729, 1769, 379|8, 30, 379|
-|Space Invaders(4)| 1820|   64, 100 |520, 1335|1495, 1502, 1335|8, 29, 1335|
-|Space Invaders(4)| 1820|   64, 400 |365, 1235|1625, 1620, 1235|12, 29, 1235|
-|Space Invaders(4)| 1820|   128, 100|390, 1040|1563, 1457, 1040|12, 35, 1040|
-|Space Invaders(4)| 1820|   128, 400|520, 1430|1931, 1921, 1430|6, 27, 1430|
-|Bowling(6)|      60|   64, 100 |60, -|49, 1, 60|33, 1, 60|
-|Bowling(6)|      60|   64, 400 |60, -|49, 1, 60|33, 1, 60|
-|Bowling(6)|      60|   128, 100|60, -|26, 1, 60|24, 1, 60|
-|Bowling(6)|      60|   128, 400|60, -|26, 1, 60|24, 1, 60|
-|Boxing(18)|   100|   64, 100 |94, 100|1173, 1167, 100|13, 79, 100|
-|Boxing(18)|   100|   64, 400 |98, 100|2621, 2605, 100|14, 119, 100|
-|Boxing(18)|   100|   128, 100|94, 97|2499, 2482, 97|14, 106, 97|
-|Boxing(18)|   100|   128, 400|97, 100|1173, 1169, 100|14, 88, 100|
-|Chopper Command(18) |   | 64, 100 | 4000 | 3710, 3731, 4000 | 38, 182, 1890| 
+<table>
+  <tr>
+    <th rowspan="2">Game(# of actions)</th>
+    <th rowspan="2">RNN(score)</th>
+    <th rowspan="2">Bh</th>
+    <th rowspan="2">Bf</th>
+    <th colspan="2">Fine-Tuning Score</th>
+    <th colspan="3">Before Minimization</th>
+    <th colspan="3">After Minimization</th>
+  </tr>
+  <tr>
+    <td>Before</td>
+    <td>After</td>
+    <td>|H|</td>
+    <td>|O|</td>
+    <td>Acc(%)</td>
+    <td>|H|</td>
+    <td>|O|</td>
+    <td>Acc(%)</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Pong(3)</td>
+    <td rowspan="4">21</td>
+    <td>64</td>
+    <td>100</td>
+    <td>20</td>
+    <td>21</td>
+    <td>380</td>
+    <td>374</td>
+    <td>21</td>
+    <td>4</td>
+    <td>12</td>
+    <td>21</td>
+  </tr>
+  <tr>
+    <td>64</td>
+    <td>400</td>
+    <td>20</td>
+    <td>21</td>
+    <td>373</td>
+    <td>372</td>
+    <td>21</td>
+    <td>3</td>
+    <td>10</td>
+    <td>21</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>100</td>
+    <td>20</td>
+    <td>21</td>
+    <td>383</td>
+    <td>373</td>
+    <td>21</td>
+    <td>3</td>
+    <td>12</td>
+    <td>21</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>400</td>
+    <td>20</td>
+    <td>21</td>
+    <td>379</td>
+    <td>371</td>
+    <td>21</td>
+    <td>3</td>
+    <td>11</td>
+    <td>21</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Freeway(3)</td>
+    <td rowspan="4">21</td>
+    <td>64</td>
+    <td>100</td>
+    <td>21</td>
+    <td>-</td>
+    <td>1</td>
+    <td>1</td>
+    <td>21</td>
+    <td>1</td>
+    <td>1</td>
+    <td>21</td>
+  </tr>
+  <tr>
+    <td>64</td>
+    <td>400</td>
+    <td>21</td>
+    <td>-</td>
+    <td>1</td>
+    <td>1</td>
+    <td>21</td>
+    <td>1</td>
+    <td>1</td>
+    <td>21</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>100</td>
+    <td>21</td>
+    <td>-</td>
+    <td>1</td>
+    <td>1</td>
+    <td>21</td>
+    <td>1</td>
+    <td>1</td>
+    <td>21</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>400</td>
+    <td>21</td>
+    <td>-</td>
+    <td>1</td>
+    <td>1</td>
+    <td>21</td>
+    <td>1</td>
+    <td>1</td>
+    <td>21</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Breakout(4)</td>
+    <td rowspan="4">773</td>
+    <td>64</td>
+    <td>100</td>
+    <td>32</td>
+    <td>423</td>
+    <td>1898</td>
+    <td>1874</td>
+    <td>423</td>
+    <td>8</td>
+    <td>30</td>
+    <td>423</td>
+  </tr>
+  <tr>
+    <td>64</td>
+    <td>400</td>
+    <td>25</td>
+    <td>415</td>
+    <td>1888</td>
+    <td>1871</td>
+    <td>415</td>
+    <td>8</td>
+    <td>30</td>
+    <td>415</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>100</td>
+    <td>41</td>
+    <td>377</td>
+    <td>1583</td>
+    <td>1514</td>
+    <td>377</td>
+    <td>11</td>
+    <td>27</td>
+    <td>377</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>400</td>
+    <td>85</td>
+    <td>379</td>
+    <td>1729</td>
+    <td>1769</td>
+    <td>379</td>
+    <td>8</td>
+    <td>30</td>
+    <td>379</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Space Invaders(4)</td>
+    <td rowspan="4">1820</td>
+    <td>64</td>
+    <td>100</td>
+    <td>520</td>
+    <td>1335</td>
+    <td>1495</td>
+    <td>1502</td>
+    <td>1335</td>
+    <td>8</td>
+    <td>29</td>
+    <td>1335</td>
+  </tr>
+  <tr>
+    <td>64</td>
+    <td>400</td>
+    <td>365</td>
+    <td>1235</td>
+    <td>1625</td>
+    <td>1620</td>
+    <td>1235</td>
+    <td>12</td>
+    <td>29</td>
+    <td>1235</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>100</td>
+    <td>390</td>
+    <td>1040</td>
+    <td>1563</td>
+    <td>1457</td>
+    <td>1040</td>
+    <td>12</td>
+    <td>35</td>
+    <td>1040</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>400</td>
+    <td>520</td>
+    <td>1430</td>
+    <td>1931</td>
+    <td>1921</td>
+    <td>1430</td>
+    <td>6</td>
+    <td>27</td>
+    <td>1430</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Bowling(6)</td>
+    <td rowspan="4">60</td>
+    <td>64</td>
+    <td>100</td>
+    <td>60</td>
+    <td>-</td>
+    <td>49</td>
+    <td>1</td>
+    <td>60</td>
+    <td>33</td>
+    <td>1</td>
+    <td>60</td>
+  </tr>
+  <tr>
+    <td>64</td>
+    <td>400</td>
+    <td>60</td>
+    <td>-</td>
+    <td>49</td>
+    <td>1</td>
+    <td>60</td>
+    <td>33</td>
+    <td>1</td>
+    <td>60</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>100</td>
+    <td>60</td>
+    <td>-</td>
+    <td>26</td>
+    <td>1</td>
+    <td>60</td>
+    <td>24</td>
+    <td>1</td>
+    <td>60</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>400</td>
+    <td>60</td>
+    <td>-</td>
+    <td>26</td>
+    <td>1</td>
+    <td>60</td>
+    <td>24</td>
+    <td>1</td>
+    <td>60</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Boxing(18)</td>
+    <td rowspan="4">100</td>
+    <td>64</td>
+    <td>100</td>
+    <td>94</td>
+    <td>100</td>
+    <td>1173</td>
+    <td>1167</td>
+    <td>100</td>
+    <td>13</td>
+    <td>79</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>64</td>
+    <td>400</td>
+    <td>98</td>
+    <td>100</td>
+    <td>2621</td>
+    <td>2605</td>
+    <td>100</td>
+    <td>14</td>
+    <td>119</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>100</td>
+    <td>94</td>
+    <td>97</td>
+    <td>2499</td>
+    <td>2482</td>
+    <td>97</td>
+    <td>14</td>
+    <td>106</td>
+    <td>97</td>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>400</td>
+    <td>97</td>
+    <td>100</td>
+    <td>1173</td>
+    <td>1169</td>
+    <td>100</td>
+    <td>14</td>
+    <td>88</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>Chopper Command(18)</td>
+    <td></td>
+    <td>64</td>
+    <td>100</td>
+    <td></td>
+    <td>4000</td>
+    <td>3710</td>
+    <td>3731</td>
+    <td>4000</td>
+    <td>38</td>
+    <td>182</td>
+    <td>1890</td>
+  </tr>
+</table>
 
 
 
