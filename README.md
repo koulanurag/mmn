@@ -1,4 +1,4 @@
-# Introduction
+# MMN
 In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described.
 Topics covered in this document:
 * [Installation](#installation)
@@ -17,12 +17,12 @@ A paper for this work is available [here](https://openreview.net/pdf?id=S1gOpsCc
 ```
 ## Installation
 * Python 3.5+
-* Pytorch 0.4.0
+* Pytorch
 * gym_x
 * To install dependencies:
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ## Usage
 In this section, a guide on how to use the code is presented.
@@ -92,9 +92,9 @@ By having the proper set of parameters, now you can run the ```main_atari.py``` 
 
 ### Use prepared scripts
 
-Instead of going through the step by step manual described below, you can use the prepared scripts. This script starts from testing a given GRU model on a defined environment and ends by generating the FSM. You can do this by simply running:
+Instead of going through the step by step manual described below, you can use the prepared scripts. This script starts from testing a given GRU model on a defined environment and ends by generating the FSM. Although the script is only for atari environments, but applying it to different setting is fairly similar and easy. You can do this by simply running:
 ```bash
-sh run_atari.sh
+sh run_atari.sh **ENVIRONMENT**
 ``` 
 
 
@@ -173,7 +173,9 @@ In this directory two most important, files containing the observation space and
 For results to be easily reproducible, previously trained GRU models on different environments have been provided. You can simply use them to train new QBNs and reproduce the results presented in the paper. Models are accessible through this directory: ```results/Atari/```. The GRU cell size can be determined from the models' path, e.i. if a model is saved in a folder named as ```gru_32```, then the GRU cell size is 32. 
 Having the pretrained GRU model, you can go to [how to run the code step by step](#step-by-step-manual) to start training the QBNs.
 
-## A summary of results
+## Results
+
+### MCE
 Presenting the Mode Counter Environments(MCE) results, number of states and observations of the MMs extracted from the MMNs both before and after minimization. Moore Machine extraction for MCE(table 1 in paper):
 
 <table>
@@ -344,7 +346,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
   </tr>
 </table>
 
-
+### Grammars
 The below table presents the test results for the trained RNNs giving the accuracy over a test set of 100 strings drawn from the same distribution as used for training. Moore Machine extraction for Tomita grammar(table 2 in paper):
 
 <table>
@@ -513,7 +515,7 @@ The below table presents the test results for the trained RNNs giving the accura
   </tr>
 </table>
 
-
+### Control Tasks
 More experiments on control tasks have been done. Results are presented in the following table:
 
 <table>
@@ -566,7 +568,7 @@ More experiments on control tasks have been done. Results are presented in the f
   </tr>
 </table>
 
-
+### Atari
  This table shows the performance of the trained MMNs before and after finetuning for different combinations of B<sub>h</sub> and B<sub>f</sub>. A few more games investigated and the results are added to the table 3 of the paper:
 
 <table>
