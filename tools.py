@@ -259,8 +259,6 @@ def get_args():
     parser.add_argument('--ox_test', action='store_true', default=False, help='Test ox network')
     parser.add_argument('--bgru_train', action='store_true', default=False, help='Train binary gru network')
     parser.add_argument('--bgru_test', action='store_true', default=False, help='Test binary gru network')
-    parser.add_argument('--blstm_train', action='store_true', default=False, help='Train binary lstm network')
-    parser.add_argument('--blstm_test', action='store_true', default=False, help='Test binary lstm network')
 
     parser.add_argument('--bhx_size', type=int, help="binary encoding size")
     parser.add_argument('--bhx_suffix', default='', help="suffix fo bhx folder")
@@ -270,9 +268,7 @@ def get_args():
     parser.add_argument('--batch_size', type=int, default=32, help="batch size used for training")
     parser.add_argument('--bgru_lr', type=float, default=0.0001, help="Learning rate for binary GRU")
     parser.add_argument('--gru_scratch', action='store_true', default=False, help='use scratch gru for BGRU')
-    parser.add_argument('--blstm_lr', type=float, default=0.0001, help="Learning rate for binary LSTM")
-    parser.add_argument('--lstm_scratch', action='store_true', default=False, help='use scratch lstm for BLSTM')
-    parser.add_argument('--bx_scratch', action='store_true', default=False, help='use scratch bx network for BGRU or BLSTM')
+    parser.add_argument('--bx_scratch', action='store_true', default=False, help='use scratch bx network for BGRU')
     parser.add_argument('--generate_fsm', action='store_true', default=False, help='extract fsm from fmm net')
     parser.add_argument('--evaluate_fsm', action='store_true', default=False, help='evaluate fsm')
 
