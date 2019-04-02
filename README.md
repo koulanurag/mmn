@@ -31,7 +31,7 @@ In this section, a guide on how to use the code is presented.
 
 ## Parameters
 To run the code, there are several parameters that should be set. Below is a list of them:
-```
+```python
 usage: main_atari.py [-h] [--generate_train_data] [--generate_bn_data]
                      [--generate_max_steps GENERATE_MAX_STEPS] [--gru_train]
                      [--gru_test] [--gru_size GRU_SIZE] [--gru_lr GRU_LR]
@@ -178,33 +178,10 @@ Having the pretrained GRU model, you can go to [how to run the code step by step
 ## A summary of results
 Presenting the Mode Counter Environments(MCE) results, number of states and observations of the MMs extracted from the MMNs both before and after minimization. Moore Machine extraction for MCE(table 1 in paper):
 
-|   Game	|   B<sub>h</sub>, B<sub>f</sub>    |   Fine-Tuning Score |  Before Minimization	|   After Minization    |
-|:---------:|:---------------------------------:|:-------------------:|:-----------------------:|:---------------------:|
-|          |                                  |  Before(%), After(%)|&#124;H&#124;, &#124;O&#124;, Accuracy(%)| &#124;H&#124;, &#124;O&#124;, Accuracy(%)|
-|   Amnesia	|   4,4	|  0.98, 1 |    7, 5, 1 |  4, 4, 1 	|
-|   Amnesia	|   4,8	|  0.99, 1 	|   7, 7, 1	|  4, 4, 1 	|
-|  Amnesia 	|   8,4	|   1, -	|   6, 5, 1	|  4, 4, 1 	|
-|   Amnesia	|   8,8	|   0.99, 1	|   7, 7, 1	|  4, 4, 1 	|
-|   Blind	|   4,4	|  1, - 	|   12, 6, 1|  10, 1, 1	|
-|   Blind	|   4,8	|  1, - 	|   12, 8, 1|  10, 1, 1	|
-|  Blind 	|   8,4	|  1, - 	|   5, 6, 1|   10, 1, 1	|
-|  Blind 	|   8,8	|  0.78, 1 	|   13, 8, 1|  10, 1, 1	|
-|  Tracker 	|   4,4	|  0.98, 0.98 	|   58, 5, 0.98|  50, 4, 0.98|
-|   Tracker	|   4,8	|  0.99, 1 	|   23, 5, 1|   10, 4, 1|
-|   Tracker	|   8,4	|  0.98, 1 	|   91, 5, 1|   10, 4, 1|
-|  Tracker 	|   8,8	|  0.99, 1 	|   85, 5, 1|   10, 4, 1|
-
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-.tg .tg-0lax{text-align:left;vertical-align:top}
-</style>
 <table class="tg">
   <tr>
     <th class="tg-0pky" rowspan="2">Game</th>
-    <th class="tg-0pky" colspan="2" rowspan="2">Bh, Bf</th>
+    <th class="tg-0pky" rowspan="2">Bh, Bf</th>
     <th class="tg-0pky" colspan="2">Fine-Tuning Score</th>
     <th class="tg-0lax" colspan="3">Before Minimization</th>
     <th class="tg-0lax" colspan="3">After Minimization</th>
