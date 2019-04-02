@@ -170,8 +170,6 @@ def test(net, env, total_episodes, test_seeds=None, cuda=False, log=False, rende
     total_reward = 0
     with torch.no_grad():
         for ep in range(total_episodes):
-            # _seed = test_seeds[ep] if test_seeds is not None else (ep + 10000)
-            # env.seed(_seed)
             obs = env.reset()
             done, ep_reward, ep_actions = False, 0, []
             hx = Variable(net.init_hidden())

@@ -197,8 +197,6 @@ def generate_bottleneck_data(net, env, episodes, save_path, cuda=False, eps=(0, 
                     critic, logit, hx, (_, _, obs_c, _) = net((obs, hx), inspect=True)
                     if exploration_start_step >= act_count and random.random() < eps[ep % len(eps)]:
                         action = env.action_space.sample()
-                    # if random.random() < eps[ep % len(eps)]:
-                    #     action = env.action_space.sample()
                     else:
                         prob = F.softmax(logit, dim=1)
                         action = int(prob.max(1)[1].data.cpu().numpy())
@@ -333,7 +331,6 @@ def generate_trajectories(env, batches, batch_size, save_path, guide=None, cuda=
                             env.render()
                         _obs.append(obs)
                         if guide is None:
-                            # action = env.action_space.sample()
                             action = env.env.get_desired_action()
                             _actions.append(action)
                         else:

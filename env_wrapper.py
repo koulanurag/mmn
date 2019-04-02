@@ -71,7 +71,6 @@ class Crop15And195(AtariWrapper):
 
     @staticmethod
     def process_atari_image(img):
-        # return imresize(img[15:195].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
         return imresize(img[:195].mean(2), (80, 80)).astype(np.float32).reshape(1, 80, 80) / 255.0
 
 

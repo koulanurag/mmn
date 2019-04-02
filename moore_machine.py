@@ -226,8 +226,6 @@ class MooreMachine:
         start_state_x = net.state_encode(start_state).data.cpu().numpy()[0]
         _, self.start_state = self._get_index(self.state_space, start_state_x, force=False)
 
-        # return self.obs_space, self.transaction, self.state_desc, self.start_state
-
     def map_action(self, net, s_i, obs_i):
         """
         Gets state and observation at time i in a network and gives next action.
@@ -279,13 +277,6 @@ class MooreMachine:
                     if (obs_i not in self.transaction[s]) or (self.transaction[s][obs_i] is None) or \
                             (obs_i not in self.transaction[k]) or (self.transaction[k][obs_i] is None):
                         pass
-                        # action_next_s = self.map_action(net, s, obs_i)
-                        # action_next_k = self.map_action(net, k, obs_i)
-                        # if action_next_k != action_next_s:
-                        #     compatibility_mat[s][k] = False
-                        #     break
-                    # elif obs_i in self.transaction[s] and (self.transaction[s][obs_i] is not None):
-                    #     if obs_i in self.transaction[k] and (self.transaction[k][obs_i] is not None):
                     else:
                         next_s, next_k = self.transaction[s][obs_i], self.transaction[k][obs_i]
                         action_next_s = self.state_desc[next_s]['action']
@@ -320,13 +311,10 @@ class MooreMachine:
 
             unknown_lengths.append(len(unknowns))
 
-        # new_trans = copy.deepcopy(self.transaction)
-
         new_states = []
         new_state_info = {}
         processed = {x: False for x in _states}
         belongs_to = {_: None for _ in _states}
-        # for s in sorted(compatibility_mat.keys()):
         for s in sorted(_states):
             if not processed[s]:
                 comp_pair = [sorted((s, x))[::-1] for x in _states if
@@ -342,12 +330,6 @@ class MooreMachine:
                 new_state_info[len(new_states)] = {'action': self.state_desc[_new_state[0][0]]['action'],
                                                    'sub_states': _new_state[0]}
                 new_states.append(_new_state[0])
-
-        # new_states = []
-        # for s in _states:
-        #     sub_compatible = []
-        #     for s_next in _states:
-        #         if s != s_next:
 
         new_trans = {}
         for i, s in enumerate(new_states):
@@ -577,8 +559,6 @@ class MooreMachine:
                     except Exception as e:
                         logger.error(e)
 
-                # if not obs_index:
-                #     break
                 next_state = self.transaction[curr_state][obs_index]
                 if next_state is None:
                     logger.info('None state encountered!')
@@ -588,7 +568,6 @@ class MooreMachine:
                     _text = 'Current State:{} \n Obs: {} \n Next State: {} \n\n\n Total States:{} \n Total Obs: {}'
                     _text = _text.format(str(curr_state), (obs_index, pre_index).__str__(), str(next_state),
                                          len(self.state_desc.keys()), len(self.minobs_obs_map.keys()))
-                    # _label_img = self.text_image(_shape, _text, font_size=12)
                     _label_img = self.text_image(_shape, _text)
                     _img = np.hstack((org_obs, _label_img))
                     env.render(inspect=inspect, img=_img)
@@ -619,7 +598,6 @@ class MooreMachine:
             total_reward += ep_reward
             if log:
                 logger.info("Episode => {} Score=> {}".format(ep, ep_reward))
-                # logger.info("Action => {} Observation=> {}".format(ep_actions, ep_obs))
             if inspect:
                 _parseable_path = ep_video_path.replace('(', '\(')
                 _parseable_path = _parseable_path.replace(')', '\)')
@@ -704,7 +682,6 @@ class MooreMachine:
             _state_info = self.state_desc[k]['description' if not self.minimized else 'sub_states']
             t1.add_row([k, self.state_desc[k]['action'], _state_info])
         info_file.write(t1.__str__() + '\n')
-        # column_names = [""] + sorted(self.transaction[list(self.transaction.keys())[0]].keys())
         if not self.minimized:
             column_names = [""] + [str(_) for _ in range(len(self.obs_space))]
             t = PrettyTable(column_names)

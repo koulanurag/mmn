@@ -26,19 +26,12 @@ class ProcessFSM():
         return train_data
 
     def train_gru(self, gru_net, gru_net_path, gru_plot_dir, train_data, batch_size, train_epochs, cuda, bn_episodes, bottleneck_data_path, generate_max_steps, gru_prob_data_path, gru_dir):
-        # start_time = time.time()
-        # gru_net.noise = True
-        # logging.info(['No Training Performed!!'])
-        # logging.warning('We assume that we already have a pre-trained model @ {}'.format(gru_net_path))
-        # tl.write_net_readme(gru_net, gru_dir, info={'time_taken': time.time() - start_time})
-
         logging.info('Training GRU!')
         start_time = time.time()
         gru_net.train()
         optimizer = optim.Adam(gru_net.parameters(), lr=1e-3)
         gru_net = gru_nn.train(gru_net, self.env, optimizer, gru_net_path, gru_plot_dir, train_data, batch_size,
                                train_epochs, cuda, trunc_k=50)
-        # gru_net.load_state_dict(torch.load(gru_net_path))
         logging.info('Generating Data-Set for Later Bottle Neck Training')
         gru_net.eval()
         tl.generate_bottleneck_data(gru_net, self.env, bn_episodes, bottleneck_data_path, cuda=cuda, max_steps=generate_max_steps)
@@ -121,16 +114,12 @@ class ProcessFSM():
         bgru_net.eval()
         moore_machine = MooreMachine()
         moore_machine.extract_from_nn(self.env, bgru_net, 10, 0, log=True, partial=True, cuda=cuda)
-        # perf = moore_machine.evaluate(bgru_net, env, total_episodes=3, render=True, cuda=cuda)
         pickle.dump(moore_machine, open(unmin_moore_machine_path, 'wb'))
         moore_machine.save(open(os.path.join(bgru_dir, 'fsm.txt'), 'w'))
-        # logging.info('Performance Before Minimization:{}'.format(perf))
 
         moore_machine.minimize_partial_fsm(bgru_net)
         moore_machine.save(open(os.path.join(bgru_dir, 'minimized_moore_machine.txt'), 'w'))
         pickle.dump(moore_machine, open(min_moore_machine_path, 'wb'))
-        # perf = moore_machine.evaluate(bgru_net, env, total_episodes=3, render=True, inspect=True, store_obs=True, path=tl.ensure_directory_exits(os.path.join(bgru_dir, 'obs_data')), cuda=cuda)
-        # logging.info('Performance After Minimization: {}'.format(perf))
 
     def evaluate_fsm(self, bgru_net, bgru_net_path, min_moore_machine_path):
         bgru_net.load_state_dict(torch.load(bgru_net_path))

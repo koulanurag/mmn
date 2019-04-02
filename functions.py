@@ -87,7 +87,6 @@ class BinaryTanh(nn.Module):
 
     def __init__(self):
         super(BinaryTanh, self).__init__()
-        # self.hardtanh = nn.Hardtanh()
         self.hardtanh = nn.Tanh()
 
     def forward(self, input):
@@ -106,7 +105,6 @@ class TernaryTanh(nn.Module):
 
     def forward(self, input):
         output = 1.5 * F.tanh(input) + 0.5 * F.tanh(-3 * input)
-        # output = F.tanh(input)
         output = ternarizeTanh(output)
         return output
 

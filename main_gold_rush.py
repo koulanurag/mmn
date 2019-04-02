@@ -43,7 +43,6 @@ class ObsQBNet(nn.Module):
                                      nn.Linear(f1, input_size),
                                      nn.ReLU6())
 
-        # self.apply(tl.weights_init)
 
     def forward(self, x):
         encoded = self.encode(x)
@@ -75,7 +74,6 @@ class HxQBNet(nn.Module):
                                      nn.Tanh(),
                                      nn.Linear(f1, input_size),
                                      nn.Tanh())
-        # self.apply(tl.weights_init)
 
     def forward(self, x):
         x = self.encode(x)

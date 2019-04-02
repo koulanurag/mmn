@@ -51,8 +51,6 @@ def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=F
             batch_input = train_data[b_i:b_i + batch_size]
             batch_target = Variable(torch.FloatTensor(batch_input))
             batch_input = torch.FloatTensor(batch_input)
-            # noise = batch_input.data.new(batch_input.size()).uniform_(low, high)
-            # batch_input += noise
             batch_input = Variable(batch_input, requires_grad=True)
 
             if cuda:
