@@ -893,7 +893,7 @@ More experiments on control tasks have been done. Results are presented in the f
   </tr>
   <tr>
     <td>Chopper Command(18)</td>
-    <td></td>
+    <td>5300</td>
     <td>64</td>
     <td>100</td>
     <td></td>
