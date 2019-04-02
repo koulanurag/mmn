@@ -529,10 +529,10 @@ More experiments on control tasks have been done. Results are presented in the f
   <tr>
     <td>|H|</td>
     <td>|O|</td>
-    <td>Acc(%)</td>
+    <td>Score</td>
     <td>|H|</td>
     <td>|O|</td>
-    <td>Acc(%)</td>
+    <td>Score</td>
   </tr>
   <tr>
     <td>Cart Pole(2)</td>
