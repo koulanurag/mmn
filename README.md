@@ -1,19 +1,11 @@
 # Introduction
 In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described.
-<<<<<<< HEAD
 Topics covered in this README file is as follows: [how to use the pretrained models](#using-pretrained-models), [a summary of results](#a-summary-of-results), [general documentation about the code](#code-walk-through), [how to run the code step by step](#step-by-step-manual), and [how to run the code with the prepared script](#use-prepared-scripts).
 
 
 ### Using pretrained models
 For results to be easily reproducible, previously trained GRU models on different environments have been provided. You can simply use them to train new QBNs and reproduce the results presented in the paper. Models are accessible through this directory: `results/Atari/`. The GRU cell size can be determined from the models' path, e.i. if a model is saved in a folder named as `gru_32`, then the GRU cell size is 32. 
 Having the pretrained GRU model, you can go to [how to run the code step by step](#step-by-step-manual) to start training the QBNs.
-=======
-Topics covered in this README file is as follows: [general documentation about the code](), [how to use the pretrained models](), [a summary of results](#a-summary-of-results), [how to run the code step by step](#step-by-step-manual), and [how to run the code with the prepared script](#use-prepared-scripts).
-
-### Using pretrained models
-For results to be easily reproducible, previously trained GRU models on different environments have been provided. You can simply use them to train new QBNs and reproduce the results presented in the paper. Models are accessible through this directory: `results/Atari/`. The GRU cell size can be determined from the models' path, e.i. if a model is saved in a folder named as `gru_32`, then the GRU cell size is 32. 
-
->>>>>>> 96cda6396841a4ba17a17b6f748c20dc5efac287
 
 ### A summary of results
 Presenting the Mode Counter Environments(MCE) results, number of states and observations of the MMs extracted from the MMNs both before and after minimization. Moore Machine extraction for MCE(table 1 in paper):
@@ -35,11 +27,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
 |  Tracker 	|   8,8	|  0.99, 1 	|   85, 5, 1|   10, 4, 1|
 
 
-<<<<<<< HEAD
 The below table presents the test results for the trained RNNs giving the accuracy over a test set of 100 strings drawn from the same distribution as used for training. Moore Machine extraction for Tomita grammar(table 2 in paper):
-=======
-The bellow table presents the test results for the trained RNNs giving the accuracy over a test set of 100 strings drawn from the same distribution as used for training. Moore Machine extraction for Tomita grammar(table 2 in paper):
->>>>>>> 96cda6396841a4ba17a17b6f748c20dc5efac287
 
 |   Grammar	|   RNN Accuracy(%) | B<sub>h</sub>    |   Fine-Tuning Accuracy(%) |  Before Minimization	|   After Minization    |
 |:---------:|:-----------------:|:---------------------------------:|:-------------------:|:-----------------------:|:---------------------:|
@@ -100,7 +88,6 @@ Also, more experiments on classic control and Box2D environments have been done.
 |LunarLander(4)|   128, 100 	|2550, 2197, 172|75, 77, 134|
 |LunarLander(4)|   128, 400 	|2194, 1996, 201|27, 37, 205|
 
-<<<<<<< HEAD
 
 ### Code walk-through
 To run the code, there are several parameters that should be set. Below is a list of them:
@@ -122,8 +109,6 @@ evaluate_fsm: use it if you want to evaluate the minimized FSM
 
 By having the proper set of parameters, now you can run the `main_atari.py` code to start the process. For a step by step manual click [here](#step-by-step-manual).
 
-=======
->>>>>>> 96cda6396841a4ba17a17b6f748c20dc5efac287
 ### Step by step manual
 In the first step, the given model should be tested to see if it gets relatively good results or not. This command is to be used to test how the model performs during the test:
 <br/>`python main_atari.py --env **ENVIRONMENT** --gru_test --gru_size 32`
@@ -169,8 +154,4 @@ And the FSM explanation files will be saved as text files here:
 ### Use prepared scripts
 
 Instead of going through the step by step manual described above, one can use the prepared scripts. This script starts from testing a given GRU model on a defined environment and ends by generating the FSM. One can do this by simply running:
-<<<<<<< HEAD
 <br/>`sh run_atari.sh` 
-=======
-<br/>`sh run_atari.sh` 
->>>>>>> 96cda6396841a4ba17a17b6f748c20dc5efac287
