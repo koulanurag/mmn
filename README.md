@@ -3,7 +3,7 @@ In this document, a manual on how to work with the **LEARNING FINITE STATE REPRE
 Topics covered in this document:
 * [Installation](#installation)
 * [Usage](#usage)
-* [Results](#a-summary-of-results)
+* [Results](#results)
 
 A paper for this work is available [here](https://openreview.net/pdf?id=S1gOpsCctm). Below is the BibTeX entry in case you want to cite it:
 ```
