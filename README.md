@@ -906,7 +906,3 @@ More experiments on control tasks have been done. Results are presented in the f
     <td>1890</td>
   </tr>
 </table>
-
-
-
-
