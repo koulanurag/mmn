@@ -566,6 +566,17 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">37</td>
     <td align="center">205</td>
   </tr>
+  <tr>
+    <td align="center">Acrobot(3)</td>
+    <td align="center">32</td>
+    <td align="center">16</td>
+    <td align="center">807</td>
+    <td align="center">306</td>
+    <td align="center">-82</td>
+    <td align="center">36</td>
+    <td align="center">62</td>
+    <td align="center">-146</td>
+  </tr>
 </table>
 
 ### Atari
