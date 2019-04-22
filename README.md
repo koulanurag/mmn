@@ -1,6 +1,6 @@
 # MMN
 
-This is the implementation of Moore Machine Network (MMN) introduced in the work  "[Learning Finite State Representations of Recurrent Policy Networks](https://openreview.net/pdf?id=S1gOpsCctm)".
+This is the implementation of Moore Machine Network (MMN) introduced in the work  **"[Learning Finite State Representations of Recurrent Policy Networks](https://openreview.net/pdf?id=S1gOpsCctm)"**.
 
 If you find it useful in your research, please cite it using :
 
@@ -147,7 +147,7 @@ Formation of MMN requires following multiple steps which could be found [here](#
     Final Results before and after minimization are stored in text files (*fsm.txt* and *minimized_moore_machine.txt* ) here: 
     
     ```bash
-    results/Atari/**ENVIRONMENT**/gru_32_hx_(64,100)_bgru/
+    results/Atari/Pong-v0/gru_32_hx_(64,100)_bgru/
     ```
 
 ### Using pre-trained models
