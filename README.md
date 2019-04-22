@@ -1,6 +1,6 @@
 # MMN
 
-This is the implementation of Moore Machine Network (MMN) introduced in the work  [Learning Finite State Representations of Recurrent Policy Networks](https://openreview.net/pdf?id=S1gOpsCctm).
+This is the implementation of Moore Machine Network (MMN) introduced in the work  "[Learning Finite State Representations of Recurrent Policy Networks](https://openreview.net/pdf?id=S1gOpsCctm)".
 
 If you find it useful in your research, please cite it using :
 
@@ -83,9 +83,6 @@ optional arguments:
   --result_dir RESULT_DIR
                         Directory Path to store results
 ```
-
-
-By having the proper set of parameters, now you can run the ```main_atari.py``` code to start the process. For a step by step manual click [here](#step-by-step-manual).
 
 
 ### Use prepared scripts
