@@ -1,34 +1,31 @@
 # MMN
-In this document, a manual on how to work with the **LEARNING FINITE STATE REPRESENTATIONS OF RECURRENT POLICY NETWORKS**'s code is described.
-Topics covered in this document:
-* [Installation](#installation)
-* [Usage](#usage)
-* [Results](#results)
 
-A paper for this work is available [here](https://openreview.net/pdf?id=S1gOpsCctm). Below is the BibTeX entry in case you want to cite it:
+This is the implementation of Moore Machine Network (MMN) introduced in the work  [Learning Finite State Representations of Recurrent Policy Networks](https://openreview.net/pdf?id=S1gOpsCctm).
+
+If you find it useful in your research, please cite it using :
+
 ```
-@inproceedings{koul2018learning,
-    title={Learning Finite State Representations of Recurrent Policy Networks},
-    author={Anurag Koul and Alan Fern and Sam Greydanus},
-    booktitle={International Conference on Learning Representations},
-    year={2019},
-    url={https://openreview.net/forum?id=S1gOpsCctm},
+@article{koul2018learning,
+  title={Learning Finite State Representations of Recurrent Policy Networks},
+  author={Koul, Anurag and Greydanus, Sam and Fern, Alan},
+  journal={arXiv preprint arXiv:1811.12530},
+  year={2018}
 }
 ```
+
 ## Installation
 * Python 3.5+
 * Pytorch
-* gym_x
+* [gym_x](https://github.com/koulanurag/gym_x)
 * To install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
 
 ## Usage
-In this section, a guide on how to use the code is presented.
+In this section, we describe the usage of the scripts: 
 
-## Parameters
-To run the code, there are several parameters that should be set. Below is a list of them:
+### Parameters
 ```
 usage: main_atari.py [-h] [--generate_train_data] [--generate_bn_data]
                      [--generate_max_steps GENERATE_MAX_STEPS] [--gru_train]
@@ -87,90 +84,77 @@ optional arguments:
                         Directory Path to store results
 ```
 
+
 By having the proper set of parameters, now you can run the ```main_atari.py``` code to start the process. For a step by step manual click [here](#step-by-step-manual).
 
 
 ### Use prepared scripts
+Formation of MMN requires following multiple steps which could be found [here](#step-by-step-manual). These steps could also be sequentially executed for `bhx_size=64,ox_size=100` using the following script. This script could be easily customized for other environments.
 
-Instead of going through the step by step manual described below, you can use the prepared scripts. This script starts from testing a given GRU model on a defined environment and ends by generating the FSM. Although the script is only for atari environments, but applying it to different setting is fairly similar and easy. You can do this by simply running:
 ```bash
-sh run_atari.sh **ENVIRONMENT**
+./run_atari.sh Pong-v0
 ``` 
 
 
-### Step by step manual
-In the first step, the given model should be tested to see if it gets relatively good results or not. This command is to be used to test how the model performs during the test:
-```bash
-python main_atari.py --env **ENVIRONMENT** --gru_test --gru_size 32
-```
+### Steps
+1. *Test RNN*: We assume existence of pre-trained RNN model. The following step is optional and evaluates the performance of this model:
+    ```bash
+    python main_atari.py --env Pong-v0 --gru_test --gru_size 32
+    ```
+2. *Generate Bottleneck Data*: It involves generating and storing data for training quantized bottleneck data (QBN).
+    ```bash
+    python main_atari.py --env Pong-v0 --generate_bn_data --gru_size 32 --generate_max_steps 100
+    ```
+3. Train BHX :  It involves training QBN for Hidden State (hx). After each epoch, the QBN is inserted into orginal rnn model and the overall model is evaluated with environment. The Best performing QBN is saved.
+    ```bash
+    python main_atari.py --env Pong-v0 --bhx_train --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    ``` 
+    After it's done, the model and plots will be saved here:
+    ```bash
+    results/Atari/Pong-v0/gru_32_bhx_64/
+    ```
+4. Test BHX (optional): Inserts the saved BHX model into original rnn model and evaluates the model with environment. 
+    ```bash
+    python main_atari.py --env Pong-v0 --bhx_test --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    ```
+5. Train OX : It involves training QBN for learned  observation features(X) given as input to RNN. 
+    ```bash
+    python main_atari.py --env Pong-v0 --ox_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    ```
+    
+    After it's done, the model and plots will be saved here:
+    ```bash
+    results/Atari/Pong-v0/gru_32_ox_100/
+    ```
+6. Test BHX (optional): Inserts the saved OX model into original rnn model and evaluates the model with environment. 
+    ```bash
+    python main_atari.py --env Pong-v0 --ox_test --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    ```
+7. MMN:  We form the Moore Machine Network by inserting both the BHX and OX qbn's into the original rnn model. Thereafter the performance of the  *mmn* is evaluated on the environment. Fine-Tuning of MMN is performed if there is a fall in performance which could be caused by accumulated error by both the qbn's.
+    ```bash
+    python main_atari.py --env Pong-v0 --bgru_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    ```
 
-Before training the QBNs, the discrete data should be generated. This means that quantizing the continuous data into a discrete form. This can be done by the following command:
-```bash
-python main_atari.py --env **ENVIRONMENT** --generate_bn_data --gru_size 32 --generate_max_steps 100
-```
+    When the fine-tuning is done, model and plots will be saved here:
+    ```bash
+    results/Atari/Pon/gru_32_hx_(64,100)_bgru
+    ```
+8. Test MMN (optional): Loads and tests the saved MMN model.
+    ```bash
+    python main_atari.py --env Pong-v0 --bgru_test --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
+    ```
+9. Extract Moore Machine: In this final step, quantized observation and hidden state space are enumarated to form a moore machine. Thereafter minimization is performed on top of it.
+    ```bash
+    python main_atari.py --env Pong-v0 --generate_fsm --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
+    ```
+    Final Results before and after minimization are stored in text files (*fsm.txt* and *minimized_moore_machine.txt* ) here: 
+    
+    ```bash
+    results/Atari/**ENVIRONMENT**/gru_32_hx_(64,100)_bgru/
+    ```
 
-Now, the hidden state QBN should be trained based on the previously trained RNN(**GRU**) model and using the data generated in the last step. To do this, the following command should be run to train the Bottleneck Hidden State(BHX) net:
-```bash
-python main_atari.py --env **ENVIRONMENT** --bhx_train --bhx_size 64 --gru_size 32 --generate_max_steps 100
-```
-
-After it's done, the model and plots will be saved here:
-```bash
-results/Atari/**ENVIRONMENT**/gru_32_bhx_64/
-```
-
-Now, it's time to test the new model that was trained using the QBNs(BHX net). Run the following command:
-```bash
-python main_atari.py --env **ENVIRONMENT** --bhx_test --bhx_size 64 --gru_size 32 --generate_max_steps 100
-```
-
-Now, the observation QBN should be trained. To do this, the following command should be run to train the Bottleneck Observation State(OX) net:
-```bash
-python main_atari.py --env **ENVIRONMENT** --ox_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
-```
-
-After it's done, the model and plots will be saved here:
-```bash
-results/Atari/**ENVIRONMENT**/gru_32_ox_100/
-```
-
-When the OX net is trained, it can be tested. Run the following command to do so:
-```bash
-python main_atari.py --env **ENVIRONMENT** --ox_test --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
-```
-
-Having the QBNs, it's time to fine-tune the RNN(**GRU**) model based on them. Following command would do that:
-```bash
-python main_atari.py --env **ENVIRONMENT** --bgru_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
-```
-
-When the fine-tuning is done, model and plots will be saved here:
-```bash
-results/Atari/**ENVIRONMENT**/gru_32_hx_(64,100)_bgru
-```
-
-In this step the trained model in previous step is going to be tested by the following command:
-```bash
-python main_atari.py --env **ENVIRONMENT** --bgru_test --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
-```
-
-Congrats, you've made it so far :). It is the final step. Here the final results will be converted into a finite state machine explanation text file. Run the following command for that:
-```bash
-python main_atari.py --env **ENVIRONMENT** --generate_fsm --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
-```
-
-And the FSM explanation files will be saved as text files here:
-
-```bash
-results/Atari/**ENVIRONMENT**/gru_10_hx_(8,1)_bgru/
-```
-In this directory two most important, files containing the observation space and hidden state space beبore minimization(in the file named as: "fsm.txt") and after minimization(in the file named as: "minimized_moore_machine.txt")
-
-
-
-
-### Using pretrained models
-For results to be easily reproducible, previously trained GRU models on different environments have been provided. You can simply use them to train new QBNs and reproduce the results presented in the paper. Models are accessible through this directory: ```results/Atari/```. The GRU cell size can be determined from the models' path, e.i. if a model is saved in a folder named as ```gru_32```, then the GRU cell size is 32. 
+### Using pre-trained models
+For results to be easily reproducible, previously trained GRU models on different environments have been provided. You can simply use them to train new QBNs and reproduce the results presented in the paper. Models are accessible through this directory: ```results/Atari/```. The GRU cell size can be determined from the models' path, i.e. if a model is saved in a folder named as ```gru_32```, then the GRU cell size is 32. 
 Having the pretrained GRU model, you can go to [how to run the code step by step](#step-by-step-manual) to start training the QBNs.
 
 ## Results
@@ -346,7 +330,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
   </tr>
 </table>
 
-### Grammars
+### Tomita Grammar
 The below table presents the test results for the trained RNNs giving the accuracy over a test set of 100 strings drawn from the same distribution as used for training. Moore Machine extraction for Tomita grammar(table 2 in paper):
 
 <table>
@@ -581,7 +565,8 @@ More experiments on control tasks have been done. Results are presented in the f
 
 ### Atari
  This table shows the performance of the trained MMNs before and after finetuning for different combinations of B<sub>h</sub> and B<sub>f</sub>. A few more games investigated and the results are added to the table 3 of the paper:
-
+ Results may slightly vary.
+ 
 <table>
   <tr>
     <th align="center" rowspan="2">Game(# of actions)</th>
