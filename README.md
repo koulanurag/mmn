@@ -23,7 +23,7 @@ If you find it useful in your research, please cite it using :
     ```
 
 ## Usage
-In this section, we describe the usage of the scripts: 
+In this section, we describe the usage of the scripts. We described it based on the Atari games, however for other environments such as MCE or Gold Rush the settings and steps are pretty the same. To run Atari games, you should use the `main_atari.py` file. To run the MCE environments or the Tomita Grammars, `main_mce.py` or `main_tomita.py` should be used respectively.
 
 ### Parameters
 ```
