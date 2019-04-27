@@ -84,6 +84,7 @@ optional arguments:
                         Directory Path to store results
 ```
 
+For most of the experiments we've done, we've set `generate_max_steps = 100`. Based on the environment you're using, you can change it accordingly. Other parameters' values were set to the default ones, except for `ox_size`, `hx_size`, and `gru_size` which were set based on the experiment we ran. 
 
 ### Use prepared scripts
 Formation of MMN requires following multiple steps which could be found [here](#step-by-step-manual). These steps could also be sequentially executed for `bhx_size=64,ox_size=100` using the following script. This script could be easily customized for other environments.
@@ -179,7 +180,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
     <td align="center">Acc(%)</td>
   </tr>
   <tr>
-    <td align="center" rowspan="4">Amnesia</td>
+    <td align="center" rowspan="4">Amnesia<br/>(gold rush read)</td>
     <td align="center">4</td>
     <td align="center">4</td>
     <td align="center">98</td>
@@ -228,7 +229,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
     <td align="center">100</td>
   </tr>
   <tr>
-    <td align="center" rowspan="4">Blind</td>
+    <td align="center" rowspan="4">Blind<br/>(gold rush blind)</td>
     <td align="center">4</td>
     <td align="center">4</td>
     <td align="center">100</td>
@@ -277,7 +278,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
     <td align="center">100</td>
   </tr>
   <tr>
-    <td rowspan="4">Tracker</td>
+    <td rowspan="4">Tracker<br/>(gold rush sneak)</td>
     <td align="center">4</td>
     <td align="center">4</td>
     <td align="center">98</td>
