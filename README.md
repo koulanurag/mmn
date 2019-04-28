@@ -23,7 +23,10 @@ If you find it useful in your research, please cite it using :
     ```
 
 ## Usage
-In this section, we describe the usage of the scripts. We described it based on the Atari games, however for other environments such as MCE or Gold Rush the settings and steps are pretty the same. To run Atari games, you should use the `main_atari.py` file. To run the MCE environments or the Tomita Grammars, `main_mce.py` or `main_tomita.py` should be used respectively.
+We use ```main_mce.py , main_tomita.py``` and ```main_atari.py``` for experimenting with Mode Counter Environment(a.k.a Gold Rush) , Tomita Grammar and Atari ; respectively.
+
+In the following, we describe usage w.r.t ```main_atari.py```. However, the same would apply for other cases.
+
 
 ### Parameters
 ```
@@ -152,6 +155,7 @@ Formation of MMN requires following multiple steps which could be found [here](#
     ```
 
 ### Using pre-trained models
+
 For results to be easily reproducible, previously trained GRU models on different environments have been provided. You can simply use them to train new QBNs and reproduce the results presented in the paper. Models are accessible through this directory: ```results/Atari/```. The GRU cell size can be determined from the models' path, i.e. if a model is saved in a folder named as ```gru_32```, then the GRU cell size is 32. 
 Having the pretrained GRU model, you can go to [how to run the code step by step](#step-by-step-manual) to start training the QBNs.
 
