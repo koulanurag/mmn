@@ -249,7 +249,7 @@ class MooreMachine:
 
     def minimize_partial_fsm(self, net):
         """
-        Minimizing the whole Finite State Machine(FSM) to fewer observations.
+        Minimizing the whole Finite State Machine(FSM) to fewer states.
 
         :param net: given network
         """
