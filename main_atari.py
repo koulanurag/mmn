@@ -318,7 +318,7 @@ if __name__ == '__main__':
             logging.info('Reward Threshold:' + str(env.spec.reward_threshold))
             target_net = lambda bottle_net: MMNet(gru_net, obs_qbn=bottle_net)
             logging.info('Loading Data-Set ...')
-            _, _, obs_train_data, obs_test_data = tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda)
+            _, _, obs_train_data, obs_test_data = tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda, max_steps=args.generate_max_steps)
             if args.ox_train:
                 fsm_object.ox_train(ox_net, obs_train_data, obs_test_data, ox_net_path, ox_plot_dir, args.batch_size, args.train_epochs, args.cuda, target_net, ox_dir)
             if args.ox_test:
