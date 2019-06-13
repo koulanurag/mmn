@@ -3,10 +3,10 @@
 
 ENV=$1
 GRU_SIZE=32
-FILE=main_atari.py
+FILE=main_mce.py
 
-# Assuming Pre-trained models exist
-python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64 --ox_size 100 --generate_bn_data --generate_max_steps 100
+python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64 --ox_size 100 --gru_train --generate_max_steps 1000
+python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64 --ox_size 100 --generate_bn_data --generate_max_steps 1000
 python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64 --ox_size 100 --bhx_train
 python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64 --ox_size 100 --bhx_test
 python $FILE --env $ENV --gru_size $GRU_SIZE --bhx_size 64 --ox_size 100 --ox_train

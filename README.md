@@ -23,7 +23,7 @@ If you find it useful in your research, please cite it using :
     ```
 
 ## Usage
-We use ```main_mce.py , main_tomita.py``` and ```main_atari.py``` for experimenting with Mode Counter Environment(a.k.a Gold Rush) , Tomita Grammar and Atari ; respectively.
+We use ```main_mce.py , main_tomita.py``` and ```main_atari.py``` for experimenting with [Mode Counter Environment(a.k.a Gold Rush) , Tomita Grammar](https://github.com/koulanurag/gym_x) and Atari ; respectively.
 
 In the following, we describe usage w.r.t ```main_atari.py```. However, the same would apply for other cases.
 
@@ -93,65 +93,65 @@ For most of the experiments we've done, we've set `generate_max_steps = 100`. Ba
 Formation of MMN requires following multiple steps which could be found [here](#step-by-step-manual). These steps could also be sequentially executed for `bhx_size=64,ox_size=100` using the following script. This script could be easily customized for other environments.
 
 ```bash
-./run_atari.sh Pong-v0
+./run_atari.sh PongDeterministic-v4
 ``` 
 
 
 ### Steps
 1. *Test RNN*: We assume existence of pre-trained RNN model. The following step is optional and evaluates the performance of this model:
     ```bash
-    python main_atari.py --env Pong-v0 --gru_test --gru_size 32
+    python main_atari.py --env PongDeterministic-v4 --gru_test --gru_size 32
     ```
 2. *Generate Bottleneck Data*: It involves generating and storing data for training quantized bottleneck data (QBN).
     ```bash
-    python main_atari.py --env Pong-v0 --generate_bn_data --gru_size 32 --generate_max_steps 100
+    python main_atari.py --env PongDeterministic-v4 --generate_bn_data --gru_size 32 --generate_max_steps 100
     ```
 3. Train BHX :  It involves training QBN for Hidden State (hx). After each epoch, the QBN is inserted into orginal rnn model and the overall model is evaluated with environment. The Best performing QBN is saved.
     ```bash
-    python main_atari.py --env Pong-v0 --bhx_train --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    python main_atari.py --env PongDeterministic-v4 --bhx_train --bhx_size 64 --gru_size 32 --generate_max_steps 100
     ``` 
     After it's done, the model and plots will be saved here:
     ```bash
-    results/Atari/Pong-v0/gru_32_bhx_64/
+    results/Atari/PongDeterministic-v4/gru_32_bhx_64/
     ```
 4. Test BHX (optional): Inserts the saved BHX model into original rnn model and evaluates the model with environment. 
     ```bash
-    python main_atari.py --env Pong-v0 --bhx_test --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    python main_atari.py --env PongDeterministic-v4 --bhx_test --bhx_size 64 --gru_size 32 --generate_max_steps 100
     ```
 5. Train OX : It involves training QBN for learned  observation features(X) given as input to RNN. 
     ```bash
-    python main_atari.py --env Pong-v0 --ox_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    python main_atari.py --env PongDeterministic-v4 --ox_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
     ```
     
     After it's done, the model and plots will be saved here:
     ```bash
-    results/Atari/Pong-v0/gru_32_ox_100/
+    results/Atari/PongDeterministic-v4/gru_32_ox_100/
     ```
 6. Test BHX (optional): Inserts the saved OX model into original rnn model and evaluates the model with environment. 
     ```bash
-    python main_atari.py --env Pong-v0 --ox_test --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    python main_atari.py --env PongDeterministic-v4 --ox_test --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
     ```
 7. MMN:  We form the Moore Machine Network by inserting both the BHX and OX qbn's into the original rnn model. Thereafter the performance of the  *mmn* is evaluated on the environment. Fine-Tuning of MMN is performed if there is a fall in performance which could be caused by accumulated error by both the qbn's.
     ```bash
-    python main_atari.py --env Pong-v0 --bgru_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
+    python main_atari.py --env PongDeterministic-v4 --bgru_train --ox_size 100 --bhx_size 64 --gru_size 32 --generate_max_steps 100
     ```
 
     When the fine-tuning is done, model and plots will be saved here:
     ```bash
-    results/Atari/Pon/gru_32_hx_(64,100)_bgru
+    results/Atari/PongDeterministic-v4/gru_32_hx_(64,100)_bgru
     ```
 8. Test MMN (optional): Loads and tests the saved MMN model.
     ```bash
-    python main_atari.py --env Pong-v0 --bgru_test --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
+    python main_atari.py --env PongDeterministic-v4 --bgru_test --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
     ```
 9. Extract Moore Machine: In this final step, quantized observation and hidden state space are enumarated to form a moore machine. Thereafter minimization is performed on top of it.
     ```bash
-    python main_atari.py --env Pong-v0 --generate_fsm --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
+    python main_atari.py --env PongDeterministic-v4 --generate_fsm --bhx_size 64 --ox_size 100 --gru_size 32 --generate_max_steps 100
     ```
     Final Results before and after minimization are stored in text files (*fsm.txt* and *minimized_moore_machine.txt* ) here: 
     
     ```bash
-    results/Atari/Pong-v0/gru_32_hx_(64,100)_bgru/
+    results/Atari/PongDeterministic-v4/gru_32_hx_(64,100)_bgru/
     ```
 
 ### Using pre-trained models

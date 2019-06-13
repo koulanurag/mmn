@@ -99,6 +99,7 @@ class MMNet(nn.Module):
         self.gru_units = net.gru_units
         self.gru_net = net
         self.bhx_net = hx_qbn
+        self.obx_net = None
         self.actor_linear = self.gru_net.get_action_linear
 
     def init_hidden(self, batch_size=1):
@@ -144,7 +145,7 @@ if __name__ == '__main__':
     obs = env.reset()
 
     # create directories to store results
-    result_dir = tl.ensure_directory_exits(os.path.join(args.result_dir, 'Atari'))
+    result_dir = tl.ensure_directory_exits(os.path.join(args.result_dir, 'Tomita'))
     env_dir = tl.ensure_directory_exits(os.path.join(result_dir, args.env))
 
     gru_dir = tl.ensure_directory_exits(os.path.join(env_dir, 'gru_{}'.format(args.gru_size)))

@@ -1,0 +1,22 @@
+atari-py==0.1.7
+certifi==2019.3.9
+chardet==3.0.4
+cycler==0.10.0
+future==0.17.1
+gym==0.12.0
+-e git+https://github.com/koulanurag/gym_x.git@e10214b71ade1e4d1696ef7ba083aad2be035073#egg=gym_x
+idna==2.8
+kiwisolver==1.1.0
+matplotlib==3.0.3
+numpy==1.16.4
+Pillow==6.0.0
+prettytable==0.7.2
+pyglet==1.3.2
+PyOpenGL==3.1.0
+pyparsing==2.4.0
+python-dateutil==2.8.0
+requests==2.22.0
+scipy==1.1.0
+six==1.12.0
+torch==1.1.0
+urllib3==1.25.3

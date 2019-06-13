@@ -16,7 +16,8 @@ from torch.autograd import Variable
 logger = logging.getLogger(__name__)
 
 
-def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=False, grad_clip=None, target_net=None, env=None, low=0, high=0.05, target_test_episodes=1):
+def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=False, grad_clip=None, target_net=None,
+          env=None, low=0, high=0.05, target_test_episodes=1):
     """
     Train the QBN
 
@@ -48,7 +49,8 @@ def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=F
         batch_losses = []
         random.shuffle(train_data)
         for b_i in range(total_batches):
-            batch_input = train_data[b_i:b_i + batch_size]
+            # batch_input = train_data[b_i:b_i + batch_size]
+            batch_input = train_data[(b_i * batch_size):(b_i * batch_size) + batch_size]
             batch_target = Variable(torch.FloatTensor(batch_input))
             batch_input = torch.FloatTensor(batch_input)
             batch_input = Variable(batch_input, requires_grad=True)

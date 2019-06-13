@@ -177,7 +177,7 @@ if __name__ == '__main__':
     obs = env.reset()
 
     # create directories to store results
-    result_dir = tl.ensure_directory_exits(os.path.join(args.result_dir, 'Atari'))
+    result_dir = tl.ensure_directory_exits(os.path.join(args.result_dir, 'MCE'))
     env_dir = tl.ensure_directory_exits(os.path.join(result_dir, args.env))
 
     gru_dir = tl.ensure_directory_exits(os.path.join(env_dir, 'gru_{}'.format(args.gru_size)))
