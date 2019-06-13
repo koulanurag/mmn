@@ -1,4 +1,5 @@
 # This is an example script for sequence of commands to run
+# Usage : ./run_mce.sh GoldRushRead-v0
 #!/usr/bin/env bash
 
 ENV=$1

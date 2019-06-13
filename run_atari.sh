@@ -1,4 +1,5 @@
 # This is an example script for sequence of commands to run
+# Usage : ./run_atari.sh PongDeterministic-v4
 #!/usr/bin/env bash
 
 ENV=$1
