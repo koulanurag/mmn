@@ -262,7 +262,7 @@ Presenting the Mode Counter Environments(MCE) results, number of states and obse
     <td align="center">4</td>
     <td align="center">100</td>
     <td align="center">-</td>
-    <td align="center">5</td>
+    <td align="center">15</td>
     <td align="center">6</td>
     <td align="center">100</td>
     <td align="center">10</td>
