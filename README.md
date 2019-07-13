@@ -23,7 +23,7 @@ If you find it useful in your research, please cite it using :
     ```
 
 ## Usage
-We use ```main_mce.py , main_tomita.py``` and ```main_atari.py``` for experimenting with [Mode Counter Environment(a.k.a Gold Rush) , Tomita Grammar](https://github.com/koulanurag/gym_x) and Atari ; respectively.
+We use ```main_mce.py , main_tomita.py``` and ```main_atari.py``` for experimenting with [Mode Counter Environment(a.k.a Gold Rush) , Tomita Grammar](https://github.com/koulanurag/gym_x) and Atari, respectively.
 
 In the following, we describe usage w.r.t ```main_atari.py```. However, the same would apply for other cases.
 
