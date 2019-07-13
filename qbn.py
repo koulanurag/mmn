@@ -49,7 +49,6 @@ def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=F
         batch_losses = []
         random.shuffle(train_data)
         for b_i in range(total_batches):
-            # batch_input = train_data[b_i:b_i + batch_size]
             batch_input = train_data[(b_i * batch_size):(b_i * batch_size) + batch_size]
             batch_target = Variable(torch.FloatTensor(batch_input))
             batch_input = torch.FloatTensor(batch_input)
@@ -57,10 +56,10 @@ def train(net, data, optimizer, model_path, plot_dir, batch_size, epochs, cuda=F
 
             if cuda:
                 batch_input, batch_target = batch_input.cuda(), batch_target.cuda()
-            batch_ouput, _ = net(batch_input)
+            batch_output, _ = net(batch_input)
 
             optimizer.zero_grad()
-            loss = mse_loss(batch_ouput, batch_target)
+            loss = mse_loss(batch_output, batch_target)
             loss.backward()
             batch_losses.append(loss.item())
             if grad_clip is not None:
@@ -125,8 +124,8 @@ def test(net, data, batch_size, cuda=False):
             batch_target = Variable(torch.FloatTensor(batch_input))
             if cuda:
                 batch_target, batch_input = batch_target.cuda(), batch_input.cuda()
-            batch_ouput, _ = net(batch_input)
-            loss = mse_loss(batch_ouput, batch_target)
+            batch_output, _ = net(batch_input)
+            loss = mse_loss(batch_output, batch_target)
             batch_losses.append(float(loss.item()))
 
     return sum(batch_losses) / len(batch_losses)
