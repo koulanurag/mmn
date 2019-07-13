@@ -5,11 +5,13 @@ This is the implementation of Moore Machine Network (MMN) introduced in the work
 If you find it useful in your research, please cite it using :
 
 ```
-@article{koul2018learning,
+@inproceedings{
+  koul2018learning,
   title={Learning Finite State Representations of Recurrent Policy Networks},
-  author={Koul, Anurag and Greydanus, Sam and Fern, Alan},
-  journal={arXiv preprint arXiv:1811.12530},
-  year={2018}
+  author={Anurag Koul and Alan Fern and Sam Greydanus},
+  booktitle={International Conference on Learning Representations},
+  year={2019},
+  url={https://openreview.net/forum?id=S1gOpsCctm},
 }
 ```
 
