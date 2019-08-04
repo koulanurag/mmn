@@ -15,10 +15,8 @@ If you find it useful in your research, please cite it using :
 }
 ```
 
-<<<<<<< HEAD
 Also, [here](https://postersession.ai/poster/learning-finite-state-representations-of/?fbclid=IwAR3NBEJ34GPYZw7YOJIBzujc-xU8bwNaSekeNWhVuKyJnpAuz0DykwdYKuw) is the link to the poster presented in the ICLR2019.
-=======
->>>>>>> f3ea5b21b84195a10a1b8461306b759ae950eeff
+
 ## Installation
 * Python 3.5+
 * Pytorch
@@ -542,7 +540,7 @@ More experiments on control tasks have been done. Results are presented in the f
     <td align="center">500</td>
   </tr>
   <tr>
-    <td align="center" rowspan="2">Lunar Lander(4)</td>
+    <td align="center">Lunar Lander(4)</td>
     <td align="center">128</td>
     <td align="center">64</td>
     <td align="center">1502</td>
