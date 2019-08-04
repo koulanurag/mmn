@@ -248,7 +248,9 @@ if __name__ == '__main__':
             if args.cuda:
                 gru_net = gru_net.cuda()
             if args.gru_train:
-                gru_net = fsm_object.train_gru(gru_net, gru_net_path, gru_plot_dir, train_data, args.batch_size, args.train_epochs, args.cuda, args.bn_episodes, bottleneck_data_path, args.generate_max_steps, gru_prob_data_path, gru_dir)
+                logging.info(['No Training Performed!!'])
+                logging.warning('We assume that we already have a pre-trained model @ {}'.format(gru_net_path))
+                tl.write_net_readme(gru_net, gru_dir, info={})
             if args.gru_test:
                 test_performance = fsm_object.test_gru(gru_net, gru_net_path, args.cuda)
         # ***********************************************************************************
