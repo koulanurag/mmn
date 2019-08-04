@@ -1,5 +1,5 @@
 # This is an example script for sequence of commands to run
-# Usage : ./run_control.sh CartPole-v0
+# Usage : ./run_control.sh CartPole-v1 32 64 64
 #!/usr/bin/env bash
 
 ENV=$1
