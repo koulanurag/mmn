@@ -15,6 +15,8 @@ A paper for this work is available [here](https://openreview.net/pdf?id=S1gOpsCc
     url={https://openreview.net/forum?id=S1gOpsCctm},
 }
 ```
+
+Also, [here](https://postersession.ai/poster/learning-finite-state-representations-of/?fbclid=IwAR3NBEJ34GPYZw7YOJIBzujc-xU8bwNaSekeNWhVuKyJnpAuz0DykwdYKuw) is the link to the poster presented in the ICLR2019.
 ## Installation
 * Python 3.5+
 * Pytorch
@@ -516,6 +518,10 @@ The below table presents the test results for the trained RNNs giving the accura
 </table>
 
 ### Control Tasks
+To run the whole thing over control tasks, you only need to run the `run_control.sh` file. Below, is an example of how to do it:
+```bash
+sh run_control.sh Acrobot-v1 32 64 64
+```
 More experiments on control tasks have been done. Results are presented in the following table:
 
 <table>
@@ -536,46 +542,36 @@ More experiments on control tasks have been done. Results are presented in the f
   </tr>
   <tr>
     <td align="center">Cart Pole(2)</td>
-    <td align="center">8</td>
-    <td align="center">8</td>
-    <td align="center">10</td>
+    <td align="center">64</td>
+    <td align="center">64</td>
     <td align="center">27</td>
+    <td align="center">859</td>
     <td align="center">500</td>
-    <td align="center">5</td>
-    <td align="center">25</td>
+    <td align="center">4</td>
+    <td align="center">32</td>
     <td align="center">500</td>
   </tr>
   <tr>
     <td align="center" rowspan="2">Lunar Lander(4)</td>
     <td align="center">128</td>
-    <td align="center">100</td>
-    <td align="center">2550</td>
-    <td align="center">2197</td>
-    <td align="center">172</td>
-    <td align="center">75</td>
-    <td align="center">77</td>
-    <td align="center">134</td>
-  </tr>
-  <tr>
-    <td align="center">128</td>
-    <td align="center">400</td>
-    <td align="center">2194</td>
-    <td align="center">1996</td>
-    <td align="center">201</td>
-    <td align="center">27</td>
-    <td align="center">37</td>
-    <td align="center">205</td>
+    <td align="center">64</td>
+    <td align="center">1502</td>
+    <td align="center">1165</td>
+    <td align="center">198</td>
+    <td align="center">52</td>
+    <td align="center">89</td>
+    <td align="center">115</td>
   </tr>
   <tr>
     <td align="center">Acrobot(3)</td>
-    <td align="center">32</td>
-    <td align="center">16</td>
-    <td align="center">807</td>
-    <td align="center">306</td>
-    <td align="center">-82</td>
-    <td align="center">36</td>
-    <td align="center">62</td>
-    <td align="center">-146</td>
+    <td align="center">64</td>
+    <td align="center">64</td>
+    <td align="center">769</td>
+    <td align="center">649</td>
+    <td align="center">-73.95</td>
+    <td align="center">11</td>
+    <td align="center">23</td>
+    <td align="center">-89.4</td>
   </tr>
 </table>
 
