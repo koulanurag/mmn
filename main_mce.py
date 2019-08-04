@@ -1,36 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-Script for training and testing MMNet on Atari Environments.
+Script for training Moore Machine Network(MMNet) on Gold Rush
 """
 
 import os
-import qbn
 import sys
+import qbn
 import time
 import copy
 import torch
-import gru_nn
 import pickle
+import gru_nn
 import bgru_nn
 import logging
 import traceback
+import gym, gym_x
 import fsm_process
 import tools as tl
 import torch.nn as nn
 from torch import optim
 from functions import TernaryTanh
 from torch.autograd import Variable
-from env_wrapper import atari_wrapper
 from moore_machine import MooreMachine
+
 
 class ObsQBNet(nn.Module):
     """
-    Quantized Bottleneck Network(QBN) for observation features.
+    Quantized Bottleneck Network(QBN) for observation features
     """
-
     def __init__(self, input_size, x_features):
         super(ObsQBNet, self).__init__()
         self.bhx_size = x_features
+
         f1 = int(8 * x_features)
         self.encoder = nn.Sequential(nn.Linear(input_size, f1),
                                      nn.Tanh(),
@@ -41,6 +42,7 @@ class ObsQBNet(nn.Module):
                                      nn.Tanh(),
                                      nn.Linear(f1, input_size),
                                      nn.ReLU6())
+
 
     def forward(self, x):
         encoded = self.encode(x)
@@ -62,17 +64,13 @@ class HxQBNet(nn.Module):
     def __init__(self, input_size, x_features):
         super(HxQBNet, self).__init__()
         self.bhx_size = x_features
-        f1, f2 = int(8 * x_features), int(4 * x_features)
+        f1 = int(8 * x_features)
         self.encoder = nn.Sequential(nn.Linear(input_size, f1),
                                      nn.Tanh(),
-                                     nn.Linear(f1, f2),
-                                     nn.Tanh(),
-                                     nn.Linear(f2, x_features),
+                                     nn.Linear(f1, x_features),
                                      TernaryTanh())
 
-        self.decoder = nn.Sequential(nn.Linear(x_features, f2),
-                                     nn.Tanh(),
-                                     nn.Linear(f2, f1),
+        self.decoder = nn.Sequential(nn.Linear(x_features, f1),
                                      nn.Tanh(),
                                      nn.Linear(f1, input_size),
                                      nn.Tanh())
@@ -90,56 +88,27 @@ class HxQBNet(nn.Module):
 
 class GRUNet(nn.Module):
     """
-    Gated Recurrent Unit Network(GRUNet) definition.
+    Gated Recurrent Unit Network(GRUNet)  definition
     """
-
     def __init__(self, input_size, gru_cells, total_actions):
         super(GRUNet, self).__init__()
         self.gru_units = gru_cells
-        self.noise = False
-        self.conv1 = nn.Conv2d(input_size, 32, 3, stride=2, padding=1)
-        self.conv2 = nn.Conv2d(32, 32, 3, stride=2, padding=1)
-        self.conv3 = nn.Conv2d(32, 16, 3, stride=2, padding=1)
-        self.conv4 = nn.Conv2d(16, 8, 3, stride=2, padding=1)
-
-        self.input_ff = nn.Sequential(self.conv1, nn.ReLU(),
-                                      self.conv2, nn.ReLU(),
-                                      self.conv3, nn.ReLU(),
-                                      self.conv4, nn.ReLU6())
-        self.input_c_features = 8 * 5 * 5
-        self.input_c_shape = (8, 5, 5)
+        self.input_c_features = 4 * input_size
+        self.input_ff = nn.Sequential(nn.Linear(input_size, self.input_c_features), nn.ReLU())
         self.gru = nn.GRUCell(self.input_c_features, gru_cells)
-
-        self.critic_linear = nn.Linear(gru_cells, 1)
         self.actor_linear = nn.Linear(gru_cells, total_actions)
-
-        self.apply(tl.weights_init)
-        self.actor_linear.weight.data = tl.normalized_columns_initializer(self.actor_linear.weight.data, 0.01)
-        self.actor_linear.bias.data.fill_(0)
-        self.critic_linear.weight.data = tl.normalized_columns_initializer(self.critic_linear.weight.data, 1.0)
-        self.critic_linear.bias.data.fill_(0)
-
-        self.gru.bias_ih.data.fill_(0)
-        self.gru.bias_hh.data.fill_(0)
 
     def forward(self, input, input_fn=None, hx_fn=None, inspect=False):
         input, hx = input
         c_input = self.input_ff(input)
-        c_input = c_input.view(-1, self.input_c_features)
         input, input_x = input_fn(c_input) if input_fn is not None else (c_input, c_input)
         ghx = self.gru(input, hx)
-
-        # Keep the noise during both training as well as evaluation
-        # c_input = gaussian(c_input, self.training, mean=0, std=0.05, one_sided=True)
-        # c_input = tl.uniform(c_input, self.noise, low=-0.01, high=0.01, enforce_pos=True)
-        # ghx = tl.uniform(ghx, self.noise, low=-0.01, high=0.01)
-
         hx, bhx = hx_fn(ghx) if hx_fn is not None else (ghx, ghx)
 
         if inspect:
-            return self.critic_linear(hx), self.actor_linear(hx), hx, (ghx, bhx, c_input, input_x)
+            return None, self.actor_linear(hx), hx, (ghx, bhx, c_input, input_x)
         else:
-            return self.critic_linear(hx), self.actor_linear(hx), hx
+            return None, self.actor_linear(hx), hx
 
     def init_hidden(self, batch_size=1):
         return torch.zeros(batch_size, self.gru_units)
@@ -154,7 +123,7 @@ class GRUNet(nn.Module):
 
 class MMNet(nn.Module):
     """
-    Moore Machine Network(MMNet) definition.
+    Moore Machine Network(MMNet) definition
     """
     def __init__(self, net, hx_qbn=None, obs_qbn=None):
         super(MMNet, self).__init__()
@@ -203,12 +172,12 @@ class MMNet(nn.Module):
 
 if __name__ == '__main__':
     args = tl.get_args()
-    env = atari_wrapper(args.env)
+    env = gym.make(args.env)
     env.seed(args.env_seed)
     obs = env.reset()
 
     # create directories to store results
-    result_dir = tl.ensure_directory_exits(os.path.join(args.result_dir, 'Atari'))
+    result_dir = tl.ensure_directory_exits(os.path.join(args.result_dir, 'MCE'))
     env_dir = tl.ensure_directory_exits(os.path.join(result_dir, args.env))
 
     gru_dir = tl.ensure_directory_exits(os.path.join(env_dir, 'gru_{}'.format(args.gru_size)))
@@ -235,7 +204,7 @@ if __name__ == '__main__':
         # ***********************************************************************************
         # Generating training data                                                          *
         # ***********************************************************************************
-        no_batches = 10000
+        no_batches = 100
         if args.generate_train_data:
             train_data = fsm_object.generate_train_data(no_batches, args.batch_size, trajectories_data_path, args.generate_train_data, gru_dir)
         # ***********************************************************************************
@@ -248,9 +217,8 @@ if __name__ == '__main__':
             if args.cuda:
                 gru_net = gru_net.cuda()
             if args.gru_train:
-                logging.info(['No Training Performed!!'])
-                logging.warning('We assume that we already have a pre-trained model @ {}'.format(gru_net_path))
-                tl.write_net_readme(gru_net, gru_dir, info={})
+                train_data = fsm_object.generate_train_data(no_batches, args.batch_size, trajectories_data_path, args.generate_train_data, gru_dir)
+                gru_net = fsm_object.train_gru(gru_net, gru_net_path, gru_plot_dir, train_data, args.batch_size, args.train_epochs, args.cuda, args.bn_episodes, bottleneck_data_path, args.generate_max_steps, gru_prob_data_path, gru_dir)
             if args.gru_test:
                 test_performance = fsm_object.test_gru(gru_net, gru_net_path, args.cuda)
         # ***********************************************************************************
@@ -265,9 +233,7 @@ if __name__ == '__main__':
             if args.cuda:
                 gru_net = gru_net.cuda()
             gru_net.eval()
-
-            tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda,
-                                        eps=(0, 0.3), max_steps=args.generate_max_steps)
+            tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda, eps=(0, 0.3), max_steps=args.generate_max_steps)
             tl.generate_trajectories(env, 3, 5, gru_prob_data_path, gru_net, cuda=args.cuda, render=True)
 
         # ***********************************************************************************
@@ -320,7 +286,7 @@ if __name__ == '__main__':
             logging.info('Reward Threshold:' + str(env.spec.reward_threshold))
             target_net = lambda bottle_net: MMNet(gru_net, obs_qbn=bottle_net)
             logging.info('Loading Data-Set ...')
-            _, _, obs_train_data, obs_test_data = tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda, max_steps=args.generate_max_steps)
+            _, _, obs_train_data, obs_test_data = tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda)
             if args.ox_train:
                 fsm_object.ox_train(ox_net, obs_train_data, obs_test_data, ox_net_path, ox_plot_dir, args.batch_size, args.train_epochs, args.cuda, target_net, ox_dir)
             if args.ox_test:

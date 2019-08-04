@@ -24,38 +24,6 @@ from torch.autograd import Variable
 from moore_machine import MooreMachine
 
 
-class ObsQBNet(nn.Module):
-    """
-    Quantized Bottleneck Network(QBN) for observation features
-    """
-    def __init__(self, input_size, x_features):
-        super(ObsQBNet, self).__init__()
-        self.bhx_size = x_features
-
-        f1 = int(8 * x_features)
-        self.encoder = nn.Sequential(nn.Linear(input_size, f1),
-                                     nn.Tanh(),
-                                     nn.Linear(f1, x_features),
-                                     TernaryTanh())
-
-        self.decoder = nn.Sequential(nn.Linear(x_features, f1),
-                                     nn.Tanh(),
-                                     nn.Linear(f1, input_size),
-                                     nn.ReLU6())
-
-
-    def forward(self, x):
-        encoded = self.encode(x)
-        decoded = self.decode(encoded)
-        return decoded, encoded
-
-    def encode(self, x):
-        return self.encoder(x)
-
-    def decode(self, x):
-        return self.decoder(x)
-
-
 class HxQBNet(nn.Module):
     """
     Quantized Bottleneck Network(QBN) for hidden states of GRU
@@ -125,13 +93,13 @@ class MMNet(nn.Module):
     """
     Moore Machine Network(MMNet) definition
     """
-    def __init__(self, net, hx_qbn=None, obs_qbn=None):
+    def __init__(self, net, hx_qbn=None):
         super(MMNet, self).__init__()
         self.bhx_units = hx_qbn.bhx_size if hx_qbn is not None else None
         self.gru_units = net.gru_units
-        self.obx_net = obs_qbn
         self.gru_net = net
         self.bhx_net = hx_qbn
+        self.obx_net = None
         self.actor_linear = self.gru_net.get_action_linear
 
     def init_hidden(self, batch_size=1):
@@ -177,7 +145,7 @@ if __name__ == '__main__':
     obs = env.reset()
 
     # create directories to store results
-    result_dir = tl.ensure_directory_exits(os.path.join(args.result_dir, 'Atari'))
+    result_dir = tl.ensure_directory_exits(os.path.join(args.result_dir, 'Tomita'))
     env_dir = tl.ensure_directory_exits(os.path.join(result_dir, args.env))
 
     gru_dir = tl.ensure_directory_exits(os.path.join(env_dir, 'gru_{}'.format(args.gru_size)))
@@ -252,7 +220,7 @@ if __name__ == '__main__':
                 logging.info('Pre-Trained GRU model not found!')
                 sys.exit(0)
             else:
-                gru_net.load_state_dict(torch.load(gru_net_path))
+                gru_net.load_state_dict(torch.load(gru_net_path, map_location='cpu'))
             gru_net.noise = False
             env.spec.reward_threshold = gru_nn.test(gru_net, env, 5, log=True, cuda=args.cuda, render=False)
             logging.info('Reward Threshold:' + str(env.spec.reward_threshold))
@@ -266,40 +234,12 @@ if __name__ == '__main__':
                 fsm_object.bhx_test(bhx_net, bhx_net_path, hx_test_data, args.cuda)
 
         # ***********************************************************************************
-        # Obs-QBN                                                                           *
-        # ***********************************************************************************
-        if args.ox_test or args.ox_train:
-            tl.set_log(ox_dir, 'train' if args.ox_train else 'test')
-            gru_net = GRUNet(len(obs), args.gru_size, int(env.action_space.n))
-            ox_net = ObsQBNet(gru_net.input_c_features, args.ox_size)
-            if args.cuda:
-                gru_net = gru_net.cuda()
-                ox_net = ox_net.cuda()
-
-            if not os.path.exists(gru_net_path):
-                logging.warning('Pre-Trained GRU model not found!')
-                sys.exit(0)
-            else:
-                gru_net.load_state_dict(torch.load(gru_net_path))
-            gru_net.noise = False
-            env.spec.reward_threshold = gru_nn.test(gru_net, env, 5, log=True, cuda=args.cuda, render=False)
-            logging.info('Reward Threshold:' + str(env.spec.reward_threshold))
-            target_net = lambda bottle_net: MMNet(gru_net, obs_qbn=bottle_net)
-            logging.info('Loading Data-Set ...')
-            _, _, obs_train_data, obs_test_data = tl.generate_bottleneck_data(gru_net, env, args.bn_episodes, bottleneck_data_path, cuda=args.cuda)
-            if args.ox_train:
-                fsm_object.ox_train(ox_net, obs_train_data, obs_test_data, ox_net_path, ox_plot_dir, args.batch_size, args.train_epochs, args.cuda, target_net, ox_dir)
-            if args.ox_test:
-                fsm_object.ox_test(ox_net, ox_net_path, obs_test_data, args.cuda)
-
-        # ***********************************************************************************
         # MMN                                                                               *
         # ***********************************************************************************
         if args.bgru_train or args.bgru_test or args.generate_fsm or args.evaluate_fsm:
             gru_net = GRUNet(len(obs), args.gru_size, int(env.action_space.n))
             bhx_net = HxQBNet(args.gru_size, args.bhx_size)
-            ox_net = ObsQBNet(gru_net.input_c_features, args.ox_size)
-            bgru_net = MMNet(gru_net, bhx_net, ox_net)
+            bgru_net = MMNet(gru_net, bhx_net)
             if args.cuda:
                 bgru_net = bgru_net.cuda()
 
@@ -307,13 +247,11 @@ if __name__ == '__main__':
             if not args.bx_scratch:
                 if bgru_net.bhx_net is not None:
                     bgru_net.bhx_net.load_state_dict(torch.load(bhx_net_path))
-                if bgru_net.obx_net is not None:
-                    bgru_net.obx_net.load_state_dict(torch.load(ox_net_path))
                 bx_prefix = ''
 
             gru_prefix = 'scratch-'
             if not args.gru_scratch:
-                bgru_net.gru_net.load_state_dict(torch.load(gru_net_path))
+                bgru_net.gru_net.load_state_dict(torch.load(gru_net_path, map_location='cpu'))
                 bgru_net.gru_net.noise = False
                 gru_prefix = ''
 
